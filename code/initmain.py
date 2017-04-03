@@ -7,6 +7,7 @@ CAL_FILE = "hsa7458_v000_HH"
 PATH_TO_MIR_TO_FITS = "/usr/local/bin/miriad_to_uvfits.py"
 PATH_DATA = "/home/trienko/HERA/conference/data/"
 PATH_CODE = "/home/trienko/HERA/conference/code/"
+OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
 
 class inittasks():
 
@@ -61,12 +62,25 @@ class inittasks():
               os.system(command)
           os.chdir(PATH_CODE)
 
+      def add_HERA_observatory(self):
+          file = open("add_HERA.py","w") 
+          file.write("from casa import table as tb\n") 
+          file.write("obstablename="+'"'+OBSTABLENAME+'"'+"\n") 
+          file.write("tb.open(obstablename,nomodify=False)\n") 
+          file.write("paperi =(tb.getcol(\"Name\")==\"PAPER_SA\").nonzero()[0]\n") 
+          file.write("tb.copyrows(obstablename,startrowin=paperi,startrowout=-1,nrow=1)\n")
+          file.write("tb.putcell(\"Name\",tb.nrows()-1,\"HERA\")\n")
+          file.write("tb.close()")
+          file.close() 
+          command = "casa -c add_HERA.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command)
 
 if __name__ == "__main__":
    inittasks_object = inittasks()
    #inittasks_object.add_uv_tracks()
-   inittasks_object.miriad_to_uvfits()
- 
+   #inittasks_object.miriad_to_uvfits()
+   inittasks_object.add_HERA_observatory()
 
    #inittasks_object.remove_uvcU()
 
