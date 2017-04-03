@@ -62,6 +62,20 @@ class inittasks():
               os.system(command)
           os.chdir(PATH_CODE)
 
+      ##############################
+      #Deleting the ms files
+      ##############################
+      def remove_uvfits(self):
+          os.chdir(PATH_DATA)
+          for file in glob.glob("*.ms"):
+              command = "rm -r "+ file
+              print("CMD >>> "+command)
+              os.system(command)
+          os.chdir(PATH_CODE)
+
+      ##############################
+      #Adding HERA to CASA's observatory table
+      ##############################
       def add_HERA_observatory(self):
           file = open("add_HERA.py","w") 
           file.write("from casa import table as tb\n") 
@@ -75,12 +89,48 @@ class inittasks():
           command = "casa -c add_HERA.py --nogui --nologfile --log2term"
           print("CMD >>> "+command)
           os.system(command)
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+
+      ##############################
+      #Converting uvfits to ms
+      ##############################
+      def uv_fits_to_ms(self):
+          os.chdir(PATH_DATA)
+          for file_name in glob.glob("*.uvfits"):
+              file = open("uvfits_to_ms.py","w")
+              msname = file_name[:-7]+".ms"
+              file.write("fitsfile=\""+file_name+"\"\n")
+              file.write("vis=\""+msname+"\"\n")
+              file.write("go(importuvfits)\n")
+              file.close() 
+              command = "casa -c uvfits_to_ms.py --nogui --nologfile --log2term"
+              print("CMD >>> "+command)
+              os.system(command)
+              #break
+          
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+          os.chdir(PATH_CODE)
+              
+      #def test_sudo(self):
+      #    command = "sudo man"
+      #    print("CMD >>> "+command)
+      #    os.system(command)
+          
+
+
+
 
 if __name__ == "__main__":
    inittasks_object = inittasks()
+   
    #inittasks_object.add_uv_tracks()
    #inittasks_object.miriad_to_uvfits()
-   inittasks_object.add_HERA_observatory()
+   #inittasks_object.add_HERA_observatory()
+   #inittasks_object.uv_fits_to_ms()
 
-   #inittasks_object.remove_uvcU()
+   
 
