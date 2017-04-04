@@ -12,6 +12,19 @@ PATH_CODE = "/home/trienko/HERA/conference/code/"
 OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
 ##############################################################################################################
 
+#GENERAL CASA WRAPPER FUNCTION
+def CASA_WRAPPER(task="plotms",options={}):
+    file = open(task+"_script.py","w")
+    file.write("default("+task+")\n")
+    for key in options.keys():
+        if isinstance(options[key], str):
+           file.write(key+"=\'"+options[key]+"\'\n") 
+        else:
+           file.write(key+"="+str(options[key])+"\n")
+    file.write("inp("+task+")\n")
+    file.write("go("+task+")\n")
+    file.close()     
+
 ##############################################################################################################
 #CLASS CONTAINING ALL THE IMPORTANT INITIALIZATION TASKS FOR HERA-19 COMMISIONING
 
@@ -119,8 +132,10 @@ class inittasks():
           for file_name in glob.glob("*.uvfits"):
               file = open("uvfits_to_ms.py","w")
               msname = file_name[:-7]+".ms"
+              file.write("default(importuvfits)\n")
               file.write("fitsfile=\""+file_name+"\"\n")
               file.write("vis=\""+msname+"\"\n")
+              file.write("inp(importuvfits)\n")
               file.write("go(importuvfits)\n")
               file.close() 
               command = "casa -c uvfits_to_ms.py --nogui --nologfile --log2term"
@@ -168,7 +183,9 @@ class inittasks():
       #    command = "sudo man"
       #    print("CMD >>> "+command)
       #    os.system(command)
-          
+
+                 
+
 if __name__ == "__main__":
    #I NEED TO BE SUDO TO RUN THIS TASK WHICH IS WHY I HAVE WRITTEN A WRAPPER AROUND THIS CLASS WHICH CAN CALL THIS PYTHON FILE
    inittasks_object = inittasks()
