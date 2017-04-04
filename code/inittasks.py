@@ -10,6 +10,7 @@ PATH_TO_MIR_TO_FITS = "/usr/local/bin/miriad_to_uvfits.py"
 PATH_DATA = "/home/trienko/HERA/conference/data/"
 PATH_CODE = "/home/trienko/HERA/conference/code/"
 OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
+ANT_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
 ##############################################################################################################
 
 #GENERAL CASA WRAPPER FUNCTION
