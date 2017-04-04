@@ -4,8 +4,8 @@
 
 Two python files working in unison:
 
-1. `inittasks.py`contains the class that performs all the initialization tasks
-2. `initscript.py`- wrapper around inittasks.py, provides command line interface (applies tasks to all files in data direcotry)
+1. `inittasks.py` - contains the class that performs all the initialization tasks
+2. `initscript.py` - wrapper around inittasks.py, provides command line interface (applies tasks to all files in data direcotry)
 
 `python initscript.py -h`
 
