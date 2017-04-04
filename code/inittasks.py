@@ -2,12 +2,30 @@ import numpy as np
 import pylab as plt
 import glob, os
 
+#SETTING LOCATIONS TO ALL THE IMPORTANT SCRIPTS AND DATA FILES
+##############################################################################################################
 PATH_TO_ADD_UVWS = "/home/trienko/HERA/software/capo/dcj/scripts/add_uvws.py"
 CAL_FILE = "hsa7458_v000_HH" 
 PATH_TO_MIR_TO_FITS = "/usr/local/bin/miriad_to_uvfits.py"
 PATH_DATA = "/home/trienko/HERA/conference/data/"
 PATH_CODE = "/home/trienko/HERA/conference/code/"
 OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
+##############################################################################################################
+
+##############################################################################################################
+#CLASS CONTAINING ALL THE IMPORTANT INITIALIZATION TASKS FOR HERA-19 COMMISIONING
+
+#For every .uvc file
+#*******************
+#1. Add uv-tracks to miriad data files using the add_uvws command
+#2. Convert miriad to uvfits using the miriad_to_uvfits command
+#3. Convert uvfits to ms using the importuvfits command
+#4. Swap the antenna columns s.t. A1 < A2
+
+#Once off ater installing CASA for the first time
+#************************************************
+#5. Add HERA to CASA's observatory table 
+##############################################################################################################
 
 class inittasks():
 
@@ -65,7 +83,7 @@ class inittasks():
       ##############################
       #Deleting the ms files
       ##############################
-      def remove_uvfits(self):
+      def remove_ms(self):
           os.chdir(PATH_DATA)
           for file in glob.glob("*.ms"):
               command = "rm -r "+ file
@@ -84,7 +102,7 @@ class inittasks():
           file.write("paperi =(tb.getcol(\"Name\")==\"PAPER_SA\").nonzero()[0]\n") 
           file.write("tb.copyrows(obstablename,startrowin=paperi,startrowout=-1,nrow=1)\n")
           file.write("tb.putcell(\"Name\",tb.nrows()-1,\"HERA\")\n")
-          file.write("tb.close()")
+          file.write("tb.close()\n")
           file.close() 
           command = "casa -c add_HERA.py --nogui --nologfile --log2term"
           print("CMD >>> "+command)
@@ -114,23 +132,48 @@ class inittasks():
           print("CMD >>> "+command)
           os.system(command)
           os.chdir(PATH_CODE)
+
+      ##############################
+      #Swap ANTENNA columns s.t. A1 < A2 
+      ##############################  
+      def swap_antenna(self):
+          os.chdir(PATH_DATA)
+          
+          for file_name in glob.glob("*.ms"):
+              file = open("swap.py","w")
+              file.write("from casa import table as tb\n") 
+              file.write("tb.open(\""+file_name+"\",nomodify=False)\n")
+              file.write("a1,a2,data = [tb.getcol(x) for x in [\"ANTENNA1\",\"ANTENNA2\",\"DATA\"]]\n")
+              file.write("m = a1 > a2\n")
+              file.write("data[:,:,m] = data[:,:,m].conj()\n")
+              file.write("x = a2[m]\n")
+              file.write("a2[m] = a1[m]\n")
+              file.write("a1[m] = x\n")
+              file.write("tb.putcol(\"ANTENNA1\",a1)\n")
+              file.write("tb.putcol(\"ANTENNA2\",a2)\n")
+              file.write("tb.putcol(\"DATA\",data)\n")
+              file.write("tb.flush()\n")
+              file.write("tb.close()\n")
+              file.close()
+              command = "casa -c swap.py --nogui --nologfile --log2term"
+              print("CMD >>> "+command)
+              os.system(command)
+     
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+          os.chdir(PATH_CODE)
               
       #def test_sudo(self):
       #    command = "sudo man"
       #    print("CMD >>> "+command)
       #    os.system(command)
           
-
-
-
-
 if __name__ == "__main__":
+   #I NEED TO BE SUDO TO RUN THIS TASK WHICH IS WHY I HAVE WRITTEN A WRAPPER AROUND THIS CLASS WHICH CAN CALL THIS PYTHON FILE
    inittasks_object = inittasks()
-   
-   #inittasks_object.add_uv_tracks()
-   #inittasks_object.miriad_to_uvfits()
-   #inittasks_object.add_HERA_observatory()
-   #inittasks_object.uv_fits_to_ms()
+   inittasks_object.miriad_to_uvfits()
+
 
    
 
