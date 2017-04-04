@@ -9,9 +9,7 @@ Two python files working in unison:
 
 `python initscript.py -h`
 
-`python initscript.py -h --add_uvws --miriad_to_uvfits --sudo_miriad_to_uvfits --add_HERA --importuvfits --swap_ant --del_uvfits` 
-
-`--del_uvcU --del_ms`
+`python initscript.py -h --add_uvws --miriad_to_uvfits --sudo_miriad_to_uvfits --add_HERA --importuvfits --swap_ant --del_uvfits --del_uvcU --del_ms`
 
 `--add_uvws: adds uv-tracks to miriad data sets`
 
