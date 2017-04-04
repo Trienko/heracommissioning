@@ -26,7 +26,7 @@ class plotutilities():
           os.system(command)
           os.chdir(it.PATH_CODE)
 
-      def plot_auto_correlations_all(self):
+      def plot_auto_correlations_all(self,add_tag=""):
           os.chdir(it.PATH_DATA)
           options={}          
           options["xaxis"]='freq'
@@ -39,11 +39,14 @@ class plotutilities():
           options["showgui"]=False
           options["overwrite"]=True
 
-          
+          if not os.path.isdir(FIGURE_PATH+"AUTO/"):
+             command = "mkdir "+FIGURE_PATH+"AUTO/"
+             print("CMD >>> "+command)
+             os.system(command) 
 
           for file_name in glob.glob("*.ms"):
               options["vis"]=file_name
-              options["plotfile"]=FIGURE_PATH+file_name[:-3]+'_AUTO.png'
+              options["plotfile"]=FIGURE_PATH+"AUTO/"+file_name[:-3]+'_AUTO'+add_tag+'.png'
 
               self.plotms_wrapper(options=options)
     
