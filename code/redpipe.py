@@ -130,7 +130,7 @@ class redpipe():
           gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
           os.chdir(it.PATH_DATA)
           
-          #CREAT POINT SOURCE MODEL AT THE PS OF GALACTIC CENTER
+          #CREAT POINT SOURCE MODEL AT THE POS OF GALACTIC CENTER
           if not os.path.isfile('point_source_model.cl'):
              command = "casa -c create_ps.py --nogui --nologfile --log2term"
              print("CMD >>> "+command)
