@@ -33,7 +33,7 @@ Two python files working in unison:
 
 # Plotting utilities
 
-plotutilities.py provides some basic plotting functionality:
+`plotutilities.py` provides some basic plotting functionality:
 
 1. Plotting autocorrelations
 2. Plotting redindant groups (per baseline or combined)
