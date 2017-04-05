@@ -31,4 +31,28 @@ Two python files working in unison:
 
 **REMEMBER TO SET THE LOCATIONS TO ALL THE IMPORTANT SCRIPTS AND DATA FILES IN THE HEADER OF INITTASKS.PY**
 
+# Plotting utilities
+
+plotutilities.py provides some basic plotting functionality:
+
+1. Plotting autocorrelations
+2. Plotting redindant groups (per baseline or combined)
+3. Plotting HEX-19 with antenna labels (either ids or names)
+
+`python plotutilities.py -a -r -l --per_baseline <value> --ymax <value> --id_true <value>`
+
+`-a: plot all the autocorrelations for all the measurement sets in current directory`
+
+`-r: plot all the correlations associated with the different baseline groups for all the measurement sets in current directory`
+
+`-l: plot the HERA-19 layout with antenna labels`
+
+`--ymax <value>: (must be a real number) On the correlation plots this is the chosen maximum y-value. Default is 6.`
+
+`--per_baseline <value>: (must be a boolean) Produce per-baseline correlation plots. Default is False.`
+
+`--id_true <value>: (must be a boolean) On the HERA-19 layout plot use CASA antenna names or HERA wiki ids. Default is False.`
+
+**REMEMBER TO SET THE LOCATION OF WHERE THE FIGURES SHOULD BE STORED IN THE HEADER OF PLOTUTILITIES.PY**
+
 
