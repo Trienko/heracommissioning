@@ -3,6 +3,7 @@ import numpy as np
 import pylab as plt
 import glob, os
 import inittasks as it
+import plotutilities as plutil
 
 FLAG_SPW_STRING = '0:0~140;379~387;768~770;851~852;901~1023'
 FLAG_ANT_STRING = '81;82;113'
@@ -49,6 +50,19 @@ class redpipe():
           it.CASA_WRAPPER(task="bandpass",options=options)
           print os.getcwd()
           command = "casa -c bandpass_script.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command) 
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+
+      #####################################
+      #CASA wrapper around plotcal 
+      #####################################
+      def plotcal_wrapper(self,options={}):
+          it.CASA_WRAPPER(task="plotcal",options=options)
+          print os.getcwd()
+          command = "casa -c plotcal_script.py --nogui --nologfile --log2term"
           print("CMD >>> "+command)
           os.system(command) 
           command = "rm ipython*.log"
@@ -127,6 +141,7 @@ class redpipe():
           return msname
 
       def bandpass_gc(self):
+          global BANDBASS_GC_CAL_TABLE
           gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
           os.chdir(it.PATH_DATA)
           
@@ -158,12 +173,48 @@ class redpipe():
           options["combine"]='scan'
           options["caltable"] = BANDBASS_GC_CAL_TABLE 
           self.bandpass_wrapper(options=options)
+          os.chdir(it.PATH_CODE)
+
+      def plot_cal_gc(self):
+          global BANDBASS_GC_CAL_TABLE
+          if BANDBASS_GC_CAL_TABLE == '':
+             gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
+	     gc_name_split = gc_name.split('.')
+             gc_jd = gc_name_split[1]+'.'+gc_name_split[2]
           
+             BANDBASS_GC_CAL_TABLE = 'b_'+gc_jd+'.cal'
+           
+          os.chdir(it.PATH_DATA)
+                       
+          if os.path.isdir(BANDBASS_GC_CAL_TABLE):  
+             if not os.path.isdir(plutil.FIGURE_PATH+"CAL_SOLUTIONS/"):
+             	command = "mkdir "+plutil.FIGURE_PATH+"CAL_SOLUTIONS/"
+             	print("CMD >>> "+command)
+             	os.system(command)
+
+             options={}
+             options["caltable"]=BANDBASS_GC_CAL_TABLE
+             options["xaxis"]='freq'
+             options["yaxis"]='phase'
+             options["showgui"]=False
+             options["figfile"]=plutil.FIGURE_PATH+"CAL_SOLUTIONS/"+BANDBASS_GC_CAL_TABLE+"_PHASE.png"
+	     self.plotcal_wrapper(options=options)
+
+             options={}
+             options["caltable"]=BANDBASS_GC_CAL_TABLE
+             options["xaxis"]='freq'
+             options["yaxis"]='amp'
+             options["showgui"]=False
+             options["figfile"]=plutil.FIGURE_PATH+"CAL_SOLUTIONS/"+BANDBASS_GC_CAL_TABLE+"_AMP.png"
+	     self.plotcal_wrapper(options=options)
+          os.chdir(it.PATH_CODE)
+
 if __name__ == "__main__":
    #main(sys.argv[1:])
    red_object = redpipe()
-   print red_object.print_lst(print_values=True)
-   red_object.bandpass_gc()
+   #print red_object.print_lst(print_values=True)
+   #red_object.bandpass_gc()
+   red_object.plot_cal_gc()
    #red_object.flag_basic_all()
    #plot_object = plotutilities()
 
