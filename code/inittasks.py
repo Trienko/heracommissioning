@@ -22,7 +22,8 @@ def CASA_WRAPPER(task="plotms",options={}):
            file.write(key+"=\'"+options[key]+"\'\n") 
         else:
            file.write(key+"="+str(options[key])+"\n")
-    file.write("inp("+task+")\n")
+    if task <> "viewer":#FOR SOME REASON INP ON VIEWER HANGS
+       file.write("inp("+task+")\n")
     file.write("go("+task+")\n")
     file.close()     
 

@@ -69,6 +69,45 @@ class redpipe():
           print("CMD >>> "+command)
           os.system(command)
 
+      #####################################
+      #CASA wrapper around applycal 
+      #####################################
+      def applycal_wrapper(self,options={}):
+          it.CASA_WRAPPER(task="applycal",options=options)
+          print os.getcwd()
+          command = "casa -c applycal_script.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command) 
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+
+      #####################################
+      #CASA wrapper around clean
+      #####################################
+      def clean_wrapper(self,options={}):
+          it.CASA_WRAPPER(task="clean",options=options)
+          print os.getcwd()
+          command = "casa -c clean_script.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command) 
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+
+      #####################################
+      #CASA wrapper around viewer
+      #####################################
+      def viewer_wrapper(self,options={}):
+          it.CASA_WRAPPER(task="viewer",options=options)
+          print os.getcwd()
+          command = "casa -c viewer_script.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command) 
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+
       def flag_basic_all(self):
           
           os.chdir(it.PATH_DATA)
@@ -93,7 +132,6 @@ class redpipe():
           options["action"]='apply'
           options["datacolumn"]='DATA'
           options["antenna"] = FLAG_ANT_STRING  
-          
 
           for file_name in glob.glob("*.ms"):
               options["vis"]=file_name
@@ -209,13 +247,80 @@ class redpipe():
 	     self.plotcal_wrapper(options=options)
           os.chdir(it.PATH_CODE)
 
+      def applycal_gc_all(self):
+          global BANDBASS_GC_CAL_TABLE
+          if BANDBASS_GC_CAL_TABLE == '':
+             gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
+	     gc_name_split = gc_name.split('.')
+             gc_jd = gc_name_split[1]+'.'+gc_name_split[2]
+          
+             BANDBASS_GC_CAL_TABLE = 'b_'+gc_jd+'.cal'
+
+          os.chdir(it.PATH_DATA)
+          file_names = glob.glob("*.ms")
+          for file_name in file_names:
+              options={}
+              options["vis"] = file_name
+              options["gaintable"]=BANDBASS_GC_CAL_TABLE
+	      self.applycal_wrapper(options=options)
+          os.chdir(it.PATH_CODE)
+
+      def create_images(self):
+          os.chdir(it.PATH_DATA)
+                       
+          if not os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
+             command = "mkdir "+plutil.FIGURE_PATH+"IMAGES/"
+             print("CMD >>> "+command)
+             os.system(command)
+
+          file_names = glob.glob("*.ms")
+
+          for file_name in file_names:
+              
+              if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".model"):
+                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".*"
+                 print("CMD >>> "+command)
+                 os.system(command)
+
+              #RUN THE CLEAN TASK
+              options={}
+              options["vis"] = file_name
+              options["imagename"] = plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]
+              options["imagermode"] = 'csclean'
+              options["psfmode"] = 'clark'
+              options["threshold"]='0.2Jy'
+              options["niter"]=3
+              options["mode"]='mfs'
+              options["cell"]=['10arcmin','10arcmin']
+              options["weighting"]='uniform'
+              options["imsize"]=[240,240]
+              options["gridmode"]='widefield'
+              options["wprojplanes"]=128
+              options["gain"]=0.2
+              options["interactive"]=False
+
+	      self.clean_wrapper(options=options)
+
+              #RUN VIEWER
+              options={}
+              options["infile"] = plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".image"
+              options["outfile"] = plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".png"
+              options["outformat"] = 'png'
+              options["gui"]=False
+            
+              self.viewer_wrapper(options=options)
+          os.chdir(it.PATH_CODE)
+       		
 if __name__ == "__main__":
    #main(sys.argv[1:])
    red_object = redpipe()
+   #red_object.flag_basic_all()
    #print red_object.print_lst(print_values=True)
    #red_object.bandpass_gc()
-   red_object.plot_cal_gc()
-   #red_object.flag_basic_all()
+   #red_object.plot_cal_gc()
+   #red_object.applycal_gc_all()
+   red_object.create_images()
+   
    #plot_object = plotutilities()
 
 
