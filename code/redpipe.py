@@ -9,7 +9,7 @@ import sys, getopt
 FLAG_SPW_STRING = '0:0~140;379~387;768~770;851~852;901~1023'
 FLAG_ANT_STRING = '81;82;113'
 SGR_STR = '17:45:40.0'
-SGR_FLOAT = (17.0/24 + 45.0/60 + 40.0/3600)*(pi/12)
+SGR_FLOAT = (17.0 + 45.0/60 + 40.0/3600)*(pi/12)
 BANDBASS_GC_CAL_TABLE = ''
 POINT_SOURCE_MODEL = 'point_source_model.cl'
 
@@ -170,11 +170,15 @@ class redpipe():
               ra_cen[k] = float(HERA.sidereal_time())
               k = k + 1
               if print_values:
-                 print "MSNAME: %s, UTC: %s (LST %s = %f):" % (file_name, HERA.date, HERA.sidereal_time(), float(HERA.sidereal_time()) )
-	      
+                 print "MSNAME: %s, UTC: %s (LST %s = %f)" % (file_name, HERA.date, HERA.sidereal_time(), float(HERA.sidereal_time()) )
+	    
           d = np.absolute(ra_cen - SGR_FLOAT)
           index_min = np.argmin(d)
           msname = file_names[index_min]
+          if print_values:
+             print "SGR = ",SGR_STR 
+             #for k in xrange(len(ra_cen)):
+             #    print file_names[k]+" "+str(ra_cen[k])+" "+str(SGR_FLOAT)+" "+str(d[k]) 
           #print msname
           os.chdir(it.PATH_CODE)
           return msname
@@ -321,7 +325,7 @@ def main(argv):
    createimages = False
 
    try:
-      opts, args = getopt.getopt(argv,"h",["flag_all_basic","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images"])
+      opts, args = getopt.getopt(argv,"h",["flag_all_basic","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images","print_lst"])
    except getopt.GetoptError:
       print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst'
       sys.exit(2)
@@ -349,7 +353,8 @@ def main(argv):
       elif opt == "--create_images":
            createimages = True
       elif opt == "--print_lst":
-	   red_object.print_lst()
+	   msname = red_object.print_lst(print_values=True)
+           print "Final MS: ",msname
 
    if flagallbasic:
       red_object.flag_basic_all()
@@ -361,6 +366,7 @@ def main(argv):
       red_object.apply_cal_gc_all()
    if createimages:
       red_object.create_images()
+      
      		
 if __name__ == "__main__":
    main(sys.argv[1:])
