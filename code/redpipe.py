@@ -189,7 +189,7 @@ class redpipe():
           os.chdir(it.PATH_DATA)
           
           #CREAT POINT SOURCE MODEL AT THE POS OF GALACTIC CENTER
-          if not os.path.isfile(POINT_SOURCE_MODEL):
+          if not os.path.isdir(POINT_SOURCE_MODEL):
              command = "casa -c create_ps.py --nogui --nologfile --log2term"
              print("CMD >>> "+command)
              os.system(command) 
@@ -363,7 +363,7 @@ def main(argv):
    if plotcalgc:
       red_object.plot_cal_gc()
    if applycalgcall:
-      red_object.apply_cal_gc_all()
+      red_object.applycal_gc_all()
    if createimages:
       red_object.create_images()
       
