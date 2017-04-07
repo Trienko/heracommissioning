@@ -184,7 +184,7 @@ class redpipe():
           os.chdir(it.PATH_DATA)
           
           #CREAT POINT SOURCE MODEL AT THE POS OF GALACTIC CENTER
-          if not os.path.isfile('point_source_model.cl'):
+          if not os.path.isfile(POINT_SOURCE_MODEL):
              command = "casa -c create_ps.py --nogui --nologfile --log2term"
              print("CMD >>> "+command)
              os.system(command) 
@@ -310,17 +310,66 @@ class redpipe():
             
               self.viewer_wrapper(options=options)
           os.chdir(it.PATH_CODE)
-       		
-if __name__ == "__main__":
-   #main(sys.argv[1:])
+
+def main(argv):
    red_object = redpipe()
+   flagallbasic = False
+   bandpassgc = False
+   plotcalgc = False
+   applycalgcall = False
+   createimages = False
+
+   try:
+      opts, args = getopt.getopt(argv,"h",["flag_all_basic","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images"])
+   except getopt.GetoptError:
+      print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst'
+      sys.exit(2)
+   for opt, arg in opts:
+      #print "opt = ",opt
+      #print "arg = ",arg
+      if opt == '-h':
+         print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst'
+         print '--flag_all_basic: flag known bad channels, autocorrelations and antenna'
+         print '--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith'
+         print '--plot_cal_gc: plot the calibration bandpass solution obtained from doing a bandpass cal on the ms where gc is at zenith'
+         print '--apply_cal_gc_all: apply the bandpass solutions obtained to all the other measurement sets in the directory'
+         print '--create_images: call clean and viewer to create some basic images' 
+         print '--print_lst: converts the file names to lst and prints them'
+         print "REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY"
+         sys.exit()
+      elif opt == "--flag_all_basic":
+           flagallbasic = True
+      elif opt == "--bandpass_gc":
+           bandpassgc = True   
+      elif opt == "--plot_cal_gc":
+           plotcalgc = True
+      elif opt == "--apply_cal_gc_all":
+           applycalgcall = True
+      elif opt == "--create_images":
+           createimages = True
+      elif opt == "--print_lst
+	   red_object.print_lst()
+
+   if flagallbasic:
+      red_object.flag_all_basic()
+   if bandpassgc:
+      red_object.bandpass_gc()
+   if plotcalgc():
+      red_object.plot_cal_gc()
+   if applycalgcall:
+      red_object.apply_cal_gc_all()
+   if createimages:
+      red_object.create_images()
+     		
+if __name__ == "__main__":
+   main(sys.argv[1:])
+   #red_object = redpipe()
    #red_object.flag_basic_all()
    #print red_object.print_lst(print_values=True)
    #red_object.bandpass_gc()
    #red_object.plot_cal_gc()
    #red_object.applycal_gc_all()
-   red_object.create_images()
-   
+   #red_object.create_images()
    #plot_object = plotutilities()
 
 
