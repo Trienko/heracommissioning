@@ -55,4 +55,28 @@ Two python files working in unison:
 
 **REMEMBER TO SET THE LOCATION OF WHERE THE FIGURES SHOULD BE STORED IN THE HEADER OF PLOTUTILITIES.PY**
 
+# Reduction pipeline
 
+`redpipe.py` provides some basic reduction related processing commands:
+
+1. Manual basic flagging: antenna, baselines and auto
+2. Bandpass calibration of galactic center ms
+3. Transfer of bandpass solution in 2 to all ms in directory
+4. Plotting of badpass cal solution in 2
+5. Imaging of all ms in directory
+
+`python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst`
+
+`--flag_all_basic: flag known bad channels, autocorrelations and antenna`
+
+`--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith`
+
+`--plot_cal_gc: plot the calibration bandpass solution obtained from doing a bandpass cal on the ms where gc is at zenith`
+
+`--apply_cal_gc_all: apply the bandpass solutions obtained to all the other measurement sets in the directory`
+
+`--create_images: call clean and viewer to create some basic images`
+
+`--print_lst: converts the file names to lst and prints them`
+
+## REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY#
