@@ -355,7 +355,7 @@ def main(argv):
       red_object.flag_basic_all()
    if bandpassgc:
       red_object.bandpass_gc()
-   if plotcalgc():
+   if plotcalgc:
       red_object.plot_cal_gc()
    if applycalgcall:
       red_object.apply_cal_gc_all()
