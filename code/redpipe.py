@@ -4,6 +4,7 @@ import pylab as plt
 import glob, os
 import inittasks as it
 import plotutilities as plutil
+import sys, getopt
 
 FLAG_SPW_STRING = '0:0~140;379~387;768~770;851~852;901~1023'
 FLAG_ANT_STRING = '81;82;113'
@@ -347,11 +348,11 @@ def main(argv):
            applycalgcall = True
       elif opt == "--create_images":
            createimages = True
-      elif opt == "--print_lst
+      elif opt == "--print_lst":
 	   red_object.print_lst()
 
    if flagallbasic:
-      red_object.flag_all_basic()
+      red_object.flag_basic_all()
    if bandpassgc:
       red_object.bandpass_gc()
    if plotcalgc():
