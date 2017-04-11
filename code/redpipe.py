@@ -109,6 +109,19 @@ class redpipe():
           print("CMD >>> "+command)
           os.system(command)
 
+      #####################################
+      #CASA wrapper around viewer
+      #####################################
+      def exportfits_wrapper(self,options={}):
+          it.CASA_WRAPPER(task="exportfits",options=options)
+          print os.getcwd()
+          command = "casa -c exportfits_script.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command) 
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+
       def flag_basic_all(self):
           
           os.chdir(it.PATH_DATA)
@@ -316,6 +329,22 @@ class redpipe():
               self.viewer_wrapper(options=options)
           os.chdir(it.PATH_CODE)
 
+      def convert_to_fits(self):
+	  if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
+
+             os.chdir(plutil.FIGURE_PATH+"IMAGES/")
+
+             file_names = glob.glob("*.image")
+          
+             for file_name in file_names:
+                 options={}
+                 options["imagename"] = file_name
+                 options["fitsimage"] = file_name[:-5]+".fits"
+                 options["history"]=False
+                 self.exportfits_wrapper(options)
+
+          os.chdir(it.PATH_CODE)
+
 def main(argv):
    red_object = redpipe()
    flagallbasic = False
@@ -323,23 +352,25 @@ def main(argv):
    plotcalgc = False
    applycalgcall = False
    createimages = False
+   converttofits = False
 
    try:
-      opts, args = getopt.getopt(argv,"h",["flag_all_basic","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images","print_lst"])
+      opts, args = getopt.getopt(argv,"h",["flag_all_basic","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images","print_lst","convert_to_fits"])
    except getopt.GetoptError:
-      print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst'
+      print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst --convert_to_fits'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
       #print "arg = ",arg
       if opt == '-h':
-         print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst'
+         print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst --convert_to_fits'
          print '--flag_all_basic: flag known bad channels, autocorrelations and antenna'
          print '--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith'
          print '--plot_cal_gc: plot the calibration bandpass solution obtained from doing a bandpass cal on the ms where gc is at zenith'
          print '--apply_cal_gc_all: apply the bandpass solutions obtained to all the other measurement sets in the directory'
          print '--create_images: call clean and viewer to create some basic images' 
          print '--print_lst: converts the file names to lst and prints them'
+         print '--convert_to_fits: convert .image files to .fits'
          print "REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY"
          sys.exit()
       elif opt == "--flag_all_basic":
@@ -352,6 +383,9 @@ def main(argv):
            applycalgcall = True
       elif opt == "--create_images":
            createimages = True
+      elif opt == "--convert_to_fits":
+           #print "HALLO"
+           converttofits = True
       elif opt == "--print_lst":
 	   msname = red_object.print_lst(print_values=True)
            print "Final MS: ",msname
@@ -366,6 +400,8 @@ def main(argv):
       red_object.applycal_gc_all()
    if createimages:
       red_object.create_images()
+   if converttofits:
+      red_object.convert_to_fits()
       
      		
 if __name__ == "__main__":
