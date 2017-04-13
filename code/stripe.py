@@ -25,7 +25,7 @@ class stripe():
              file_names = glob.glob("*G.fits")
           
              for file_name in file_names:
-	         command = "python "+mk_file+" "+file_name+" -i -m "+file_name[:-6]+"_healpix.fits "+"--nside="+str(256)
+	         command = "python "+mk_file+" "+file_name+" -i -m "+file_name[:-6]+"_healpix.fits "+"-n --nside="+str(256)
                  print("CMD >>> "+command)
                  os.system(command)  
              os.chdir(it.PATH_CODE)
@@ -71,7 +71,17 @@ class stripe():
              os.system(command) 
 	     os.chdir(it.PATH_CODE) 
 
-      def create_gauss_beam_fits(self,input_image="zen.2457545.47315.xx.HH.uvcU..fits"):
+      def create_gauss_beams_fits(self):
+          if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
+             os.chdir(plutil.FIGURE_PATH+"IMAGES/")
+             
+             file_names = glob.glob("*uvcU.fits")
+
+             for file_name in file_names:
+                 self.create_gauss_beam_fits(input_image=file_name)
+             os.chdir(it.PATH_CODE)
+
+      def create_gauss_beam_fits(self,input_image="zen.2457545.47315.xx.HH.uvcU.fits"):
 	  
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
 
@@ -80,13 +90,17 @@ class stripe():
           
              image = fh[0].data
 
-             print "fh[0].header = ", fh[0].header
+             #print "fh[0].header = ", fh[0].header
 
              cell_dim = np.absolute(fh[0].header["CDELT1"])
              n = fh[0].header["NAXIS1"]
 
-	     print "cell_dim = ",cell_dim
-             print "n = ",n
+	     #print "cell_dim = ",cell_dim
+             #print "n = ",n
+
+             #ASSUMING 14m DISH
+             #ASSUMING OBS FREQ IS 150MHz
+             #FWHM = 2.35*sigma
 
              lambda_v = 3e8/150e6
 
@@ -94,11 +108,11 @@ class stripe():
          
              p_beam_deg = p_beam*(180.0/np.pi) 
 
-             print "b_beam_deg = ",p_beam_deg
+             #print "b_beam_deg = ",p_beam_deg
 
              sigma = p_beam_deg/2.35
 
-             print "sigma = ",sigma
+             #print "sigma = ",sigma
           
              fh.close()
 
@@ -119,24 +133,26 @@ class stripe():
                  y -= cell_dim
                  #print "y = ",y
                  #return x                          
-             plt.imshow(image_v)
+             #plt.imshow(image_v)
 
-             plt.show()
-             
-             os.chdir(it.PATH_CODE)          
-  
-          #cmd = 'cp ' + input_image + ' ' + output_image
-          #os.system(cmd)
-          #fh = pf.open(output_image)
-          #fh[0].data = image
-          #fh.writeto(output_image,clobber=True)
-          #fh.close()	
+             #plt.show()
+                         
+             output_image = input_image[:-6]+"_gaussbeam.fits"
+             cmd = 'cp ' + input_image + ' ' + output_image 
+             print("CMD >>> "+cmd)
+             os.system(cmd)
+             fh.close()
+             fh = pf.open(output_image)
+             fh[0].data[0,0,:,:] = image
+             fh.writeto(output_image,clobber=True)
+             fh.close()	
+             os.chdir(it.PATH_CODE) 
            
              
 if __name__ == "__main__":
    s = stripe()
    #s.call_mk_map_mod()
    #s.plot_healpix()
-   s.create_gauss_beam_fits()
+   s.create_gauss_beams_fits()
    #s.plot_healpix(file_name="all_sky.fits")
    #s.call_save_map()  
