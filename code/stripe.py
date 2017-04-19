@@ -22,10 +22,10 @@ class stripe():
 
              mk_file = it.PATH_CODE + "mk_map_mod.py"
 
-             file_names = glob.glob("*G.fits")
+             file_names = glob.glob("*B.fits")
           
              for file_name in file_names:
-	         command = "python "+mk_file+" "+file_name+" -i -m "+file_name[:-6]+"_healpix.fits "+"-n --nside="+str(256)
+	         command = "python "+mk_file+" "+file_name+" -i -m "+file_name[:-6]+"H.fits "+"-n --nside="+str(256)
                  print("CMD >>> "+command)
                  os.system(command)  
              os.chdir(it.PATH_CODE)
@@ -48,9 +48,9 @@ class stripe():
 
              print "haslam = ",haslam
 
-             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title="zen.2457545.47315.xx.HH.uvcU_healpix.fits",max=0.4)
+             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name,max=0.4)
              hp.graticule()
-             #plt.show()
+             plt.show()
 
              #mask = hp.read_map(file_name).astype(np.bool)
              #haslam_mask = hp.ma(mask)
@@ -66,7 +66,7 @@ class stripe():
 
              s_file = it.PATH_CODE + "save_map.py"
 
-	     command = "python "+s_file+" *_healpix.fits "+"-s all_sky.fits"
+	     command = "python "+s_file+" *H.fits "+"-s all_sky.fits"
              print("CMD >>> "+command)
              os.system(command) 
 	     os.chdir(it.PATH_CODE) 
@@ -81,7 +81,7 @@ class stripe():
                  self.create_gauss_beam_fits(input_image=file_name)
              os.chdir(it.PATH_CODE)
 
-      def create_gauss_beam_fits(self,input_image="zen.2457545.47315.xx.HH.uvcU.fits"):
+      def create_gauss_beam_fits(self,input_image="zen.2457545.47315.xx.HH.uvcU.fits",produce_beam=True,produce_beam_sqr=True,apply_beam=True):
 	  
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
 
@@ -95,6 +95,8 @@ class stripe():
              cell_dim = np.absolute(fh[0].header["CDELT1"])
              n = fh[0].header["NAXIS1"]
 
+             #TODO:: READ FREQ FROM HEADER OF FITS
+
 	     #print "cell_dim = ",cell_dim
              #print "n = ",n
 
@@ -104,7 +106,7 @@ class stripe():
 
              lambda_v = 3e8/150e6
 
-             p_beam = lambda_v/14.0
+             p_beam = 1.22*lambda_v/14.0
          
              p_beam_deg = p_beam*(180.0/np.pi) 
 
@@ -116,6 +118,7 @@ class stripe():
           
              fh.close()
 
+             old_image = np.copy(image[0,0,:,:])
              image_v = image[0,0,:,:]
              
              x_0 = -1*(n/2.0)*cell_dim
@@ -136,16 +139,44 @@ class stripe():
              #plt.imshow(image_v)
 
              #plt.show()
-                         
-             output_image = input_image[:-6]+"_gaussbeam.fits"
-             cmd = 'cp ' + input_image + ' ' + output_image 
-             print("CMD >>> "+cmd)
-             os.system(cmd)
              fh.close()
-             fh = pf.open(output_image)
-             fh[0].data[0,0,:,:] = image
-             fh.writeto(output_image,clobber=True)
-             fh.close()	
+            
+             if produce_beam:
+                output_image = input_image[:-9]+"B.fits"
+                cmd = 'cp ' + input_image + ' ' + output_image 
+                print("CMD >>> "+cmd)
+                os.system(cmd)           
+                fh = pf.open(output_image)
+                fh[0].data[0,0,:,:] = image_v
+                #plt.imshow(image_v)
+                #plt.show()
+                fh.writeto(output_image,clobber=True)
+                fh.close()	
+
+             if produce_beam_sqr:
+                output_image = input_image[:-9]+"sB.fits"
+                cmd = 'cp ' + input_image + ' ' + output_image 
+                print("CMD >>> "+cmd)
+                os.system(cmd)           
+                fh = pf.open(output_image)
+                fh[0].data[0,0,:,:] = image_v**2
+                fh.writeto(output_image,clobber=True)
+                #plt.imshow(image_v**2)
+                #plt.show()
+                fh.close()	
+
+             if apply_beam:
+                output_image = input_image[:-6]+"B.fits"
+                cmd = 'cp ' + input_image + ' ' + output_image 
+                print("CMD >>> "+cmd)
+                os.system(cmd)           
+                fh = pf.open(output_image)
+                fh[0].data[0,0,:,:] = image_v*old_image
+                fh.writeto(output_image,clobber=True)
+                #plt.imshow(image_v*old_image)
+                #plt.show()
+                fh.close()	
+             
              os.chdir(it.PATH_CODE) 
            
              
@@ -154,5 +185,6 @@ if __name__ == "__main__":
    #s.call_mk_map_mod()
    #s.plot_healpix()
    s.create_gauss_beams_fits()
-   #s.plot_healpix(file_name="all_sky.fits")
+   s.call_mk_map_mod()
+   #s.plot_healpix(file_name="zen.2457545.47315.xx.HH.uvcU.fits")
    #s.call_save_map()  
