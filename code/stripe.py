@@ -31,7 +31,65 @@ class stripe():
              os.chdir(it.PATH_CODE)
 
       
+      #m=None
+      #w=None
+      #for fits in args:
+      #    print 'Opening:',fits
+      #    fitssplt = fits.split('/')[-1].split('.')
+      #    JD = fitssplt[0] + '.' + fitssplt[1]
+         #POL = 'xx'
+         #beam = '%s.%s.B_healpix.fits'%(JD,POL)
+      #    path,srcFits=os.path.split(os.path.realpath(fits))
+         #destBm = os.path.join(path,beam)
+      #    if m is None: 
+      #        m,w,hdr=h.read_map(fits,field=(0,1),h=True)
+             #bm,bw,bhdr=h.read_map(destBm,field=(0,1),h=True)
+      #    else:
+      #        m0,w0,hdr=h.read_map(fits,field=(0,1),h=True)
+             #bm0,bw0,bhdr=h.read_map(destBm,field=(0,1),h=True)
+      #        m+=m0
+      #        w+=w0
+             #bm+=bm0
+      #if not(opts.savemap is None):
+      #    ofn=opts.savemap
+         #h.write_map(ofn,n.array([m/bm,w,w]),dtype=n.float64,coord='E')
+      #    h.write_map(ofn,n.array([m,w,w]),dtype=n.float64,coord='E')
 
+      def make_all_sky_map(self):
+          if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"): 
+             os.chdir(plutil.FIGURE_PATH+"IMAGES/")     
+             file_names = glob.glob("*uvcUBH.fits")
+             m = None
+             w = None
+
+             for file_name in file_names:
+                 beam_name = file_name[:-11]+"sBH.fits"
+                 if m is None:
+                    print "file_name = ",file_name
+                    m = hp.read_map(file_name,field=0)
+                 else:
+                    m = m + hp.read_map(file_name,field=0)  
+                 if w is None:
+                    print "beam_name = ",beam_name
+                    w = hp.read_map(beam_name,field=0)
+                 else:
+                    w = w + hp.read_map(beam_name,field=0)
+
+             c = np.copy(m)
+
+             for k in xrange(len(m)):
+                 if not w[k]<0.01:
+                    c[k] = m[k]/w[k]
+                 else:
+                    c[k] = 0       
+
+             #with np.errstate(divide='ignore', invalid='ignore'):
+             #     c = np.true_divide(m,w)
+             #     c[c == np.inf] = 0
+             #     #c = np.nan_to_num(c)
+                   
+             hp.write_map("ALL_SKY.fits",np.array([c,m,w]),dtype=np.float64,coord='C')            
+ 
       def plot_healpix(self,file_name="zen.2457545.47315.xx.HH.uvcU_healpix.fits"):
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
              
@@ -40,7 +98,7 @@ class stripe():
              
              #file_names = glob.glob("*_healpix.fits") 
 
-             haslam = hp.read_map(file_name,field=0)
+             haslam = hp.read_map(file_name,field=2)
             
              for x in xrange(len(haslam)):
                  if np.allclose(haslam[x],0.0):
@@ -48,7 +106,7 @@ class stripe():
 
              print "haslam = ",haslam
 
-             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name,max=0.4)
+             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name)#max=0.4
              hp.graticule()
              plt.show()
 
@@ -184,7 +242,9 @@ if __name__ == "__main__":
    s = stripe()
    #s.call_mk_map_mod()
    #s.plot_healpix()
-   s.create_gauss_beams_fits()
-   s.call_mk_map_mod()
+   #s.create_gauss_beams_fits()
+   #s.call_mk_map_mod()
+   s.make_all_sky_map()
+   s.plot_healpix(file_name="ALL_SKY.fits")
    #s.plot_healpix(file_name="zen.2457545.47315.xx.HH.uvcU.fits")
    #s.call_save_map()  
