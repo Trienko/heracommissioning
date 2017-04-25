@@ -25,7 +25,7 @@ class stripe():
              file_names = glob.glob("*B.fits")
           
              for file_name in file_names:
-	         command = "python "+mk_file+" "+file_name+" -i -m "+file_name[:-6]+"H.fits "+"-n --nside="+str(256)
+	         command = "python "+mk_file+" "+file_name+" -i -m "+file_name[:-5]+"H.fits "+"-n --nside="+str(256)
                  print("CMD >>> "+command)
                  os.system(command)  
              os.chdir(it.PATH_CODE)
@@ -166,7 +166,7 @@ class stripe():
                 fh.close()	
 
              if apply_beam:
-                output_image = input_image[:-6]+"B.fits"
+                output_image = input_image[:-5]+"B.fits"
                 cmd = 'cp ' + input_image + ' ' + output_image 
                 print("CMD >>> "+cmd)
                 os.system(cmd)           
