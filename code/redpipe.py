@@ -339,7 +339,7 @@ class redpipe():
              for file_name in file_names:
                  options={}
                  options["imagename"] = file_name
-                 options["fitsimage"] = file_name[:-5]+".fits"
+                 options["fitsimage"] = file_name[:-6]+"G.fits"
                  options["history"]=False
                  self.exportfits_wrapper(options)
 

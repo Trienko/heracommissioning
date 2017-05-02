@@ -2,6 +2,7 @@ import numpy as np
 import pylab as plt
 import glob, os
 
+
 #SETTING LOCATIONS TO ALL THE IMPORTANT SCRIPTS AND DATA FILES
 ##############################################################################################################
 PATH_TO_ADD_UVWS = "/home/trienko/HERA/software/capo/dcj/scripts/add_uvws.py"
