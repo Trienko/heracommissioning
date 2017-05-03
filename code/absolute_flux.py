@@ -180,6 +180,41 @@ class absflux():
           ff.close()
           return np.array([x_1,x_2,y_1,y_2]),npix
 
+      def obtain_MS_range(self,source="PMN J2101-2802",before_after=3,print_values=True):
+          
+          if source == "PMN J2101-2802":
+             S = hours(PMN_J2101_2802_RA)
+          elif source == "PMN J2107 2526":
+             S = hours(PMN_J2107_2526_RA)
+          else:
+             S = hours(PMN_J2101_2802_RA)
+
+          os.chdir(it.PATH_DATA)
+          HERA = Observer()
+          HERA.lat, HERA.long, HERA.elevation = '-30:43:17', '21:25:40.08', 0.0
+          j0 = julian_date(0)
+
+          file_names = glob.glob("*.ms")
+          ra_cen = np.zeros((len(file_names),))
+          k = 0        
+ 
+          for file_name in file_names:
+              file_name_split = file_name.split('.')
+              lst = file_name_split[1]+'.'+file_name_split[2]
+              HERA.date = float(lst) - j0
+              ra_cen[k] = float(HERA.sidereal_time())
+              k = k + 1
+              if print_values:
+                 print "MSNAME: %s, UTC: %s (LST %s = %f)" % (file_name, HERA.date, HERA.sidereal_time(), float(HERA.sidereal_time()) )
+	    
+          d = np.absolute(ra_cen - S)
+          index_min = np.argsort(d)
+          truncated_ra = ra_cen[index_min[:2*before_after]]
+          truncated_names = file_names[index_min[:2*before_after]]
+          
+          os.chdir(it.PATH_CODE)
+          return truncated_ra,truncated_names
+
 if __name__ == "__main__":
    
    ab_object = absflux()
@@ -187,25 +222,31 @@ if __name__ == "__main__":
    mask = np.zeros((2,2),dtype=float)
    direc = plutil.FIGURE_PATH+"IMAGES/"
    
-   x = ["59147","59842","61234", "61930", "62626"]
+   ra,names = ab_object.obtain_MS_range(source="PMN J2101-2802",before_after=3)
+   
+   print "ra = ",ra
+   print "names = ",names
+   
+   
+   #x = ["59147","59842","61234", "61930", "62626"]
 
-   for k in xrange(len(x)):
-       fits_file = "zen.2457545."+x[k]+".xx.HH.uvcU.fits"    
+   #for k in xrange(len(x)):
+   #    fits_file = "zen.2457545."+x[k]+".xx.HH.uvcU.fits"    
 
-       print "fits_file = ",fits_file
-       print "direc = ",direc
-       l,m = ab_object.convert_PMN_J2101_2802_to_lm(direc,fits_file)
+   #    print "fits_file = ",fits_file
+   #    print "direc = ",direc
+   #    l,m = ab_object.convert_PMN_J2101_2802_to_lm(direc,fits_file)
 
-       print "l = ",l
-       print "m = ",m
+   #    print "l = ",l
+   #    print "m = ",m
 
-       mask[0,0] = l
-       mask[0,1] = m
+   #    mask[0,0] = l
+   #    mask[0,1] = m
 
-       l,m = ab_object.convert_PMN_J2107_2526_to_lm(direc,fits_file)
+   #    l,m = ab_object.convert_PMN_J2107_2526_to_lm(direc,fits_file)
 
-       mask[1,0] = l
-       mask[1,1] = m
+   #    mask[1,0] = l
+   #    mask[1,1] = m
 
-       ab_object.obtainTrimBox(direc,fits_file,mask,window=8,pix_deg="PIX",plot_selection=True) 
+   #    ab_object.obtainTrimBox(direc,fits_file,mask,window=8,pix_deg="PIX",plot_selection=True) 
 
