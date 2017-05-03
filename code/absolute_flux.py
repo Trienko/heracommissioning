@@ -11,6 +11,7 @@ import pyfits
 PMN_J2101_2802_RA = "21:01:18.3"
 PMN_J2101_2802_DEC = "-28:01:55"
 PMN_J2101_2802_FLUX_189 = 23.1
+PMN_J2101_2802_FLUX_150 = 23.1*(150.0/189.0)**(-0.8)
 
 #https://ned.ipac.caltech.edu/cgi-bin/objsearch?objname=PMN+J2101-2802&extend=no&hconst=73&omegam=0.27&omegav=0.73&corr_z=1&out_csys=Equatorial&out_equinox=J2000.0&obj_sort=RA+or+Longitude&of=pre_text&zv_breaker=30000.0&list_limit=5&img_stamp=YES
 
@@ -19,6 +20,7 @@ PMN_J2101_2802_FLUX_189 = 23.1
 PMN_J2107_2526_RA = "21:07:25.3"
 PMN_J2107_2526_DEC = "-25:25:40"
 PMN_J2107_2526_FLUX_189 = 47.7
+PMN_J2107_2526_FLUX_150 = 47.7*(150.0/189.0)**(-0.8)
 
 #https://ned.ipac.caltech.edu/cgi-bin/objsearch?objname=PMN+J2107-2526&extend=no&hconst=73&omegam=0.27&omegav=0.73&corr_z=1&out_csys=Equatorial&out_equinox=J2000.0&obj_sort=RA+or+Longitude&of=pre_text&zv_breaker=30000.0&list_limit=5&img_stamp=YES
 
@@ -33,7 +35,7 @@ class absflux():
           pass
 
       def getFieldCenter(self,direc,fits_file):
-
+          #print "d+f = ",direc+fits_file
           if os.path.isfile(direc+fits_file):
              ff = pyfits.open(direc+fits_file)
              header_v = ff[0].header
@@ -109,9 +111,11 @@ class absflux():
           #print "itemindex4 = ",itemindex4
           return np.array([itemindex2,itemindex1,itemindex4,itemindex3])
 
-      def obtainTrimBox(self,direc,fits_file,mask,window=2,pix_deg="PIX",plot_selection=False):
+      def obtainTrimBox(self,direc,fits_file,mask,window=2,pix_deg="PIX",plot_selection=False,avg=False):
           if not (os.path.isfile(direc+fits_file)):
-             return np.array([np.NaN,np.NaN,np.NaN,np.NaN]),np.NaN
+             return np.array([np.NaN,np.NaN,np.NaN,np.NaN]),np.NaN,-1
+          
+          flux = np.zeros((mask.shape[0],),dtype=float)
 
           ff = pyfits.open(direc+"/"+fits_file)
           header_v = ff[0].header
@@ -161,9 +165,14 @@ class absflux():
 
                 #print "y_1 = ",y_1
                 #print "y_2 = ",y_2
-
+              data_temp = np.copy(data[y_1:y_2,x_1:x_2])
+              if avg:
+                 flux[s] = np.average(data_temp)
+              else:
+                 flux[s] = np.amax(data_temp)	
+	
               if plot_selection:
-                   data_temp = np.copy(data[y_1:y_2,x_1:x_2])
+                   
                    data[y_1:y_2,x_1:x_2] = 0
                    #data_temp = data[0:1000,:]
 
@@ -171,14 +180,13 @@ class absflux():
                    plt.show()
                    plt.imshow(data)
                    plt.show()
-              else:
-                 x_1 = np.NaN
-                 x_2 = np.NaN
-                 y_1 = np.NaN
-                 y_2 = Np.NaN
-
+              #else:
+              #   x_1 = np.NaN
+              #   x_2 = np.NaN
+              #   y_1 = np.NaN
+              #   y_2 = np.NaN
           ff.close()
-          return np.array([x_1,x_2,y_1,y_2]),npix
+          return flux
 
       def obtain_MS_range(self,source="PMN J2101-2802",before_after=3,print_values=True):
           
@@ -209,11 +217,18 @@ class absflux():
 	    
           d = np.absolute(ra_cen - S)
           index_min = np.argsort(d)
-          truncated_ra = ra_cen[index_min[:2*before_after]]
-          truncated_names = file_names[index_min[:2*before_after]]
           
+             
+          ra_sorted = ra_cen[index_min]
+          #print "ra_sorted = ",ra_sorted
+    
+          file_names_np = np.array(file_names)
+
+          names_sorted = file_names_np[index_min]
+          #print "names_sorted = ",names_sorted    
+      
           os.chdir(it.PATH_CODE)
-          return truncated_ra,truncated_names
+          return ra_sorted[:2*before_after], names_sorted[:2*before_after]
 
 if __name__ == "__main__":
    
@@ -223,30 +238,96 @@ if __name__ == "__main__":
    direc = plutil.FIGURE_PATH+"IMAGES/"
    
    ra,names = ab_object.obtain_MS_range(source="PMN J2101-2802",before_after=3)
+   ind = np.argsort(ra)
+   ra = ra[ind]
+   names = names[ind]
+
+   source_flux = np.zeros((2,len(names)),dtype=float)
+   beam_gain = np.zeros((2,len(names)),dtype=float)
+   x = 0
    
-   print "ra = ",ra
-   print "names = ",names
-   
-   
-   #x = ["59147","59842","61234", "61930", "62626"]
+   for fits_file in names:
+       fits_file = fits_file[:-2]+"fits"
+       beam_fits = fits_file[:-9]+"B.fits"
 
-   #for k in xrange(len(x)):
-   #    fits_file = "zen.2457545."+x[k]+".xx.HH.uvcU.fits"    
+       print "fits_file = ",fits_file
+       print "beam_fits = ",beam_fits
 
-   #    print "fits_file = ",fits_file
-   #    print "direc = ",direc
-   #    l,m = ab_object.convert_PMN_J2101_2802_to_lm(direc,fits_file)
+       print "direc = ",direc
+       l,m = ab_object.convert_PMN_J2101_2802_to_lm(direc,fits_file)
 
-   #    print "l = ",l
-   #    print "m = ",m
+       print "l = ",l
+       print "m = ",m
 
-   #    mask[0,0] = l
-   #    mask[0,1] = m
+       mask[0,0] = l
+       mask[0,1] = m
 
-   #    l,m = ab_object.convert_PMN_J2107_2526_to_lm(direc,fits_file)
+       l,m = ab_object.convert_PMN_J2107_2526_to_lm(direc,fits_file)
 
-   #    mask[1,0] = l
-   #    mask[1,1] = m
+       mask[1,0] = l
+       mask[1,1] = m
 
-   #    ab_object.obtainTrimBox(direc,fits_file,mask,window=8,pix_deg="PIX",plot_selection=True) 
+       source_flux[:,x] = ab_object.obtainTrimBox(direc,fits_file,mask,window=8,pix_deg="PIX",plot_selection=False) 
+       beam_gain[:,x] = ab_object.obtainTrimBox(direc,beam_fits,mask,window=2,pix_deg="PIX",plot_selection=False,avg=True) 
+       x = x + 1
+       #print "flux = ",flux
+
+   plt.plot(ra,source_flux[0,:],label="PMN J2101-2802")
+   plt.plot(ra,source_flux[1,:],label="PMN J2107-2526")
+   plt.legend()
+   plt.xlabel("RA [rad]")
+   plt.ylabel("Uncalibrated Flux")
+   plt.show()
+
+   plt.plot(ra,beam_gain[0,:],label="PMN J2101-2802")
+   plt.plot(ra,beam_gain[1,:],label="PMN J2107-2526")
+   plt.legend()
+   plt.xlabel("RA [rad]")
+   plt.ylabel("Beam Gain")
+   plt.show()
+
+   plt.plot(ra,beam_gain[0,:]**(-2),label="PMN J2101-2802")
+   plt.plot(ra,beam_gain[1,:]**(-2),label="PMN J2107-2526")
+   plt.legend()
+   plt.xlabel("RA [rad]")
+   plt.ylabel("Beam Gain")
+   plt.show()
+
+   plt.plot(ra,source_flux[0,:]/beam_gain[0,:],label="PMN J2101-2802")
+   plt.plot(ra,source_flux[1,:]/beam_gain[1,:],label="PMN J2107-2526")
+   plt.legend()
+   plt.xlabel("RA [rad]")
+   plt.ylabel("Uncalibrated Flux")
+   plt.show()
+
+   fact1 = np.sum(beam_gain[0,:]*source_flux[0,:])/np.sum(beam_gain[0,:]**2)
+   fact2 = np.sum(beam_gain[1,:]*source_flux[1,:])/np.sum(beam_gain[1,:]**2)
+
+   c1 = PMN_J2101_2802_FLUX_150/fact1
+   c2 = PMN_J2107_2526_FLUX_150/fact2
+   c3 = (PMN_J2101_2802_FLUX_150+PMN_J2107_2526_FLUX_150)/(fact1 + fact2) 
+
+   print "c1 = ",c1
+   print "c2 = ",c2
+   print "c3 = ",c3
+   print "PMN_J2101_2802_FLUX_150 = ",PMN_J2101_2802_FLUX_150
+   print "PMN_J2107_2526_FLUX_150 = ",PMN_J2107_2526_FLUX_150
+
+   plt.plot(ra,source_flux[0,:]*c3,label="PMN J2101-2802")
+   plt.plot(ra,source_flux[1,:]*c3,label="PMN J2107-2526")
+   plt.legend()
+   plt.xlabel("RA [rad]")
+   plt.ylabel("Calibrated Flux [Jy]")
+   plt.show()
+
+   plt.plot(ra,source_flux[0,:]/beam_gain[0,:]*c3,label="PMN J2101-2802")
+   plt.plot(ra,source_flux[1,:]/beam_gain[1,:]*c3,label="PMN J2107-2526")
+   plt.legend()
+   plt.xlabel("RA [rad]")
+   plt.ylabel("Calibrated Flux")
+   plt.show()
+
+
+
+ 
 
