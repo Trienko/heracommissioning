@@ -237,7 +237,7 @@ if __name__ == "__main__":
    mask = np.zeros((2,2),dtype=float)
    direc = plutil.FIGURE_PATH+"IMAGES/"
    
-   ra,names = ab_object.obtain_MS_range(source="PMN J2101-2802",before_after=3)
+   ra,names = ab_object.obtain_MS_range(source="PMN J2101-2802",before_after=2)
    ind = np.argsort(ra)
    ra = ra[ind]
    names = names[ind]
@@ -267,8 +267,8 @@ if __name__ == "__main__":
        mask[1,0] = l
        mask[1,1] = m
 
-       source_flux[:,x] = ab_object.obtainTrimBox(direc,fits_file,mask,window=8,pix_deg="PIX",plot_selection=False) 
-       beam_gain[:,x] = ab_object.obtainTrimBox(direc,beam_fits,mask,window=2,pix_deg="PIX",plot_selection=False,avg=True) 
+       source_flux[:,x] = ab_object.obtainTrimBox(direc,fits_file,mask,window=8,pix_deg="PIX",plot_selection=True) 
+       beam_gain[:,x] = ab_object.obtainTrimBox(direc,beam_fits,mask,window=2,pix_deg="PIX",plot_selection=True,avg=True) 
        x = x + 1
        #print "flux = ",flux
 
@@ -286,8 +286,8 @@ if __name__ == "__main__":
    plt.ylabel("Beam Gain")
    plt.show()
 
-   plt.plot(ra,beam_gain[0,:]**(-2),label="PMN J2101-2802")
-   plt.plot(ra,beam_gain[1,:]**(-2),label="PMN J2107-2526")
+   plt.plot(ra,beam_gain[0,:]**(2),label="PMN J2101-2802")
+   plt.plot(ra,beam_gain[1,:]**(2),label="PMN J2107-2526")
    plt.legend()
    plt.xlabel("RA [rad]")
    plt.ylabel("Beam Gain")
