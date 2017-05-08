@@ -360,6 +360,7 @@ def main(argv):
    applycalgcall = False
    createimages = False
    converttofits = False
+   flagao = False
 
    try:
       opts, args = getopt.getopt(argv,"h",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images","print_lst","convert_to_fits"])
@@ -383,6 +384,8 @@ def main(argv):
          sys.exit()
       elif opt == "--flag_all_basic":
            flagallbasic = True
+      elif opt == "--flag_ao":
+           flagao = True
       elif opt == "--bandpass_gc":
            bandpassgc = True   
       elif opt == "--plot_cal_gc":
@@ -399,6 +402,8 @@ def main(argv):
            print "Final MS: ",msname
 
    if flagallbasic:
+      red_object.flag_basic_all()
+   if flagao:
       red_object.flag_basic_all()
    if bandpassgc:
       red_object.bandpass_gc()
