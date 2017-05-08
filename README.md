@@ -60,14 +60,17 @@ Two python files working in unison:
 `redpipe.py` provides some basic reduction related processing commands:
 
 1. Manual basic flagging: antenna, baselines and auto
-2. Bandpass calibration of galactic center ms
-3. Transfer of bandpass solution in 2 to all ms in directory
-4. Plotting of badpass cal solution in 2
-5. Imaging of all ms in directory
+2. Run aoflagger (zen.2457545.48707.xx_strategy.rfis)
+3. Bandpass calibration of galactic center ms
+4. Transfer of bandpass solution in 2 to all ms in directory
+5. Plotting of badpass cal solution in 2
+6. Imaging of all ms in directory
 
 `python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst`
 
 `--flag_all_basic: flag known bad channels, autocorrelations and antenna`
+
+`--flag_ao: flag with ao flagger using strategy zen.2457545.48707.xx_strategy.rfis`
 
 `--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith`
 
