@@ -12,6 +12,7 @@ SGR_STR = '17:45:40.0'
 SGR_FLOAT = (17.0 + 45.0/60 + 40.0/3600)*(pi/12)
 BANDBASS_GC_CAL_TABLE = ''
 POINT_SOURCE_MODEL = 'point_source_model.cl'
+AO_STRATEGY = 'zen.2457545.48707.xx_strategy.rfis'
 
 class redpipe():
 
@@ -158,7 +159,6 @@ class redpipe():
           options["action"]='apply'
           options["datacolumn"]='DATA'
           options["autocorr"] = True  
-          
 
           for file_name in glob.glob("*.ms"):
               options["vis"]=file_name
@@ -166,6 +166,13 @@ class redpipe():
           
           os.chdir(it.PATH_CODE)
 
+      def flag_aoflagger(self):
+          
+          for file_name in glob.glob(it.PATH_DATA+"*.ms"):
+              command = "aoflagger -strategy "+AO_STRATEGY+" "+it.PATH_DATA+"file_name
+              print("CMD >>> "+command)
+              os.system(command)
+     
       def print_lst(self,print_values=False):
           os.chdir(it.PATH_DATA)
           HERA = Observer()
@@ -201,7 +208,7 @@ class redpipe():
           gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
           os.chdir(it.PATH_DATA)
           
-          #CREAT POINT SOURCE MODEL AT THE POS OF GALACTIC CENTER
+          #CREATE POINT SOURCE MODEL AT THE POS OF GALACTIC CENTER
           if not os.path.isdir(POINT_SOURCE_MODEL):
              command = "casa -c create_ps.py --nogui --nologfile --log2term"
              print("CMD >>> "+command)
@@ -355,9 +362,9 @@ def main(argv):
    converttofits = False
 
    try:
-      opts, args = getopt.getopt(argv,"h",["flag_all_basic","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images","print_lst","convert_to_fits"])
+      opts, args = getopt.getopt(argv,"h",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images","print_lst","convert_to_fits"])
    except getopt.GetoptError:
-      print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst --convert_to_fits'
+      print 'python redpipe.py --flag_all_basic --flag_ao --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst --convert_to_fits'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
@@ -365,6 +372,7 @@ def main(argv):
       if opt == '-h':
          print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst --convert_to_fits'
          print '--flag_all_basic: flag known bad channels, autocorrelations and antenna'
+         print '--flag_ao: flag with ao flagger using strategy zen.2457545.48707.xx_strategy.rfis'
          print '--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith'
          print '--plot_cal_gc: plot the calibration bandpass solution obtained from doing a bandpass cal on the ms where gc is at zenith'
          print '--apply_cal_gc_all: apply the bandpass solutions obtained to all the other measurement sets in the directory'
@@ -402,8 +410,7 @@ def main(argv):
       red_object.create_images()
    if converttofits:
       red_object.convert_to_fits()
-      
-     		
+    		
 if __name__ == "__main__":
    main(sys.argv[1:])
    #red_object = redpipe()
