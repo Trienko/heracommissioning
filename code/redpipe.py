@@ -6,13 +6,14 @@ import inittasks as it
 import plotutilities as plutil
 import sys, getopt
 
-FLAG_SPW_STRING = '0:0~140;379~387;768~770;851~852;901~1023'
+#FLAG_SPW_STRING = '0:0~140;379~387;768~770;851~852;901~1023'
+FLAG_SPW_STRING = '0:0~140;901~1023'
 FLAG_ANT_STRING = '81;82;113'
 SGR_STR = '17:45:40.0'
 SGR_FLOAT = (17.0 + 45.0/60 + 40.0/3600)*(pi/12)
 BANDBASS_GC_CAL_TABLE = ''
 POINT_SOURCE_MODEL = 'point_source_model.cl'
-AO_STRATEGY = 'zen.2457545.48707.xx_strategy.rfis'
+AO_STRATEGY = 'cool_strategy.rfis'
 
 class redpipe():
 
@@ -169,7 +170,7 @@ class redpipe():
       def flag_aoflagger(self):
           
           for file_name in glob.glob(it.PATH_DATA+"*.ms"):
-              command = "aoflagger -strategy "+AO_STRATEGY+" "+it.PATH_DATA+"file_name
+              command = "aoflagger -strategy "+AO_STRATEGY+" "+file_name
               print("CMD >>> "+command)
               os.system(command)
      
@@ -404,7 +405,7 @@ def main(argv):
    if flagallbasic:
       red_object.flag_basic_all()
    if flagao:
-      red_object.flag_basic_all()
+      red_object.flag_aoflagger()
    if bandpassgc:
       red_object.bandpass_gc()
    if plotcalgc:

@@ -13,7 +13,7 @@ def main(argv):
       print 'python initscript.py -h --add_uvws --miriad_to_uvfits --sudo_miriad_to_uvfits --add_HERA --importuvfits --swap_ant --del_uvfits --del_uvcU --del_ms'
       sys.exit(2)
    for opt, arg in opts:
-      print "opt = ",opt
+      #print "opt = ",opt
       if opt == '-h':
          print 'python initscript.py -h --add_uvws --miriad_to_uvfits --sudo_miriad_to_uvfits --add_HERA --importuvfits --swap_ant --del_uvfits --del_uvcU --del_ms'
          print "--add_uvws: adds uv-tracks to miriad data sets"
