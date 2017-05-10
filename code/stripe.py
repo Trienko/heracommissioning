@@ -90,7 +90,7 @@ class stripe():
                    
              hp.write_map("ALL_SKY.fits",np.array([c,m,w]),dtype=np.float64,coord='C')            
  
-      def plot_healpix(self,file_name="zen.2457545.47315.xx.HH.uvcU_healpix.fits"):
+      def plot_healpix(self,file_name="Abhik.fits",field=0):
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
              
 
@@ -98,7 +98,7 @@ class stripe():
              
              #file_names = glob.glob("*_healpix.fits") 
 
-             haslam = hp.read_map(file_name,field=2)
+             haslam = hp.read_map(file_name,field=field)
             
              for x in xrange(len(haslam)):
                  if np.allclose(haslam[x],0.0):
@@ -108,7 +108,10 @@ class stripe():
 
              proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name)#max=0.4
              hp.graticule()
-             plt.show()
+             f = file_name[:-5]
+             savefig(plutil.FIGURE_PATH+"IMAGES/"+f+".png")          
+
+             #plt.show()
 
              #mask = hp.read_map(file_name).astype(np.bool)
              #haslam_mask = hp.ma(mask)
@@ -130,19 +133,21 @@ class stripe():
 	     os.chdir(it.PATH_CODE) 
 
       def create_gauss_beams_fits(self):
+          print plutil.FIGURE_PATH+"IMAGES/"
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")
-             
+             print "halo"
              file_names = glob.glob("*uvcU.fits")
-
+             print "file_names = ",file_names
              for file_name in file_names:
+                 print "file_name ",file_name
                  self.create_gauss_beam_fits(input_image=file_name)
              os.chdir(it.PATH_CODE)
 
       def create_gauss_beam_fits(self,input_image="zen.2457545.47315.xx.HH.uvcU.fits",produce_beam=True,produce_beam_sqr=True,apply_beam=True):
 	  
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
-
+             
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")
              fh = pf.open(input_image)
           
@@ -235,16 +240,61 @@ class stripe():
                 #plt.show()
                 fh.close()	
              
-             os.chdir(it.PATH_CODE) 
+             os.chdir(it.PATH_CODE)
+
+def main(argv):
+    s = stripe()
+    createbeams = False
+    mkmod = False
+    allsky = False
+    plthlpx = False
+   
+
+    try:
+       opts, args = getopt.getopt(argv,"h", ["create_beams","call_mk_map_mod","make_all_sky_map","plot_healpix"])
+    except getopt.GetoptError:
+       print 'python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map --plot_healpix'
+       sys.exit(2)
+    for opt, arg in opts:
+        print "opt = ",opt
+        print "arg = ",arg
+        if opt == '-h':
+           print 'python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map'
+           print '--create_beams: creating different kind of beam files, a beam, a beam times sky and a beam square file'
+           print '--call_mk_map_mod: project all fits files to healpix map'
+           print '--make_all_sky_map: make an all sky healpix map from the individual healpix-fits files (use squared beam weighting)'
+           print '--plot_healpix: plot the all sky healpix'
+           sys.exit()
+        elif opt == "--create_beams":
+           createbeams = True
+        elif opt == "--call_mk_map_mod":
+           mkmod = True
+        elif opt == "--make_all_sky_map":
+           allsky = True  
+        elif opt == "--plot_healpix":
+           plthlpx = True 
+
+    if createbeams:
+        print "HALLO"
+        s.create_gauss_beams_fits()
+    if mkmod:
+        s.call_mk_map_mod()
+    if allsky:
+        s.make_all_sky_map()
+    if plthlpx:
+	s.plot_healpix(file_name="ALL_SKY.fits",field=0)
+        s.plot_healpix(file_name="ALL_SKY.fits",field=1)
+        s.plot_healpix(file_name="ALL_SKY.fits",field=2)
            
              
 if __name__ == "__main__":
-   s = stripe()
+   main(sys.argv[1:])
+   #s = stripe()
    #s.call_mk_map_mod()
    #s.plot_healpix()
    #s.create_gauss_beams_fits()
    #s.call_mk_map_mod()
-   s.make_all_sky_map()
-   s.plot_healpix(file_name="ALL_SKY.fits")
+   #s.make_all_sky_map()
+   #s.plot_healpix(file_name="ALL_SKY.fits")
    #s.plot_healpix(file_name="zen.2457545.47315.xx.HH.uvcU.fits")
    #s.call_save_map()  
