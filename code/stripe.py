@@ -78,7 +78,7 @@ class stripe():
              c = np.copy(m)
 
              for k in xrange(len(m)):
-                 if not w[k]<0.01:
+                 if not w[k]<0.8:
                     c[k] = m[k]/w[k]
                  else:
                     c[k] = 0       
@@ -111,7 +111,7 @@ class stripe():
              f = file_name[:-5]
              plt.savefig(plutil.FIGURE_PATH+"IMAGES/"+f+str(field)+".png")          
 
-             #plt.show()
+             plt.show()
 
              #mask = hp.read_map(file_name).astype(np.bool)
              #haslam_mask = hp.ma(mask)

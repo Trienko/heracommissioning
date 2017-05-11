@@ -242,10 +242,10 @@ class absflux():
               file.write("from casa import table as tb\n") 
               file.write("tb.open(\""+file_name+"\",nomodify=False)\n")
               file.write("corrected_data = tb.getcol(\"CORRECTED_DATA\")\n")
-              file.write("import pickle")
+              file.write("import pickle\n")
               file.write("input = open(\""+ABS_CAL_P+"\",\'rb\')\n")
               file.write("c = pickle.load(input)\n")
-              file.write("pickle.close()")
+              file.write("input.close()\n")
               file.write("corrected_data = c*corrected_data\n")
               file.write("tb.putcol(\"CORRECTED_DATA\",corrected_data)\n")
               file.write("tb.flush()\n")
@@ -254,6 +254,7 @@ class absflux():
               command = "casa -c abs_flux_cal.py --nogui --nologfile --log2term"
               print("CMD >>> "+command)
               os.system(command)
+              #break
           os.chdir(it.PATH_CODE)
 
       def compute_c(self):
