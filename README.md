@@ -88,7 +88,7 @@ Two python files working in unison:
 
 `stripe.py` helps convert individual fits images into an all-sky healpix map
 
-1. Create an Gaussian HERA beam at 150 MHz (\*B.fits).
+1. Create a Gaussian HERA beam at 150 MHz (\*B.fits).
 2. Apply to fits images (\*UB.fits).
 3. Create a squared beam (\*sB.fits).
 4. Create healpix fits images for each fits image (\*H.fits).
