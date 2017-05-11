@@ -238,9 +238,12 @@ class absflux():
           os.chdir(it.PATH_DATA)
           file_names = glob.glob("*.ms")
           for file_name in file_names:
+              command = "cp -r "+file_name+" "+file_name[:-3]+"C.ms"
+              print("CMD >>> "+command)
+              os.system(command)
               file = open("abs_flux_cal.py","w")
               file.write("from casa import table as tb\n") 
-              file.write("tb.open(\""+file_name+"\",nomodify=False)\n")
+              file.write("tb.open(\""+file_name[:-3]+"C.ms"+"\",nomodify=False)\n")
               file.write("corrected_data = tb.getcol(\"CORRECTED_DATA\")\n")
               file.write("import pickle\n")
               file.write("input = open(\""+ABS_CAL_P+"\",\'rb\')\n")
