@@ -98,7 +98,7 @@ Two python files working in unison:
 
 `--create_beams: creating different kind of beam files, a beam, a beam times sky and a beam square file`
 
-`--call_mk_map_mod: project all fits files to healpix map`
+`--call_mk_map_mod: project all fits files to individual healpix projected fits files`
 
 `--make_all_sky_map: make an all sky healpix map from the individual healpix-fits files (use squared beam weighting)`
 
