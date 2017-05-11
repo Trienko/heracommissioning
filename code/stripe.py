@@ -65,12 +65,12 @@ class stripe():
              for file_name in file_names:
                  beam_name = file_name[:-11]+"sBH.fits"
                  if m is None:
-                    print "file_name = ",file_name
+                    #print "file_name = ",file_name
                     m = hp.read_map(file_name,field=0)
                  else:
                     m = m + hp.read_map(file_name,field=0)  
                  if w is None:
-                    print "beam_name = ",beam_name
+                    #print "beam_name = ",beam_name
                     w = hp.read_map(beam_name,field=0)
                  else:
                     w = w + hp.read_map(beam_name,field=0)
@@ -104,12 +104,12 @@ class stripe():
                  if np.allclose(haslam[x],0.0):
                     haslam[x] = hp.UNSEEN 
 
-             print "haslam = ",haslam
+             #print "haslam = ",haslam
 
              proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name)#max=0.4
              hp.graticule()
              f = file_name[:-5]
-             savefig(plutil.FIGURE_PATH+"IMAGES/"+f+".png")          
+             plt.savefig(plutil.FIGURE_PATH+"IMAGES/"+f+str(field)+".png")          
 
              #plt.show()
 
@@ -133,14 +133,14 @@ class stripe():
 	     os.chdir(it.PATH_CODE) 
 
       def create_gauss_beams_fits(self):
-          print plutil.FIGURE_PATH+"IMAGES/"
+          #print plutil.FIGURE_PATH+"IMAGES/"
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")
-             print "halo"
+             #print "halo"
              file_names = glob.glob("*uvcU.fits")
-             print "file_names = ",file_names
+             #print "file_names = ",file_names
              for file_name in file_names:
-                 print "file_name ",file_name
+                 #print "file_name ",file_name
                  self.create_gauss_beam_fits(input_image=file_name)
              os.chdir(it.PATH_CODE)
 
@@ -256,8 +256,8 @@ def main(argv):
        print 'python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map --plot_healpix'
        sys.exit(2)
     for opt, arg in opts:
-        print "opt = ",opt
-        print "arg = ",arg
+        #print "opt = ",opt
+        #print "arg = ",arg
         if opt == '-h':
            print 'python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map'
            print '--create_beams: creating different kind of beam files, a beam, a beam times sky and a beam square file'
@@ -275,7 +275,6 @@ def main(argv):
            plthlpx = True 
 
     if createbeams:
-        print "HALLO"
         s.create_gauss_beams_fits()
     if mkmod:
         s.call_mk_map_mod()
