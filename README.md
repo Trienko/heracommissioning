@@ -31,7 +31,7 @@ Two python files working in unison:
 
 **REMEMBER TO SET THE LOCATIONS TO ALL THE IMPORTANT SCRIPTS AND DATA FILES IN THE HEADER OF INITTASKS.PY**
 
-# Plotting utilities
+## Plotting utilities
 
 `plotutilities.py` provides some basic plotting functionality:
 
@@ -55,7 +55,7 @@ Two python files working in unison:
 
 **REMEMBER TO SET THE LOCATION OF WHERE THE FIGURES SHOULD BE STORED IN THE HEADER OF PLOTUTILITIES.PY**
 
-# Reduction pipeline
+## Reduction pipeline
 
 `redpipe.py` provides some basic reduction related processing commands:
 
@@ -82,11 +82,17 @@ Two python files working in unison:
 
 `--print_lst: converts the file names to lst and prints them`
 
-## REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY##
+** REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY **
 
-# HEALPIX
+## HEALPIX
 
 `stripe.py` helps convert individual fits images into an all-sky healpix map
+
+1. Create an Gaussian HERA beam at 150 MHz (\*B.fits).
+2. Apply to fits images (\*UB.fits).
+3. Create a squared beam (\*sB.fits).
+4. Create healpix fits images for each fits image (\*H.fits).
+5. Create an all sky healpix fits image using square beam weighting and individual fits images.
 
 `python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map --plot_healpix`
 
