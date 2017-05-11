@@ -84,7 +84,7 @@ Two python files working in unison:
 
 ** REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY **
 
-## HEALPIX
+## Healpix
 
 `stripe.py` helps convert individual fits images into an all-sky healpix map
 
