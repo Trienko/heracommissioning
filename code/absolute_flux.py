@@ -6,6 +6,7 @@ import inittasks as it
 import plotutilities as plutil
 import sys, getopt
 import pyfits
+import pickle
 
 #FAINTER SOURCE (MEASURED WITH VIEWER)
 PMN_J2101_2802_RA = "21:01:18.3"
@@ -28,6 +29,8 @@ PMN_J2107_2526_FLUX_150 = 47.7*(150.0/189.0)**(-0.8)
 #OTHER OBSERVABLE SOURCE IDENTIFIED AS CENA
 CENA_RA = "13:35:58"
 CENA_DEC = "-34:04:19"
+
+ABS_CAL_P = "2457545_ABS_CAL.p"
 
 class absflux():
 
@@ -173,7 +176,7 @@ class absflux():
 	
               if plot_selection:
                    
-                   data[y_1:y_2,x_1:x_2] = 0
+                   #data[y_1:y_2,x_1:x_2] = 0
                    #data_temp = data[0:1000,:]
 
                    plt.imshow(data_temp)
@@ -188,7 +191,7 @@ class absflux():
           ff.close()
           return flux
 
-      def obtain_MS_range(self,source="PMN J2101-2802",before_after=3,print_values=True):
+      def obtain_MS_range(self,source="PMN J2101-2802",before_after=3,print_values=False):
           
           if source == "PMN J2101-2802":
              S = hours(PMN_J2101_2802_RA)
@@ -229,9 +232,125 @@ class absflux():
       
           os.chdir(it.PATH_CODE)
           return ra_sorted[:2*before_after], names_sorted[:2*before_after]
+      
+      def apply_c(self):
+          global ABS_CAL_P
+          os.chdir(it.PATH_DATA)
+          file_names = glob.glob("*.ms")
+          for file_name in file_names:
+              file = open("abs_flux_cal.py","w")
+              file.write("from casa import table as tb\n") 
+              file.write("tb.open(\""+file_name+"\",nomodify=False)\n")
+              file.write("corrected_data = tb.getcol(\"CORRECTED_DATA\")\n")
+              file.write("import pickle")
+              file.write("input = open(\""+ABS_CAL_P+"\",\'rb\')\n")
+              file.write("c = pickle.load(input)\n")
+              file.write("pickle.close()")
+              file.write("corrected_data = c*corrected_data\n")
+              file.write("tb.putcol(\"CORRECTED_DATA\",corrected_data)\n")
+              file.write("tb.flush()\n")
+              file.write("tb.close()\n")
+              file.close()
+              command = "casa -c abs_flux_cal.py --nogui --nologfile --log2term"
+              print("CMD >>> "+command)
+              os.system(command)
+          os.chdir(it.PATH_CODE)
+
+      def compute_c(self):
+          global ABS_CAL_P
+          mask = np.zeros((2,2),dtype=float)
+          direc = plutil.FIGURE_PATH+"IMAGES/"
+          direc_data = it.PATH_DATA
+          direc_img = plutil.FIGURE_PATH+"CAL_SOLUTIONS/"
+
+          ra,names = self.obtain_MS_range(source="PMN J2101-2802",before_after=2)
+          ind = np.argsort(ra)
+          ra = ra[ind]
+          names = names[ind]
+
+          splt =names[0].split('.')
+          pickle_name = splt[1]+'_ABS_CAL.p'
+          ABS_CAL_P = pickle_name 
+          JD = splt[1] 
+
+          source_flux = np.zeros((2,len(names)),dtype=float)
+          beam_gain = np.zeros((2,len(names)),dtype=float)
+          x = 0
+   
+          for fits_file in names:
+              fits_file = fits_file[:-2]+"fits"
+              beam_fits = fits_file[:-9]+"B.fits"
+
+              l,m = self.convert_PMN_J2101_2802_to_lm(direc,fits_file)
+
+              mask[0,0] = l
+              mask[0,1] = m
+
+              l,m = self.convert_PMN_J2107_2526_to_lm(direc,fits_file)
+
+              mask[1,0] = l
+              mask[1,1] = m
+
+              source_flux[:,x] = self.obtainTrimBox(direc,fits_file,mask,window=8,pix_deg="PIX",plot_selection=False) 
+              beam_gain[:,x] = self.obtainTrimBox(direc,beam_fits,mask,window=3,pix_deg="PIX",plot_selection=False,avg=True) 
+              x = x + 1
+
+          fact1 = np.sum(beam_gain[0,:]*source_flux[0,:])/np.sum(beam_gain[0,:]**2)
+          fact2 = np.sum(beam_gain[1,:]*source_flux[1,:])/np.sum(beam_gain[1,:]**2)
+
+          c1 = PMN_J2101_2802_FLUX_150/fact1
+          c2 = PMN_J2107_2526_FLUX_150/fact2
+          c3 = (PMN_J2101_2802_FLUX_150+PMN_J2107_2526_FLUX_150)/(fact1 + fact2)
+        
+          if os.path.isfile(direc_data+pickle_name):  
+             command = "rm "+direc_data+pickle_name
+             print "CMD >> ",command
+             os.system(command)         
+         
+          output = open(direc_data+pickle_name, 'wb')
+          pickle.dump(c3, output)
+          output.close()
+
+          if not os.path.isdir(direc_img):
+             command = "mkdir "+direc_img
+             print "CMD >> ",command
+             os.system(command) 
+
+          plt.plot(ra,source_flux[0,:],label="PMN J2101-2802")
+          plt.plot(ra,source_flux[1,:],label="PMN J2107-2526")
+          plt.legend()
+          plt.xlabel("RA [rad]")
+          plt.ylabel("Uncalibrated Flux")
+          plt.savefig(direc_img+JD+"_UN_CAL.png")
+          plt.clf()
+
+          plt.plot(ra,beam_gain[0,:],label="PMN J2101-2802")
+          plt.plot(ra,beam_gain[1,:],label="PMN J2107-2526")
+          plt.legend()
+          plt.xlabel("RA [rad]")
+          plt.ylabel("Beam Gain")
+          plt.savefig(direc_img+JD+"_BEAM.png")
+          plt.clf()
+
+          plt.plot(ra,source_flux[0,:]*c3,label="PMN J2101-2802")
+          plt.plot(ra,source_flux[1,:]*c3,label="PMN J2107-2526")
+          plt.legend()
+          plt.xlabel("RA [rad]")
+          plt.savefig(direc_img+JD+"_CAL.png")
+          plt.clf()
+          #plt.show()
+
+          return c3
+          
 
 if __name__ == "__main__":
-   
+   ab_object = absflux()
+   c = ab_object.compute_c()
+   print "c = ",c 
+   ab_object.apply_c()  
+
+
+   '''
    ab_object = absflux()
    
    mask = np.zeros((2,2),dtype=float)
@@ -243,7 +362,7 @@ if __name__ == "__main__":
    names = names[ind]
 
    source_flux = np.zeros((2,len(names)),dtype=float)
-   beam_gain = np.zeros((2,len(names)),dtype=float)
+   beam_gain = np.ze1ros((2,len(names)),dtype=float)
    x = 0
    
    for fits_file in names:
@@ -326,8 +445,8 @@ if __name__ == "__main__":
    plt.xlabel("RA [rad]")
    plt.ylabel("Calibrated Flux")
    plt.show()
-
-
+   '''
+   
 
  
 

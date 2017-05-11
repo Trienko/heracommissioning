@@ -259,9 +259,9 @@ def main(argv):
         #print "opt = ",opt
         #print "arg = ",arg
         if opt == '-h':
-           print 'python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map'
+           print 'python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map --plot_healpix'
            print '--create_beams: creating different kind of beam files, a beam, a beam times sky and a beam square file'
-           print '--call_mk_map_mod: project all fits files to healpix map'
+           print '--call_mk_map_mod: project all fits files to individual healpix projected fits files'
            print '--make_all_sky_map: make an all sky healpix map from the individual healpix-fits files (use squared beam weighting)'
            print '--plot_healpix: plot the all sky healpix'
            sys.exit()
