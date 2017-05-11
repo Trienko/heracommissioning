@@ -82,4 +82,18 @@ Two python files working in unison:
 
 `--print_lst: converts the file names to lst and prints them`
 
-## REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY#
+## REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY##
+
+# HEALPIX
+
+`stripe.py` helps convert individual fits images into an all-sky healpix map
+
+`python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map --plot_healpix`
+
+`--create_beams: creating different kind of beam files, a beam, a beam times sky and a beam square file`
+
+`--call_mk_map_mod: project all fits files to healpix map`
+
+`--make_all_sky_map: make an all sky healpix map from the individual healpix-fits files (use squared beam weighting)`
+
+`--plot_healpix: plot the all sky healpix`
