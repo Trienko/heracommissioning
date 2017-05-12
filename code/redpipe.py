@@ -291,7 +291,7 @@ class redpipe():
 	      self.applycal_wrapper(options=options)
           os.chdir(it.PATH_CODE)
 
-      def create_images(self):
+      def create_images(self,mask="U"):
           os.chdir(it.PATH_DATA)
                        
           if not os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
@@ -299,7 +299,10 @@ class redpipe():
              print("CMD >>> "+command)
              os.system(command)
 
-          file_names = glob.glob("*.ms")
+          if mask == "U":
+             file_names = glob.glob("*.ms")
+          else:
+             file_names = glob.glob("*C.ms")
 
           for file_name in file_names:
               
@@ -337,12 +340,15 @@ class redpipe():
               self.viewer_wrapper(options=options)
           os.chdir(it.PATH_CODE)
 
-      def convert_to_fits(self):
+      def convert_to_fits(self,mask="U"):
 	  if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
 
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")
 
-             file_names = glob.glob("*.image")
+             if mask == "U":
+                file_names = glob.glob("*.image")
+             else:
+                file_names = glob.glob("*C.image")
           
              for file_name in file_names:
                  options={}
@@ -362,11 +368,13 @@ def main(argv):
    createimages = False
    converttofits = False
    flagao = False
+   mask1 = "C"
+   mask2 = "C"
 
    try:
-      opts, args = getopt.getopt(argv,"h",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images","print_lst","convert_to_fits"])
+      opts, args = getopt.getopt(argv,"h",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits="])
    except getopt.GetoptError:
-      print 'python redpipe.py --flag_all_basic --flag_ao --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst --convert_to_fits'
+      print 'python redpipe.py --flag_all_basic --flag_ao --bandpass_gc --plotcal_gc --applycal_gc_all --create_images <value> --print_lst --convert_to_fits <value>'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
@@ -378,9 +386,9 @@ def main(argv):
          print '--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith'
          print '--plot_cal_gc: plot the calibration bandpass solution obtained from doing a bandpass cal on the ms where gc is at zenith'
          print '--apply_cal_gc_all: apply the bandpass solutions obtained to all the other measurement sets in the directory'
-         print '--create_images: call clean and viewer to create some basic images' 
+         print '--create_images <value>: call clean and viewer to create some basic images (U - uncalibrated fluxscale, C - calibrated)' 
          print '--print_lst: converts the file names to lst and prints them'
-         print '--convert_to_fits: convert .image files to .fits'
+         print '--convert_to_fits <value>: convert .image files to .fits (U - uncalibrated fluxscale, C - calibrated)'
          print "REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY"
          sys.exit()
       elif opt == "--flag_all_basic":
@@ -395,9 +403,13 @@ def main(argv):
            applycalgcall = True
       elif opt == "--create_images":
            createimages = True
+           if arg == "U":
+              mask1 = "U"
       elif opt == "--convert_to_fits":
            #print "HALLO"
            converttofits = True
+           if arg == "U":
+              mask2 = "U"
       elif opt == "--print_lst":
 	   msname = red_object.print_lst(print_values=True)
            print "Final MS: ",msname
@@ -413,9 +425,9 @@ def main(argv):
    if applycalgcall:
       red_object.applycal_gc_all()
    if createimages:
-      red_object.create_images()
+      red_object.create_images(mask = mask1)
    if converttofits:
-      red_object.convert_to_fits()
+      red_object.convert_to_fits(mask = mask2)
     		
 if __name__ == "__main__":
    main(sys.argv[1:])

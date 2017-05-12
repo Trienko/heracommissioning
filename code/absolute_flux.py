@@ -272,7 +272,7 @@ class absflux():
           ra = ra[ind]
           names = names[ind]
 
-          splt =names[0].split('.')
+          splt = names[0].split('.')
           pickle_name = splt[1]+'_ABS_CAL.p'
           ABS_CAL_P = pickle_name 
           JD = splt[1] 

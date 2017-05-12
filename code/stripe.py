@@ -22,7 +22,14 @@ class stripe():
 
              mk_file = it.PATH_CODE + "mk_map_mod.py"
 
-             file_names = glob.glob("*B.fits")
+             file_names = glob.glob("*CB.fits") #HAVE TO USE A DIFFERENT MASK HERE
+          
+             for file_name in file_names:
+	         command = "python "+mk_file+" "+file_name+" -i -m "+file_name[:-5]+"H.fits "+"-n --nside="+str(256)
+                 print("CMD >>> "+command)
+                 os.system(command)  
+           
+             file_names = glob.glob("*CsB.fits") #HAVE TO USE A DIFFERENT MASK HERE
           
              for file_name in file_names:
 	         command = "python "+mk_file+" "+file_name+" -i -m "+file_name[:-5]+"H.fits "+"-n --nside="+str(256)
@@ -58,12 +65,12 @@ class stripe():
       def make_all_sky_map(self):
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"): 
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")     
-             file_names = glob.glob("*uvcUBH.fits")
+             file_names = glob.glob("*uvcUCBH.fits") #DIFFERENT MASK
              m = None
              w = None
 
              for file_name in file_names:
-                 beam_name = file_name[:-11]+"sBH.fits"
+                 beam_name = file_name[:-12]+"CsBH.fits" #DIFFERENT MASK
                  if m is None:
                     #print "file_name = ",file_name
                     m = hp.read_map(file_name,field=0)
@@ -132,19 +139,21 @@ class stripe():
              os.system(command) 
 	     os.chdir(it.PATH_CODE) 
 
-      def create_gauss_beams_fits(self):
+      def create_gauss_beams_fits(self,mask="C"):
           #print plutil.FIGURE_PATH+"IMAGES/"
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")
              #print "halo"
-             file_names = glob.glob("*uvcU.fits")
-             #print "file_names = ",file_names
+             if mask == "C":
+                file_names = glob.glob("*uvcUC.fits") 
+             else:
+                file_names = glob.glob("*uvcU.fits") #ENABLE THE CONSTRUCTION OF A DIFFERENT MASK
              for file_name in file_names:
                  #print "file_name ",file_name
-                 self.create_gauss_beam_fits(input_image=file_name)
+                 self.create_gauss_beam_fits(input_image=file_name,mask=mask)
              os.chdir(it.PATH_CODE)
 
-      def create_gauss_beam_fits(self,input_image="zen.2457545.47315.xx.HH.uvcU.fits",produce_beam=True,produce_beam_sqr=True,apply_beam=True):
+      def create_gauss_beam_fits(self,input_image="zen.2457545.47315.xx.HH.uvcU.fits",produce_beam=True,produce_beam_sqr=True,apply_beam=True,mask="C"):
 	  
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
              
@@ -205,7 +214,12 @@ class stripe():
              fh.close()
             
              if produce_beam:
-                output_image = input_image[:-9]+"B.fits"
+
+                if mask == "C":
+                   output_image = input_image[:-10]+"CB.fits" 
+                else:
+                   output_image = input_image[:-9]+"B.fits" 
+
                 cmd = 'cp ' + input_image + ' ' + output_image 
                 print("CMD >>> "+cmd)
                 os.system(cmd)           
@@ -217,7 +231,12 @@ class stripe():
                 fh.close()	
 
              if produce_beam_sqr:
-                output_image = input_image[:-9]+"sB.fits"
+
+                if mask == "C":
+                   output_image = input_image[:-10]+"CsB.fits" 
+                else:
+	           output_image = input_image[:-9]+"sB.fits"
+
                 cmd = 'cp ' + input_image + ' ' + output_image 
                 print("CMD >>> "+cmd)
                 os.system(cmd)           
@@ -248,25 +267,28 @@ def main(argv):
     mkmod = False
     allsky = False
     plthlpx = False
+    mask = "U"
    
 
     try:
-       opts, args = getopt.getopt(argv,"h", ["create_beams","call_mk_map_mod","make_all_sky_map","plot_healpix"])
+       opts, args = getopt.getopt(argv,"h", ["create_beams=","call_mk_map_mod","make_all_sky_map","plot_healpix"])
     except getopt.GetoptError:
-       print 'python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map --plot_healpix'
+       print 'python stripe.py --create_beams <value> --call_mk_map_mod --make_all_sky_map --plot_healpix'
        sys.exit(2)
     for opt, arg in opts:
-        #print "opt = ",opt
-        #print "arg = ",arg
+        print "opt = ",opt
+        print "arg = ",arg
         if opt == '-h':
            print 'python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map --plot_healpix'
-           print '--create_beams: creating different kind of beam files, a beam, a beam times sky and a beam square file'
+           print '--create_beams <value>: creating different kind of beam files, a beam, a beam times sky and a beam square file. Create beams for absolute calibrated data or not (C or U).'
            print '--call_mk_map_mod: project all fits files to individual healpix projected fits files'
            print '--make_all_sky_map: make an all sky healpix map from the individual healpix-fits files (use squared beam weighting)'
            print '--plot_healpix: plot the all sky healpix'
            sys.exit()
         elif opt == "--create_beams":
            createbeams = True
+           if arg == "C":
+              mask = "C"
         elif opt == "--call_mk_map_mod":
            mkmod = True
         elif opt == "--make_all_sky_map":
@@ -275,7 +297,7 @@ def main(argv):
            plthlpx = True 
 
     if createbeams:
-        s.create_gauss_beams_fits()
+        s.create_gauss_beams_fits(mask=mask)
     if mkmod:
         s.call_mk_map_mod()
     if allsky:
