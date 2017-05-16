@@ -205,7 +205,7 @@ class absflux():
           HERA.lat, HERA.long, HERA.elevation = '-30:43:17', '21:25:40.08', 0.0
           j0 = julian_date(0)
 
-          file_names = glob.glob("*.ms")
+          file_names = glob.glob("*uvcU.ms")
           ra_cen = np.zeros((len(file_names),))
           k = 0        
  
@@ -236,7 +236,7 @@ class absflux():
       def apply_c(self):
           global ABS_CAL_P
           os.chdir(it.PATH_DATA)
-          file_names = glob.glob("*.ms")
+          file_names = glob.glob("*uvcU.ms")
           for file_name in file_names:
               command = "cp -r "+file_name+" "+file_name[:-3]+"C.ms"
               print("CMD >>> "+command)
@@ -284,6 +284,8 @@ class absflux():
           for fits_file in names:
               fits_file = fits_file[:-2]+"fits"
               beam_fits = fits_file[:-9]+"B.fits"
+
+              print
 
               l,m = self.convert_PMN_J2101_2802_to_lm(direc,fits_file)
 
@@ -345,13 +347,43 @@ class absflux():
           #plt.show()
 
           return c3
-          
+
+def main(argv):
+    a = absflux()
+    abscal = False
+    applycal = False
+   
+
+    try:
+       opts, args = getopt.getopt(argv,"h", ["abs_cal"])
+    except getopt.GetoptError:
+       print 'python absolute_flux.py --abs_cal'
+       sys.exit(2)
+    for opt, arg in opts:
+        print "opt = ",opt
+        print "arg = ",arg
+        if opt == '-h':
+           print 'python absolute_flux.py --abs_cal'
+           print '--abs_cal: 1. Absolute calibrate the data using PMN J2101 2802 and PMN J2107 2526. 2. Apply to all ms in JD dir.'
+           sys.exit()
+        elif opt == "--abs_cal":
+             print "HALLO"
+             abscal = True
+             applycal = True
+
+    if abscal:
+        c = a.compute_c()
+        print "c = ",c
+    if applycal:
+        a.apply_c()
+             
 
 if __name__ == "__main__":
-   ab_object = absflux()
-   c = ab_object.compute_c()
-   print "c = ",c 
-   ab_object.apply_c()  
+   main(sys.argv[1:])
+   #ab_object = absflux()
+   #c = ab_object.compute_c()
+   #print "c = ",c 
+   #ab_object.apply_c()  
 
 
    '''
