@@ -305,7 +305,7 @@ class redpipe():
 	      self.applycal_wrapper(options=options)
           os.chdir(it.PATH_CODE)
 
-      def create_images(self,mask="U"):
+      def create_images(self,mask="U",n_block = 75, imp_factor = 30):
           os.chdir(it.PATH_DATA)
                        
           if not os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
@@ -318,13 +318,30 @@ class redpipe():
           else:
              file_names = glob.glob("*C.ms")
 
+          print "file_names = ",file_names
+
+          file_names = ["zen.2457545.47315.xx.HH.uvcUC.ms"]
+
           for file_name in file_names:
               
               if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".model"):
-                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".*"
+                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".model"
                  print("CMD >>> "+command)
                  os.system(command)
-
+                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".psf"
+                 print("CMD >>> "+command)
+                 os.system(command)
+                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".residual"
+                 print("CMD >>> "+command)
+                 os.system(command)
+                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".image"
+                 print("CMD >>> "+command)
+                 os.system(command)
+                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"
+                 print("CMD >>> "+command)
+                 os.system(command)
+             
+             
               #RUN THE CLEAN TASK
               options={}
               options["vis"] = file_name
@@ -332,7 +349,7 @@ class redpipe():
               options["imagermode"] = 'csclean'
               options["psfmode"] = 'clark'
               options["threshold"]='0.2Jy'
-              options["niter"]=3
+              options["niter"]=0
               options["mode"]='mfs'
               options["cell"]=['10arcmin','10arcmin']
               options["weighting"]='uniform'
@@ -341,6 +358,21 @@ class redpipe():
               options["wprojplanes"]=128
               options["gain"]=0.2
               options["interactive"]=False
+
+              if mask == "C":
+                 if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask"):
+                    if os.path.isfile(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"):
+                       file_name = plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"
+                       fh = pf.open(file_name)
+                       image = fh[0].data
+                       image = np.copy(image[0,0,:,:])
+                       #img_std = np.std(image[0:n_block,0:n_block])
+                       img_std = np.amax(image[0:n_block,0:n_block])
+		       options["threshold"]=str(img_std/imp_factor)+'Jy'
+                       options["niter"]=10
+                       options["mask"]=plutil.FIGURE_PATH+"IMAGES/"+file_name[:-5]+".mask"
+                       fh.close()
+            
 
 	      self.clean_wrapper(options=options)
 
@@ -364,57 +396,67 @@ class redpipe():
              else:
                 file_names = glob.glob("*C.image")
           
+             print "file_names = ",file_names 
+
              for file_name in file_names:
+                 #print file_name
                  options={}
                  options["imagename"] = file_name
                  options["fitsimage"] = file_name[:-6]+".fits"
                  options["history"]=False
+                 options["overwrite"]= True
                  self.exportfits_wrapper(options)
 
           os.chdir(it.PATH_CODE)
 
-      def produce_decon_mask(self,n_block = 75, thr_dr = 8, w_pixels=17):
+      def produce_decon_mask(self,n_block = 75, thr_dr = 8.5, w_pixels=17):
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
              
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")
              
              file_names = glob.glob("*uvcUC.fits")
 
+             #file_names = [""]
+
 	     for file_name in file_names:
-                 print "file_name = ",file_name                
+                 
+                 mask_region = []                 
  
                  fh = pf.open(file_name)
                  image = fh[0].data
                  
                  image = np.copy(image[0,0,:,:])
                  old_image = np.copy(image)
+                 image_corr = image[::-1,:]
+                 N = old_image.shape[0]
 
-                 make_mask = False  
                  mask_one = np.ones(image.shape)
-                 mask_zero = np.zeros(image.shape) 
-
                  counter = 0              
 
                  while True:
 
-                       print "counter = ",counter
+                       #print "counter = ",counter
   
                        if counter >= 4:
                           break
 
                        img_std = np.std(old_image[0:n_block,0:n_block])
                        img_peak = image.max()
+                       
+                       #print "file_name = ",file_name
+                       #print "thr_dr*img = ",thr_dr*img_std
+                       #print "img_peak = ",img_peak
 
                        if img_peak > thr_dr*img_std:
-                          make_mask = True                          
-  
+                          #print "file_name = ",file_name
+                           
                           i = np.arange(image.shape[0])
                           j = np.arange(image.shape[0])
 
                           jj,ii = np.meshgrid(i,j)
 
-                          #print "ii = ",ii
-                          #print "jj = ",jj
+                          print "ii = ",ii
+                          print "jj = ",jj
                           #break
 
                           idx_unr = np.unravel_index(image.argmax(), image.shape)
@@ -422,17 +464,41 @@ class redpipe():
                           x = idx_unr[0]
                           y = idx_unr[1]
 
+                          idx_unr_c = np.unravel_index(image_corr.argmax(), image.shape)
+
+                          x_c = idx_unr[0]
+                          y_c = idx_unr[1]
+
+                          print "x = ",x
+                          print "y = ",y
+
+                          print "x_c = ",x_c
+                          print "y_c = ",y_c
+
+                          region = "circle [ [ "+str(int(y_c))+"pix , "+str(int(N-1-x_c))+"pix ] , "+str(int(w_pixels))+" ]" 
+                          mask_region.append(region)
+
                           d_temp = np.sqrt((ii-x)**2 + (jj-y)**2)
 
                           mask_one[d_temp < w_pixels] = 0
-                          mask_zero[d_temp < w_pixels] = 1
+                          #mask_zero[d_temp < w_pixels] = 1
                           image = mask_one*old_image
                           counter = counter + 1
                        else:
                           break 
                  fh.close()
+                 
+                 if len(mask_region) > 0:
+                    output_file = file_name[:-5]+".mask.txt"
+                    file = open(output_file,"w") 
+                    for i in xrange(len(mask_region)):
+                        file.write(mask_region[i])
+                    file.close()
+             os.chdir(it.PATH_CODE)
+                 
 
-                 if make_mask:
+             """ MAKING A FITS MASK (REPLACED BY CASA REGIONS)
+             if make_mask:
                   
                     plt.imshow(old_image)
                     plt.title(file_name)
@@ -457,7 +523,7 @@ class redpipe():
                     options["fitsimage"] = output_image
                     options["overwrite"]= True
                     self.importfits_wrapper(options)
-
+             """
    
 
       def plot_peak_sigma(self):
@@ -498,7 +564,7 @@ class redpipe():
              #print "y_peak = ",y_peak
              #print "y_std/y_peak = ",y_peak/y_std
 
-             plt.plot(x,8*y_std,'ro')
+             plt.plot(x,8.5*y_std,'ro')
              #plt.show()
 
              plt.plot(x,y_peak,'bo')
@@ -585,6 +651,8 @@ if __name__ == "__main__":
    #main(sys.argv[1:])
    red_object = redpipe()
    #red_object.plot_peak_sigma()
+   #red_object.create_images(mask = "C")
+   #red_object.convert_to_fits(mask = "C")
    red_object.produce_decon_mask()
    #red_object.flag_basic_all()
    #print red_object.print_lst(print_values=True)
