@@ -113,7 +113,7 @@ class stripe():
 
              #print "haslam = ",haslam
 
-             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name,max=25)#max=0.4
+             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name,max=25,min=0)#max=0.4
              hp.graticule()
              f = file_name[:-5]
              plt.savefig(plutil.FIGURE_PATH+"IMAGES/"+f+str(field)+".png")          

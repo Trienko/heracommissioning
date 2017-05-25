@@ -318,9 +318,9 @@ class redpipe():
           else:
              file_names = glob.glob("*C.ms")
 
-          print "file_names = ",file_names
+          #print "file_names = ",file_names
 
-          file_names = ["zen.2457545.47315.xx.HH.uvcUC.ms"]
+          #file_names = ["zen.2457545.47315.xx.HH.uvcUC.ms"]
 
           for file_name in file_names:
               
@@ -648,12 +648,12 @@ def main(argv):
       red_object.convert_to_fits(mask = mask2)
     		
 if __name__ == "__main__":
-   #main(sys.argv[1:])
-   red_object = redpipe()
+   main(sys.argv[1:])
+   #red_object = redpipe()
    #red_object.plot_peak_sigma()
    #red_object.create_images(mask = "C")
    #red_object.convert_to_fits(mask = "C")
-   red_object.produce_decon_mask()
+   #red_object.produce_decon_mask()
    #red_object.flag_basic_all()
    #print red_object.print_lst(print_values=True)
    #red_object.bandpass_gc()
