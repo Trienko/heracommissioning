@@ -337,10 +337,15 @@ class redpipe():
                  command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".image"
                  print("CMD >>> "+command)
                  os.system(command)
-                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"
+                 #command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"
+                 #print("CMD >>> "+command)
+                 #os.system(command)
+                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask"
                  print("CMD >>> "+command)
                  os.system(command)
-             
+                 command = "rm -r "+plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".png"
+                 print("CMD >>> "+command)
+                 os.system(command)
              
               #RUN THE CLEAN TASK
               options={}
@@ -359,18 +364,29 @@ class redpipe():
               options["gain"]=0.2
               options["interactive"]=False
 
+              #print plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt"
+
               if mask == "C":
-                 if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask"):
+                 print "HALLO C"
+                 print plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt"
+                 print os.path.isfile(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt")
+                 if os.path.isfile(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt"):
+                    print "HALLO 1"
                     if os.path.isfile(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"):
-                       file_name = plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"
-                       fh = pf.open(file_name)
+                       print "HALLO 2"
+                       file_name2 = plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"
+                       fh = pf.open(file_name2)
                        image = fh[0].data
                        image = np.copy(image[0,0,:,:])
                        #img_std = np.std(image[0:n_block,0:n_block])
-                       img_std = np.amax(image[0:n_block,0:n_block])
-		       options["threshold"]=str(img_std/imp_factor)+'Jy'
+                       max_v = np.amax(image[0:n_block,0:n_block])
+		       options["threshold"]=str(max_v/imp_factor)+'Jy'
                        options["niter"]=10
-                       options["mask"]=plutil.FIGURE_PATH+"IMAGES/"+file_name[:-5]+".mask"
+                       mask_list = []
+                       txt_file = open(file_name2[:-5]+".mask.txt","r") 
+                       lines = txt_file.readlines()
+                       txt_file.close()
+                       options["mask"]=lines
                        fh.close()
             
 
@@ -396,7 +412,8 @@ class redpipe():
              else:
                 file_names = glob.glob("*C.image")
           
-             print "file_names = ",file_names 
+             #print "file_names = ",file_names 
+             #file_names = ["zen.2457545.47315.xx.HH.uvcUC.image"]
 
              for file_name in file_names:
                  #print file_name
@@ -416,7 +433,7 @@ class redpipe():
              
              file_names = glob.glob("*uvcUC.fits")
 
-             #file_names = [""]
+             #file_names = ["zen.2457545.47315.xx.HH.uvcUC.fits"]
 
 	     for file_name in file_names:
                  
@@ -427,7 +444,6 @@ class redpipe():
                  
                  image = np.copy(image[0,0,:,:])
                  old_image = np.copy(image)
-                 image_corr = image[::-1,:]
                  N = old_image.shape[0]
 
                  mask_one = np.ones(image.shape)
@@ -455,27 +471,34 @@ class redpipe():
 
                           jj,ii = np.meshgrid(i,j)
 
-                          print "ii = ",ii
-                          print "jj = ",jj
+                          #print "ii = ",ii
+                          #print "jj = ",jj
                           #break
 
+                          #plt.imshow(image)
+                          #plt.show()
+                          
                           idx_unr = np.unravel_index(image.argmax(), image.shape)
 
                           x = idx_unr[0]
                           y = idx_unr[1]
 
-                          idx_unr_c = np.unravel_index(image_corr.argmax(), image.shape)
+                          row = idx_unr[0]
+                          column = idx_unr[1]
 
-                          x_c = idx_unr[0]
-                          y_c = idx_unr[1]
+                          #print "x = ",x
+                          #print "y = ",y
 
-                          print "x = ",x
-                          print "y = ",y
+                          #print "row = ",row
+                          #print "y_c = ",column
 
-                          print "x_c = ",x_c
-                          print "y_c = ",y_c
+                          y_c = row
+                          x_c = column
 
-                          region = "circle [ [ "+str(int(y_c))+"pix , "+str(int(N-1-x_c))+"pix ] , "+str(int(w_pixels))+" ]" 
+                          #print "x_c = ",x_c
+                          #print "y_c = ",y_c
+
+                          region = "circle [ [ "+str(int(x_c))+"pix , "+str(int(y_c))+"pix ] , "+str(int(w_pixels))+"pix ]" 
                           mask_region.append(region)
 
                           d_temp = np.sqrt((ii-x)**2 + (jj-y)**2)
@@ -483,6 +506,8 @@ class redpipe():
                           mask_one[d_temp < w_pixels] = 0
                           #mask_zero[d_temp < w_pixels] = 1
                           image = mask_one*old_image
+                          #plt.imshow(image)
+                          #plt.show()
                           counter = counter + 1
                        else:
                           break 
@@ -648,12 +673,12 @@ def main(argv):
       red_object.convert_to_fits(mask = mask2)
     		
 if __name__ == "__main__":
-   main(sys.argv[1:])
-   #red_object = redpipe()
+   #main(sys.argv[1:])
+   red_object = redpipe()
    #red_object.plot_peak_sigma()
-   #red_object.create_images(mask = "C")
-   #red_object.convert_to_fits(mask = "C")
-   #red_object.produce_decon_mask()
+   red_object.produce_decon_mask()
+   red_object.create_images(mask = "C")
+   red_object.convert_to_fits(mask = "C")
    #red_object.flag_basic_all()
    #print red_object.print_lst(print_values=True)
    #red_object.bandpass_gc()
