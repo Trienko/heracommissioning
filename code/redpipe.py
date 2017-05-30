@@ -695,9 +695,10 @@ def main(argv):
    flagao = False
    mask1 = "C"
    mask2 = "C"
+   delay = False
 
    try:
-      opts, args = getopt.getopt(argv,"h",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits="])
+      opts, args = getopt.getopt(argv,"hd",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits="])
    except getopt.GetoptError:
       print 'python redpipe.py --flag_all_basic --flag_ao --bandpass_gc --plotcal_gc --applycal_gc_all --create_images <value> --print_lst --convert_to_fits <value>'
       sys.exit(2)
@@ -716,6 +717,8 @@ def main(argv):
          print '--convert_to_fits <value>: convert .image files to .fits (U - uncalibrated fluxscale, C - calibrated)'
          print "REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY"
          sys.exit()
+      elif opt == '-d':
+           delay = True
       elif opt == "--flag_all_basic":
            flagallbasic = True
       elif opt == "--flag_ao":
@@ -744,11 +747,11 @@ def main(argv):
    if flagao:
       red_object.flag_aoflagger()
    if bandpassgc:
-      red_object.bandpass_gc()
+      red_object.bandpass_gc(delay=delay)
    if plotcalgc:
-      red_object.plot_cal_gc()
+      red_object.plot_cal_gc(delay=delay)
    if applycalgcall:
-      red_object.applycal_gc_all()
+      red_object.applycal_gc_all(delay=delay)
    if createimages:
       red_object.create_images(mask = mask1)
    if converttofits:
