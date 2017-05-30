@@ -8,7 +8,7 @@ import glob, os
 PATH_TO_ADD_UVWS = "/home/trienko/HERA/software/capo/dcj/scripts/add_uvws.py"
 CAL_FILE = "hsa7458_v000_HH" 
 PATH_TO_MIR_TO_FITS = "/usr/local/bin/miriad_to_uvfits.py"
-PATH_DATA = "/home/trienko/HERA/conference/data/2457545/"
+PATH_DATA = "/home/trienko/HERA/conference/data/2457545/ABHIK"
 PATH_CODE = "/home/trienko/HERA/conference/code/"
 OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
 ANT_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
@@ -164,6 +164,7 @@ class inittasks():
               file.write("a1,a2,data,uvw = [tb.getcol(x) for x in [\"ANTENNA1\",\"ANTENNA2\",\"DATA\",\"UVW\"]]\n")
               file.write("m = a1 > a2\n")
               file.write("data[:,:,m] = data[:,:,m].conj()\n")
+              file.write("print data[:,:,m]\n")
               file.write("uvw[:,m] = (-1)*uvw[:,m]\n")
               file.write("x = a2[m]\n")
               file.write("a2[m] = a1[m]\n")

@@ -13,6 +13,7 @@ FLAG_ANT_STRING = '81;82;113'
 SGR_STR = '17:45:40.0'
 SGR_FLOAT = (17.0 + 45.0/60 + 40.0/3600)*(pi/12)
 BANDBASS_GC_CAL_TABLE = ''
+DELAY_GC_CAL_TABLE = ''
 POINT_SOURCE_MODEL = 'point_source_model.cl'
 AO_STRATEGY = 'cool_strategy.rfis'
 
@@ -54,6 +55,19 @@ class redpipe():
           it.CASA_WRAPPER(task="bandpass",options=options)
           print os.getcwd()
           command = "casa -c bandpass_script.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command) 
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+
+      #####################################
+      #CASA wrapper around gaincal 
+      #####################################
+      def gaincal_wrapper(self,options={}):
+          it.CASA_WRAPPER(task="gaincal",options=options)
+          print os.getcwd()
+          command = "casa -c gaincal_script.py --nogui --nologfile --log2term"
           print("CMD >>> "+command)
           os.system(command) 
           command = "rm ipython*.log"
@@ -218,8 +232,10 @@ class redpipe():
           os.chdir(it.PATH_CODE)
           return msname
 
-      def bandpass_gc(self):
+      def bandpass_gc(self,delay=False):
           global BANDBASS_GC_CAL_TABLE
+          global DELAY_GC_TABLE
+          
           gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
           os.chdir(it.PATH_DATA)
           
@@ -242,29 +258,57 @@ class redpipe():
           gc_name_split = gc_name.split('.')
           gc_jd = gc_name_split[1]+'.'+gc_name_split[2]
           
+          if delay:
+             DELAY_GC_CAL_TABLE = 'd_'+gc_jd+'.cal'
+             options={}
+             options["vis"]=gc_name
+             options["solint"]='inf'
+             options["combine"]='scan'
+             options["refant"]='10'
+             options["spw"]="0:0~1023"
+             options["gaintype"]='K'
+             options["caltable"]=DELAY_GC_CAL_TABLE
+             self.gaincal_wrapper(options=options)
+             
           BANDBASS_GC_CAL_TABLE = 'b_'+gc_jd+'.cal'
-
+          
           #BANDPASS CALIBRTION OF GC-MS WITH PS AT GALACTIC CENTER
           options={}
           options["vis"]=gc_name
           options["solint"]='inf'
           options["combine"]='scan'
           options["caltable"] = BANDBASS_GC_CAL_TABLE 
+          if delay:
+             options["gaintable"] = DELAY_GC_CAL_TABLE
           self.bandpass_wrapper(options=options)
           os.chdir(it.PATH_CODE)
 
-      def plot_cal_gc(self):
+      def plot_cal_gc(self,delay=False):
           global BANDBASS_GC_CAL_TABLE
+          global DELAY_GC_TABLE
+
           if BANDBASS_GC_CAL_TABLE == '':
              gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
 	     gc_name_split = gc_name.split('.')
              gc_jd = gc_name_split[1]+'.'+gc_name_split[2]
           
              BANDBASS_GC_CAL_TABLE = 'b_'+gc_jd+'.cal'
+
+          if DELAY_GC_CAL_TABLE == '':
+             gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
+	     gc_name_split = gc_name.split('.')
+             gc_jd = gc_name_split[1]+'.'+gc_name_split[2]
+          
+             DELAY_GC_CAL_TABLE = 'd_'+gc_jd+'.cal'
            
           os.chdir(it.PATH_DATA)
                        
-          if os.path.isdir(BANDBASS_GC_CAL_TABLE):  
+          if os.path.isdir(BANDBASS_GC_CAL_TABLE):
+             if not.os.path.isdir(plutil.FIGURE_PATH):
+                command = "mkdir "+plutil.FIGURE_PATH
+               	print("CMD >>> "+command)
+             	os.system(command)
+
              if not os.path.isdir(plutil.FIGURE_PATH+"CAL_SOLUTIONS/"):
              	command = "mkdir "+plutil.FIGURE_PATH+"CAL_SOLUTIONS/"
              	print("CMD >>> "+command)
@@ -285,9 +329,31 @@ class redpipe():
              options["showgui"]=False
              options["figfile"]=plutil.FIGURE_PATH+"CAL_SOLUTIONS/"+BANDBASS_GC_CAL_TABLE+"_AMP.png"
 	     self.plotcal_wrapper(options=options)
+
+          if delay:
+             if os.path.isdir(DELAY_GC_CAL_TABLE):
+                if not.os.path.isdir(plutil.FIGURE_PATH):
+                   command = "mkdir "+plutil.FIGURE_PATH
+               	   print("CMD >>> "+command)
+             	   os.system(command)
+
+                if not os.path.isdir(plutil.FIGURE_PATH+"CAL_SOLUTIONS/"):
+             	   command = "mkdir "+plutil.FIGURE_PATH+"CAL_SOLUTIONS/"
+             	   print("CMD >>> "+command)
+             	   os.system(command)
+
+                #plotcal(caltable=delay_table,xaxis='antenna',yaxis='delay')
+                options={}
+                options["caltable"]=DELAY_GC_CAL_TABLE
+                options["xaxis"]='antenna'
+                options["yaxis"]='delay'
+                options["showgui"]=False
+                options["figfile"]=plutil.FIGURE_PATH+"CAL_SOLUTIONS/"+DELAY_GC_CAL_TABLE+"_DELAY.png"
+	        self.plotcal_wrapper(options=options)
+                
           os.chdir(it.PATH_CODE)
 
-      def applycal_gc_all(self):
+      def applycal_gc_all(self,delay=False):
           global BANDBASS_GC_CAL_TABLE
           if BANDBASS_GC_CAL_TABLE == '':
              gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
@@ -296,18 +362,34 @@ class redpipe():
           
              BANDBASS_GC_CAL_TABLE = 'b_'+gc_jd+'.cal'
 
+          if DELAY_GC_CAL_TABLE == '':
+             gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
+	     gc_name_split = gc_name.split('.')
+             gc_jd = gc_name_split[1]+'.'+gc_name_split[2]
+          
+             DELAY_GC_CAL_TABLE = 'd_'+gc_jd+'.cal'
+
           os.chdir(it.PATH_DATA)
           file_names = glob.glob("*.ms")
           for file_name in file_names:
               options={}
               options["vis"] = file_name
-              options["gaintable"]=BANDBASS_GC_CAL_TABLE
+              if delay:
+                 options["gaintable"]=[DELAY_GC_CAL_TABLE,BANDBASS_GC_CAL_TABLE]
+              else:   
+                 options["gaintable"]=BANDBASS_GC_CAL_TABLE
+              
 	      self.applycal_wrapper(options=options)
           os.chdir(it.PATH_CODE)
 
       def create_images(self,mask="U",n_block = 75, imp_factor = 30):
           os.chdir(it.PATH_DATA)
-                       
+          
+          if not.os.path.isdir(plutil.FIGURE_PATH):
+             command = "mkdir "+plutil.FIGURE_PATH
+             print("CMD >>> "+command)
+             os.system(command) 
+             
           if not os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
              command = "mkdir "+plutil.FIGURE_PATH+"IMAGES/"
              print("CMD >>> "+command)
@@ -367,13 +449,13 @@ class redpipe():
               #print plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt"
 
               if mask == "C":
-                 print "HALLO C"
+                 #print "HALLO C"
                  print plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt"
                  print os.path.isfile(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt")
                  if os.path.isfile(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt"):
-                    print "HALLO 1"
+                    #print "HALLO 1"
                     if os.path.isfile(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"):
-                       print "HALLO 2"
+                       #print "HALLO 2"
                        file_name2 = plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"
                        fh = pf.open(file_name2)
                        image = fh[0].data
