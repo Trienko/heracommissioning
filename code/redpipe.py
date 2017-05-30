@@ -285,7 +285,7 @@ class redpipe():
 
       def plot_cal_gc(self,delay=False):
           global BANDBASS_GC_CAL_TABLE
-          global DELAY_GC_TABLE
+          global DELAY_GC_CAL_TABLE 
 
           if BANDBASS_GC_CAL_TABLE == '':
              gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
@@ -304,7 +304,7 @@ class redpipe():
           os.chdir(it.PATH_DATA)
                        
           if os.path.isdir(BANDBASS_GC_CAL_TABLE):
-             if not.os.path.isdir(plutil.FIGURE_PATH):
+             if not os.path.isdir(plutil.FIGURE_PATH):
                 command = "mkdir "+plutil.FIGURE_PATH
                	print("CMD >>> "+command)
              	os.system(command)
@@ -332,7 +332,7 @@ class redpipe():
 
           if delay:
              if os.path.isdir(DELAY_GC_CAL_TABLE):
-                if not.os.path.isdir(plutil.FIGURE_PATH):
+                if not os.path.isdir(plutil.FIGURE_PATH):
                    command = "mkdir "+plutil.FIGURE_PATH
                	   print("CMD >>> "+command)
              	   os.system(command)
@@ -355,6 +355,7 @@ class redpipe():
 
       def applycal_gc_all(self,delay=False):
           global BANDBASS_GC_CAL_TABLE
+          global DELAY_GC_CAL_TABLE
           if BANDBASS_GC_CAL_TABLE == '':
              gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
 	     gc_name_split = gc_name.split('.')
@@ -385,7 +386,7 @@ class redpipe():
       def create_images(self,mask="U",n_block = 75, imp_factor = 30):
           os.chdir(it.PATH_DATA)
           
-          if not.os.path.isdir(plutil.FIGURE_PATH):
+          if not os.path.isdir(plutil.FIGURE_PATH):
              command = "mkdir "+plutil.FIGURE_PATH
              print("CMD >>> "+command)
              os.system(command) 
@@ -700,13 +701,14 @@ def main(argv):
    try:
       opts, args = getopt.getopt(argv,"hd",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits="])
    except getopt.GetoptError:
-      print 'python redpipe.py --flag_all_basic --flag_ao --bandpass_gc --plotcal_gc --applycal_gc_all --create_images <value> --print_lst --convert_to_fits <value>'
+      print 'python -d redpipe.py --flag_all_basic --flag_ao --bandpass_gc --plotcal_gc --applycal_gc_all --create_images <value> --print_lst --convert_to_fits <value>'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
       #print "arg = ",arg
       if opt == '-h':
-         print 'python redpipe.py --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst --convert_to_fits'
+         print 'python redpipe.py -d --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst --convert_to_fits'
+         print '-d: adds a delay calibration step before the bandpass'
          print '--flag_all_basic: flag known bad channels, autocorrelations and antenna'
          print '--flag_ao: flag with ao flagger using strategy zen.2457545.48707.xx_strategy.rfis'
          print '--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith'
@@ -758,12 +760,12 @@ def main(argv):
       red_object.convert_to_fits(mask = mask2)
     		
 if __name__ == "__main__":
-   #main(sys.argv[1:])
-   red_object = redpipe()
+   main(sys.argv[1:])
+   #red_object = redpipe()
    #red_object.plot_peak_sigma()
-   red_object.produce_decon_mask()
-   red_object.create_images(mask = "C")
-   red_object.convert_to_fits(mask = "C")
+   #red_object.produce_decon_mask()
+   #red_object.create_images(mask = "C")
+   #red_object.convert_to_fits(mask = "C")
    #red_object.flag_basic_all()
    #print red_object.print_lst(print_values=True)
    #red_object.bandpass_gc()
