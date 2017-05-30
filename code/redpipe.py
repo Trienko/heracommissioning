@@ -7,8 +7,8 @@ import plotutilities as plutil
 import sys, getopt
 import pyfits as pf
 
-#FLAG_SPW_STRING = '0:0~140;379~387;768~770;851~852;901~1023'
-FLAG_SPW_STRING = '0:0~140;901~1023'
+FLAG_SPW_STRING = '0:0~140;379~387;768~770;851~852;901~1023'
+#FLAG_SPW_STRING = '0:0~140;901~1023'
 FLAG_ANT_STRING = '81;82;113'
 SGR_STR = '17:45:40.0'
 SGR_FLOAT = (17.0 + 45.0/60 + 40.0/3600)*(pi/12)
@@ -316,7 +316,7 @@ class redpipe():
 
              options={}
              options["caltable"]=BANDBASS_GC_CAL_TABLE
-             options["xaxis"]='freq'
+             options["xaxis"]='chan'
              options["yaxis"]='phase'
              options["showgui"]=False
              options["figfile"]=plutil.FIGURE_PATH+"CAL_SOLUTIONS/"+BANDBASS_GC_CAL_TABLE+"_PHASE.png"
@@ -324,7 +324,7 @@ class redpipe():
 
              options={}
              options["caltable"]=BANDBASS_GC_CAL_TABLE
-             options["xaxis"]='freq'
+             options["xaxis"]='chan'
              options["yaxis"]='amp'
              options["showgui"]=False
              options["figfile"]=plutil.FIGURE_PATH+"CAL_SOLUTIONS/"+BANDBASS_GC_CAL_TABLE+"_AMP.png"
@@ -464,7 +464,7 @@ class redpipe():
                        #img_std = np.std(image[0:n_block,0:n_block])
                        max_v = np.amax(image[0:n_block,0:n_block])
 		       options["threshold"]=str(max_v/imp_factor)+'Jy'
-                       options["niter"]=10
+                       options["niter"]=150
                        mask_list = []
                        txt_file = open(file_name2[:-5]+".mask.txt","r") 
                        lines = txt_file.readlines()
@@ -697,17 +697,18 @@ def main(argv):
    mask1 = "C"
    mask2 = "C"
    delay = False
+   decon = False
 
    try:
-      opts, args = getopt.getopt(argv,"hd",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits="])
+      opts, args = getopt.getopt(argv,"hd",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits=","decon_mask"])
    except getopt.GetoptError:
-      print 'python -d redpipe.py --flag_all_basic --flag_ao --bandpass_gc --plotcal_gc --applycal_gc_all --create_images <value> --print_lst --convert_to_fits <value>'
+      print 'python redpipe.py -d --flag_all_basic --flag_ao --bandpass_gc --plot_cal_gc --apply_cal_gc_all --create_images <value> --print_lst --convert_to_fits <value> --decon_mask'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
       #print "arg = ",arg
       if opt == '-h':
-         print 'python redpipe.py -d --flag_all_basic --bandpass_gc --plotcal_gc --applycal_gc_all --create_images --print_lst --convert_to_fits'
+         print 'python redpipe.py -d --flag_all_basic --bandpass_gc --plotcal_gc --apply_cal_gc_all --create_images --print_lst --convert_to_fits --decon_mask'
          print '-d: adds a delay calibration step before the bandpass'
          print '--flag_all_basic: flag known bad channels, autocorrelations and antenna'
          print '--flag_ao: flag with ao flagger using strategy zen.2457545.48707.xx_strategy.rfis'
@@ -717,6 +718,7 @@ def main(argv):
          print '--create_images <value>: call clean and viewer to create some basic images (U - uncalibrated fluxscale, C - calibrated)' 
          print '--print_lst: converts the file names to lst and prints them'
          print '--convert_to_fits <value>: convert .image files to .fits (U - uncalibrated fluxscale, C - calibrated)'
+         print '--decon_mask: create a decon mask'
          print "REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY"
          sys.exit()
       elif opt == '-d':
@@ -743,6 +745,9 @@ def main(argv):
       elif opt == "--print_lst":
 	   msname = red_object.print_lst(print_values=True)
            print "Final MS: ",msname
+      elif opt == "--decon_mask":
+           #print "HALLO"
+           decon = True
 
    if flagallbasic:
       red_object.flag_basic_all()
@@ -754,10 +759,14 @@ def main(argv):
       red_object.plot_cal_gc(delay=delay)
    if applycalgcall:
       red_object.applycal_gc_all(delay=delay)
+   if decon:
+      #print "HALLO 2"
+      red_object.produce_decon_mask()
    if createimages:
       red_object.create_images(mask = mask1)
    if converttofits:
       red_object.convert_to_fits(mask = mask2)
+   
     		
 if __name__ == "__main__":
    main(sys.argv[1:])

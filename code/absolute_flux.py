@@ -367,7 +367,7 @@ def main(argv):
            print '--abs_cal: 1. Absolute calibrate the data using PMN J2101 2802 and PMN J2107 2526. 2. Apply to all ms in JD dir.'
            sys.exit()
         elif opt == "--abs_cal":
-             print "HALLO"
+             #print "HALLO"
              abscal = True
              applycal = True
 
