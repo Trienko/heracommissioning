@@ -9,9 +9,6 @@ import pyfits
 import pickle
 from pyrap.tables import table
 
-import socket
-import sys
-
 ANT_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
 
 def plot_delays():
@@ -109,6 +106,7 @@ def plot_bandpass():
    
 
 if __name__ == "__main__":
+   plot_delays()
    plot_bandpass()
    
 

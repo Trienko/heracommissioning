@@ -7,7 +7,8 @@ import plotutilities as plutil
 import sys, getopt
 import pyfits as pf
 
-FLAG_SPW_STRING = '0:0~140;379~387;768~770;851~852;901~1023'
+#510~512
+FLAG_SPW_STRING = '0:0~140;379~387;510~512;768~770;851~852;901~1023'
 #FLAG_SPW_STRING = '0:0~140;901~1023'
 FLAG_ANT_STRING = '81;82;113'
 SGR_STR = '17:45:40.0'

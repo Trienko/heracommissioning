@@ -63,9 +63,12 @@ class stripe():
       #    h.write_map(ofn,n.array([m,w,w]),dtype=n.float64,coord='E')
 
       def make_all_sky_map(self):
+          print plutil.FIGURE_PATH+"IMAGES/"
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"): 
+             print plutil.FIGURE_PATH+"IMAGES/" 
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")     
              file_names = glob.glob("*uvcUCBH.fits") #DIFFERENT MASK
+             print file_names
              m = None
              w = None
 
@@ -85,7 +88,7 @@ class stripe():
              c = np.copy(m)
 
              for k in xrange(len(m)):
-                 if not w[k]<0.8:
+                 if not w[k]<0.5:
                     c[k] = m[k]/w[k]
                  else:
                     c[k] = 0       
@@ -113,7 +116,7 @@ class stripe():
 
              #print "haslam = ",haslam
 
-             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name,max=60,min=-60)#max=0.4
+             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name,max=60,min=0)#max=0.4
              hp.graticule()
              f = file_name[:-5]
              plt.savefig(plutil.FIGURE_PATH+"IMAGES/"+f+str(field)+".png")          
