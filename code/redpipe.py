@@ -465,7 +465,7 @@ class redpipe():
                        #img_std = np.std(image[0:n_block,0:n_block])
                        max_v = np.amax(image[0:n_block,0:n_block])
 		       options["threshold"]=str(max_v/imp_factor)+'Jy'
-                       options["niter"]=150
+                       options["niter"]=100
                        mask_list = []
                        txt_file = open(file_name2[:-5]+".mask.txt","r") 
                        lines = txt_file.readlines()

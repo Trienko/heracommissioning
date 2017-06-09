@@ -6,13 +6,15 @@ import matplotlib.image as mgimg
 import matplotlib.animation as animation
 #from animate import *
 #ffmpeg -framerate 1 -i image%03d.png -c:v libx264 -r 30 -pix_fmt yuv420p out.mp4
+from matplotlib import rcParams
+
 
 GC_FILE = "zen.2457545.47315.xx.HH.uvcUC.fits"
 GC_FILE2 = "zen.2457545.47315.xx.HH.uvcU.fits"
 GC_FILE3 = "zen.2457545.47315.xx.HH.uvcU_raw.fits"
 
 #GC_FILE2 = "zen.2457555.44531.xx.HH.uvcU.fits"
-#ABS_FILE = "zen.2457555.57754.xx.HH.uvcUC.fits"
+ABS_FILE = "zen.2457555.57754.xx.HH.uvcUC.fits"
 #IMAGE_PATH = "/home/trienko/HERA/conference/data/2457545/figures/IMAGES"
 #SEARCH_STRING = "*uvcUC.fits"
 
@@ -102,11 +104,18 @@ def plot_fits(fits_file):
     gc.grid.set_alpha(0.5)
     gc.add_colorbar()
     gc.show_circles([266.417],[-29.00781],[2],color="r")
-    gc.add_label(266.417,-29.00781+3, 'Sgr A', color="r",size=12)
+    gc.add_label(266.417,-29.00781+3, 'Sgr A', color="r",size=18)
+    gc.axis_labels.set_font(size=20)
+    gc.tick_labels.set_font(size=20) 
+    gc.grid.set_xspacing(25)
+    gc.ticks.set_xspacing(25)
     gc.colorbar.set_axis_label_text('Jy/beam')
-    gc.set_title("Galactic Centre")
+    gc.colorbar.set_font(size=20)
+    gc.colorbar.set_axis_label_font(size=20)
+    #gc.set_title("Galactic Centre")
     plt.tight_layout()
-    plt.savefig("GC.png")
+    #rcParams.update({'figure.autolayout': True})
+    plt.savefig("GC.png",bbox_inches='tight')
     plt.show()
 
 def plot_fits2(fits_file):
@@ -114,25 +123,33 @@ def plot_fits2(fits_file):
     gc.show_colorscale(cmap="cubehelix_r",vmin=0)#vmax, vmin
     gc.show_circles([315.32625],[-28.031944],[1.5],color="k")
     gc.show_circles([316.8554167],[-25.02777777777778],[1.5],color="k")
-    gc.add_label(315.32625,-28.031944-2.2, 'PMN J2101 2802 (~27.79 Jy @ 150MHz)', color="k",size=12)
-    gc.add_label(316.8554167,-25.02777777777778+2.2, 'PMN J2107 2526 (~57.39 Jy @ 150MHz)', color="k",size=12)
+    gc.add_label(315.32625,-28.031944-2.2, 'PMN J2101 2802 (~27.79 Jy @ 150MHz)', color="k",size=18)
+    gc.add_label(316.8554167,-25.02777777777778+2.2, 'PMN J2107 2526 (~57.39 Jy @ 150MHz)', color="k",size=18)
     gc.add_grid()
+    gc.axis_labels.set_font(size=20)
+    gc.tick_labels.set_font(size=20) 
+    gc.grid.set_xspacing(25)
+    gc.ticks.set_xspacing(25)
     gc.grid.set_color('black') 
     gc.grid.set_alpha(0.5)
+    
     gc.add_colorbar()
     gc.colorbar.set_axis_label_text('Jy/beam')
-    gc.set_title("Absolute Flux Calibrators")
+    gc.colorbar.set_font(size=20)
+    gc.colorbar.set_axis_label_font(size=20)
+    #gc.set_title("Absolute Flux Calibrators")
     plt.tight_layout()
-    plt.savefig("ABS.png")
+    #rcParams.update({'figure.autolayout': True})
+    plt.savefig("ABS.png",bbox_inches='tight')
     plt.show()
 
 def plot_psf(fits_file="psf.fits"):
     gc = aplpy.FITSFigure(fits_file)
-    gc.show_colorscale(cmap="cubehelix_r")#vmax, vmin
+    gc.show_colorscale(cmap="cubehelix_r",pmin=0,pmax=100)#vmax, vmin
     gc.add_grid()
     gc.grid.set_color('black') 
     gc.grid.set_alpha(0.5)
-    #gc.add_colorbar()
+    gc.add_colorbar()
     #gc.colorbar.set_axis_label_text('Jy/beam')
     gc.set_title("PSF")
     plt.tight_layout()
@@ -141,10 +158,10 @@ def plot_psf(fits_file="psf.fits"):
 
 
 if __name__=="__main__":
-   plot_psf()
-   #plot_fits(fits_file=GC_FILE2)
+   #plot_psf()
+   plot_fits(fits_file=GC_FILE)
    #plot_fits(fits_file=GC_FILE3)
-   #plot_fits2(fits_file=ABS_FILE)
+   plot_fits2(fits_file=ABS_FILE)
    #make_video() 
     
     

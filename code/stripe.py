@@ -8,6 +8,7 @@ import redpipe as pipe
 import sys, getopt
 import healpy as hp
 import pyfits as pf
+from pylab import cm
 
 class stripe():
 
@@ -88,7 +89,7 @@ class stripe():
              c = np.copy(m)
 
              for k in xrange(len(m)):
-                 if not w[k]<0.5:
+                 if not w[k]<0.1:
                     c[k] = m[k]/w[k]
                  else:
                     c[k] = 0       
@@ -116,7 +117,12 @@ class stripe():
 
              #print "haslam = ",haslam
 
-             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name,max=60,min=0)#max=0.4
+             cmap=cm.jet
+             cmap.set_over(cmap(1.0))
+             cmap.set_under('w')
+             cmap.set_bad('gray')
+
+             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title='HERA-19 @ 150 MHz',max=40,min=0,cmap=cmap)#max=0.4
              hp.graticule()
              f = file_name[:-5]
              plt.savefig(plutil.FIGURE_PATH+"IMAGES/"+f+str(field)+".png")          
