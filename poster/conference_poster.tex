@@ -51,9 +51,12 @@
 % The widths of these boxes can be easily edited to accommodate your content as you see fit
 
 \begin{minipage}[b]{0.75\linewidth}
-\veryHuge \color{NavyBlue} \textbf{HERA-19} \color{Black}\\ % Title
-\Huge\textit{Commissioning}\\[2cm] % Subtitle
-\huge \textbf{T. Grobler \& G. Bernardi}\\[0.5cm] % Author(s)
+%\veryHuge \color{NavyBlue} \textbf{HERA-19} \color{Black}\\ % Title
+%\Huge\textit{Commissioning}\\[2cm] % Subtitle
+\veryHuge \color{NavyBlue} \textbf{The sky seen by HERA 19} \color{Black}\\ % Title
+\\
+\huge \textbf{T.L.~Grobler}\\[0.5cm] % Author(s)
+\\
 \huge Rhodes University, Department of Physics and Electronics\\[0.4cm] % University/organization
 %\Large \texttt{john@LaTeXTemplates.com} --- 1 (000) 111 1111\\
 \end{minipage}
@@ -79,6 +82,10 @@ The Hydrogen Epoch of Reionization Array (HERA) is a low frequency (100-200 MHz)
 Here I present the results that we obtained after reducing three Julian days (2457545, 2457555 and 2457661) worth of HERA-19 snapshots using our own custom built commissioning pipeline. Each of the three Julian days that we processed
 contained 72 ten minute snapshots.
 \end{abstract}
+
+\section{Scientific background}
+The 21-cm emission from redshifted neutral Hydrogen is the most promising probe of the cosmic evolution of the intergalactic medium and its transition from the dark ages to cosmic reionization. The detection of the 21-cm signal has been the main driver of several radio interferometric array 
+
 
 %\color{DarkSlateGray}
 
@@ -141,8 +148,16 @@ An image of the HERA-19 array is shown below.
 
 \section*{Calibration}
 
-Our pipeline only includes a first generation calibration (1GC) step (i.e. we make use of calibrator sources).
-The calibration procedure we used consisted of a two stage process.
+%Our pipeline only includes a first generation calibration (1GC) step (i.e. we make use of calibrator sources). The calibration procedure we used consisted of a two stage process.
+We leverage on the fact that at the limit angular resolution of HERA-19, the Galactic centre is almost unresolved and can be used to calibrate the array to a first order. We selected the snapshot (i.e. 10 minute long) observation when the Galactic centre transits and model it as an unresolved 1~Jy source with flat spectrum in the HERA-19 band. We calibrated by solving for antenna--based delays first and the complex gains as a function of frequency usisng the CASA (ref) task {\it gaincal} and {\it bandpass} respectively. Visibilities were then Fourier transformed and deconvolved using the CASA task {\it clean} (Figure~\ref{fig:gc_first_cal}).
+
+\begin{center}\vspace{1cm}
+\includegraphics[width=0.8\linewidth]{gc_first_cal.png}
+\captionof{figure}{\color{Green} The computed delays.}
+\label{fig:gc_first_cal}
+\end{center}\vspace{1cm}
+
+
 
 \subsection*{Delay and Bandpass Calibration}
 \begin{enumerate}
