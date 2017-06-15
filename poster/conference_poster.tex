@@ -153,7 +153,7 @@ Due to the limited angular resolution of HERA-19, the Galactic centre is almost 
 We selected the snapshot (i.e. 10 minute long) observation when the Galactic centre transits and model it as an unresolved 1~Jy source with a flat spectrum in the HERA-19 band. We calibrated by first determining the antenna--based delays using the CASA\footnote{http://casa.nrao.edu} task {\it gaincal}, thereafter we computed the complex gains as a function of frequency using the CASA task {\it bandpass} (Figure~\ref{fig:delays} and~\ref{fig:bandpass}).
 \begin{center}\vspace{1cm}
 \includegraphics[width=0.8\linewidth]{delay.png}
-\captionof{figure}{The computed delays. (\bf GB: I would remove the figure title. I would also remove the legend and write in the caption which day correspond to which colour. Rather than using JDs use the actual calendar day with time. I suggest to plot only till antenna 72 to make the plot less crowded, but all the antennas need three JD values or an explanation why not. It should be (ns) rather than [nsec]).}
+\captionof{figure}{Example of delay solutions for a subset of HERA antennas. Data were taken on {\bf (GB: include the calendar day)} (blue) and ??? (red) and ??? (green) days afterwards respectively. {\bf (GB: can you calculate the rms difference of the delays? It could be a useful number to quote)}.}
 \label{fig:delays}
 \end{center}\vspace{1cm}
 %
@@ -170,29 +170,29 @@ We selected the snapshot (i.e. 10 minute long) observation when the Galactic cen
       \includegraphics[width=0.47\linewidth]{bandpass_phase.png}%
 %      \label{fig:evaluation:avgPrice}%
     }
-    \caption{Bandpass gain solutions. {\bf (GB: plot only two antennas as it is too crowded. Try to make lines thicker as they are hard to see. Y title should be Gain amplitude. If you can plot both as a function of frequency would be better. Y title should be Gain phase (degrees). I would remove both plot titles.)}}
+    \caption{Gain solutions as a function of frequency {\bf (GB: you may remove the legend if you have time)} (the colour scheme is the same as Figure~\ref{fig:delays}. As expected after delay calibration, phases are generally flat as a function of frequency and repeatable with time - although antenna 10 shows a noticeable deviation on day ????. A similar behaviour appears for gain amplitudes. The small "glitches" in solutions are due to the presence of residual radio frequency interference.}
 \label{fig:bandpass}
   \end{minipage}
 
+Visibilities were then Fourier transformed into an image and deconvolved using the CASA task {\it clean} (Figure~\ref{fig:gc_first_cal}).
 
-Visibilities were then Fourier transformed and deconvolved using the CASA task {\it clean} (Figure~\ref{fig:gc_first_cal}).
+A similar procedure was repeated for three different nights, spaced 10 days apart. Figure~\ref{fig:delays} and~\ref{fig:bandpass} show that the instrumental response is fairly stable tens of days.
 
 \begin{center}\vspace{1cm}
 \includegraphics[width=0.4\linewidth]{gc_first_cal.png}
-\captionof{figure}{\color{Green} The computed delays.}
+\captionof{figure}{Snapshot image of the Galactic centre. The angular resolution is $\sim 2^\circ$ and the $120-180$~MHz bandwidth is synthesized. We can note that the Galactic centre is slightly resolved even at the HERA--19 resolution.}
 \label{fig:gc_first_cal}
 \end{center}\vspace{1cm}
 
 
 
-\subsection*{Delay and Bandpass Calibration}
-\begin{enumerate}
- \item Find the snapshot in which the Galactic center is closest to transit.
- \item Do a delay and bandpass calibration assuming a 1Jy point source model for the Galactic center.
- \item Apply gain solutions to all other snapshots.
-\end{enumerate}
-The computed delays seem to be quite stable as, even after ten days, there is almost no change in the delays. After $\sim$100 
-days we see a bit more deviation, although not as much as one would expect.
+%\subsection*{Delay and Bandpass Calibration}
+%\begin{enumerate}
+% \item Find the snapshot in which the Galactic center is closest to transit.
+% \item Do a delay and bandpass calibration assuming a 1Jy point source model for the Galactic center.
+% \item Apply gain solutions to all other snapshots.
+%\end{enumerate}
+%The computed delays seem to be quite stable as, even after ten days, there is almost no change in the delays. After $\sim$100 days we see a bit more deviation, although not as much as one would expect.
 
 The bandpass gain solutions are depicted below for a subset of antennas.
 The phases are almost flat as the phase slope was removed by the delay calibration step. Again the bandpass 
