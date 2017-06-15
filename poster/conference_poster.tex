@@ -183,9 +183,7 @@ A similar procedure was repeated for three different nights, spaced 10 days apar
 \captionof{figure}{Snapshot image of the Galactic centre. The angular resolution is $\sim 2^\circ$ and the $120-180$~MHz bandwidth is synthesized. We can note that the Galactic centre is slightly resolved even at the HERA--19 resolution.}
 \label{fig:gc_first_cal}
 \end{center}\vspace{1cm}
-
-
-
+%
 %\subsection*{Delay and Bandpass Calibration}
 %\begin{enumerate}
 % \item Find the snapshot in which the Galactic center is closest to transit.
@@ -193,19 +191,18 @@ A similar procedure was repeated for three different nights, spaced 10 days apar
 % \item Apply gain solutions to all other snapshots.
 %\end{enumerate}
 %The computed delays seem to be quite stable as, even after ten days, there is almost no change in the delays. After $\sim$100 days we see a bit more deviation, although not as much as one would expect.
+%
+%The bandpass gain solutions are depicted below for a subset of antennas. The phases are almost flat as the phase slope was removed by the delay calibration step. Again the bandpass gains also seem to be quite stable over time.
 
-The bandpass gain solutions are depicted below for a subset of antennas.
-The phases are almost flat as the phase slope was removed by the delay calibration step. Again the bandpass 
-gains also seem to be quite stable over time.
-
-
-\subsection*{Absolute Flux Calibration}
-\begin{enumerate}
- \item Find the snapshots containing the two flux calibrators (PMN J2101 2802 and PMN J2107 2526).
- \item Use Eq.~\eqref{eq:c} to obtain the correct scale factor.
- \item Apply scale factor to all other snapshots.
-\end{enumerate}
-The absolute flux calibration procedure we used is based on the following equation:
+%\subsection*{Absolute Flux Calibration}
+\subsection*{All sky images}
+As the instrumental response is fairly stable, we applied calibration solutions to each snapshot observation throughout each night, covering the $0^{\rm h} < {\rm LST} < 6^{\rm h}$ and $10^{\rm h} < {\rm LST} < 24^{\rm h}$ local sidereal time range. At $\alpha \sim 21^{\rm h}$ we could clearly identify two point sources PMN~J2101-2802 and PMN~2107-2526 (Figure~\ref{}) that we could use to set the absolute flux density scale that was arbitrarily set using the Galactic centre. The absolute flux density scaling $C$ was calculated as the beam weighted average of the apparent flux density over various snapshots (i.e. Jacobs et al 2013):
+%\begin{enumerate}
+% \item Find the snapshots containing the two flux calibrators (PMN J2101 2802 and PMN J2107 2526).
+% \item Use Eq.~\eqref{eq:c} to obtain the correct scale factor.
+% \item Apply scale factor to all other snapshots.
+%\end{enumerate}
+%The absolute flux calibration procedure we used is based on the following equation:
 \begin{equation}
 C = \frac{\sum_{kt}(B_{kt}^{\nu})^2\sum_k{M_{k}^{\nu}}}{\sum_{kt}B_{kt}^{\nu}S_{kt}^{\nu}},\label{eq:c}
 \end{equation}
@@ -215,21 +212,21 @@ intrinsic flux density of source $k$ at frequency $\nu$.
 Calibrated images of the delay and bandpass calibrator (Galactic Center) and the absolute flux calibrators (PMN J2101 2802 and PMN J2107 2526) is displayed in
 the following two figures. 
 
-\begin{minipage}{\columnwidth}
-    \makeatletter
-    \newcommand{\@captype}{figure}
-    \makeatother
-    \centering
-    \subfloat[Delay and Bandpass Calibrator]{%
-      \includegraphics[width=0.47\linewidth]{GC.png}%
-      \label{fig:evaluation:revenue}%
-    }\qquad%
-    \subfloat[Absolute Flux Calibrators]{%
-      \includegraphics[width=0.47\linewidth]{ABS.png}%
-      \label{fig:evaluation:avgPrice}%
-    }
-    \caption{\color{Green} Calibrators @ 150 MHz.}
-  \end{minipage}
+%\begin{minipage}{\columnwidth}
+%    \makeatletter
+%    \newcommand{\@captype}{figure}
+%    \makeatother
+%    \centering
+%    \subfloat[Delay and Bandpass Calibrator]{%
+%      \includegraphics[width=0.47\linewidth]{GC.png}%
+%      \label{fig:evaluation:revenue}%
+%    }\qquad%
+%    \subfloat[Absolute Flux Calibrators]{%
+%      \includegraphics[width=0.47\linewidth]{ABS.png}%
+%      \label{fig:evaluation:avgPrice}%
+%    }
+%    \caption{\color{Green} Calibrators @ 150 MHz.}
+%  \end{minipage}
   
 % \begin{table}
 % \caption{The names and properties of the two absolute flux calibrators.\label{tab:sources}}
