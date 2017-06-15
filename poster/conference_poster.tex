@@ -53,7 +53,7 @@
 \begin{minipage}[b]{0.75\linewidth}
 %\veryHuge \color{NavyBlue} \textbf{HERA-19} \color{Black}\\ % Title
 %\Huge\textit{Commissioning}\\[2cm] % Subtitle
-\veryHuge \color{NavyBlue} \textbf{The sky seen by HERA 19} \color{Black}\\ % Title
+\veryHuge \color{NavyBlue} \textbf{The sky seen by HERA-19} \color{Black}\\ % Title
 \\
 \huge \textbf{T.L.~Grobler}\\[0.5cm] % Author(s)
 \\
@@ -65,11 +65,6 @@
 \includegraphics[width=20cm]{Rhodes_logo.jpg}\\
 \end{minipage}
 
-%
-%\begin{minipage}[t]{0.1\linewidth}
-%\includegraphics[width=10cm]{ska_logo.jpg}\\
-%\end{minipage}
-
 \vspace{1cm} % A bit of extra whitespace between the header and poster content
 
 %----------------------------------------------------------------------------------------
@@ -80,19 +75,18 @@
 %	ABSTRACT
 %----------------------------------------------------------------------------------------
 
-\color{Navy} % Navy color for the abstract
+%\color{Navy} % Navy color for the abstract
+\color{DarkSlateGray}
 
-\begin{abstract}
-The Hydrogen Epoch of Reionization Array (HERA) is a low frequency (100-200 MHz), 350-dish radio interferometer currently under construction at the SKA site in the Karoo. Its main goal is to observe the evolution of the 21-cm line emitted by the intergalactic medium in the $6 < z < 12$ range, therefore providing a complete characterization of cosmic reionization. The first 19 dishes were deployed at the end of 2015. 
-Here I present the results that we obtained after reducing three Julian days (2457545, 2457555 and 2457661) worth of HERA-19 snapshots using our own custom built commissioning pipeline. Each of the three Julian days that we processed
-contained 72 ten minute snapshots.
-\textbf{TLG: MOVED TO ABSTRACT: The 21-cm emission from redshifted neutral Hydrogen is the most promising probe of the cosmic evolution of the intergalactic medium and its transition from the dark ages to cosmic reionization. The detection of the 21-cm signal has been the main driver of several radio interferometric array 
-}
-\end{abstract}
+%\begin{abstract}
+%The Hydrogen Epoch of Reionization Array (HERA) is a low frequency (100-200 MHz), 350-dish radio interferometer currently under construction at the SKA site in the Karoo. Its main goal is to observe the evolution of the 21-cm line emitted by the intergalactic medium in the $6 < z < 12$ range, therefore providing a complete characterization of cosmic reionization. The first 19 dishes were deployed at the end of 2015. 
+%Here I present the results that we obtained after reducing three Julian days (2457545, 2457555 and 2457661) worth of HERA-19 snapshots using our own custom built commissioning pipeline. Each of the three Julian days that we processed contained 72 ten minute snapshots.
+%\end{abstract}
+%
+\section{The Hydrogen Epoch of Reionization Array: why?}
+The 21-cm emission from redshifted neutral Hydrogen is the most promising probe of the cosmic evolution of the intergalactic medium and its transition from the dark ages to cosmic reionization. The detection of the 21-cm signal has been the main driver of several radio interferometric arrays over the last decade. The Hydrogen Epoch of Reionization Array (HERA) is a new low frequency (100-200 MHz), 350-dish radio interferometer currently under construction at the SKA site in the Karoo with the aim to provide a complete characterization of cosmic reionization through 21-cm observations in the $6 < z < 12$ range. 
 
-%\section*{Scientific background}
-
-
+The first 19 HERA dishes (HERA-19) are already deployed (Figure~\ref{fig:HERA19}) and first observations started in 2016. In this poster we provide results from early HERA-19 observations aimed to characterize both the instrument and the sky emission.
 %\color{DarkSlateGray}
 
 
@@ -116,16 +110,16 @@ contained 72 ten minute snapshots.
 %----------------------------------------------------------------------------------------
 
 \color{DarkSlateGray} % DarkSlateGray color for the rest of the content
-\section*{Pipeline}
-
-The basic HERA-19 pipeline that was implemented is shown in the flow diagram below. We mainly concentrate on how the calibration sub-blocks were implemented in this poster.  
-
-\begin{center}\vspace{1cm}
-\includegraphics[width=0.8\linewidth]{pipeline.jpg}
-\captionof{figure}{\color{Green} The custom built HERA-19 Pipeline. \url{https://github.com/Trienko/heracommissioning}.}
-\end{center}\vspace{1cm}
-
-An image of the HERA-19 array is shown below. 
+%\section*{Pipeline}
+%
+%The basic HERA-19 pipeline that was implemented is shown in the flow diagram below. We mainly concentrate on how the calibration sub-blocks were implemented in this poster.  
+%
+%\begin{center}\vspace{1cm}
+%\includegraphics[width=0.8\linewidth]{pipeline.jpg}
+%\captionof{figure}{\color{Green} The custom built HERA-19 Pipeline. \url{https://github.com/Trienko/heracommissioning}.}
+%\end{center}\vspace{1cm}
+%
+%An image of the HERA-19 array is shown below. 
 
 \begin{minipage}{\columnwidth}
     \makeatletter
@@ -137,10 +131,12 @@ An image of the HERA-19 array is shown below.
       \label{fig:evaluation:revenue}%
     }\qquad%
     \subfloat[HERA-19 Layout]{%
-      \includegraphics[width=0.4\linewidth]{Layout.png}%
+%      \includegraphics[width=0.4\linewidth]{Layout.png}%
+      \includegraphics[width=0.4\linewidth]{delay.png}%
       \label{fig:evaluation:avgPrice}%
     }
-    \caption{\color{Green} HERA-19.}
+    \caption{Right: an aerial view of HERA-19 at the Karoo site in South Africa. Left: example of delay solutions for a subset of HERA antennas. Data were taken on {\bf (GB: include the calendar day)} (blue) and ??? (red) and ??? (green) days afterwards respectively. {\bf (GB: can you calculate the rms difference of the delays? It could be a useful number to quote).}}
+  \label{fig:HERA19}  
   \end{minipage}
 
 % \begin{center}\vspace{1cm}
@@ -152,16 +148,16 @@ An image of the HERA-19 array is shown below.
 % \captionof{figure}{\color{Green} An image of HERA-19.}
 % \end{center}\vspace{1cm}
 
-\section*{Calibration}
+\section*{HERA-19 Calibration}
 
 %Our pipeline only includes a first generation calibration (1GC) step (i.e. we make use of calibrator sources). The calibration procedure we used consisted of a two stage process.
 Due to the limited angular resolution of HERA-19, the Galactic centre is almost unresolved and can therefore be used to calibrate the array.
-We selected the snapshot (i.e. 10 minute long) observation when the Galactic centre transits and model it as an unresolved 1~Jy source with a flat spectrum in the HERA-19 band. We calibrated by first determining the antenna--based delays using the CASA\footnote{http://casa.nrao.edu} task {\it gaincal}, thereafter we computed the complex gains as a function of frequency using the CASA task {\it bandpass} (Figure~\ref{fig:delays} and~\ref{fig:bandpass}).
-\begin{center}\vspace{1cm}
-\includegraphics[width=0.8\linewidth]{delay.png}
-\captionof{figure}{Example of delay solutions for a subset of HERA antennas. Data were taken on {\bf (GB: include the calendar day)} (blue) and ??? (red) and ??? (green) days afterwards respectively. {\bf (GB: can you calculate the rms difference of the delays? It could be a useful number to quote)}.}
-\label{fig:delays}
-\end{center}\vspace{1cm}
+We selected the snapshot (i.e. 10 minute long) observation when the Galactic centre transits and model it as an unresolved 1~Jy source with a flat spectrum in the HERA-19 band. We calibrated by first determining the antenna--based delays using the CASA\footnote{http://casa.nrao.edu} task {\it gaincal}, thereafter we computed the complex gains as a function of frequency using the CASA task {\it bandpass} (Figure~\ref{fig:HERA19} and~\ref{fig:bandpass}).
+%\begin{center}\vspace{1cm}
+%\includegraphics[width=0.8\linewidth]{delay.png}
+%\captionof{figure}{Example of delay solutions for a subset of HERA antennas. Data were taken on {\bf (GB: include the calendar day)} (blue) and ??? (red) and ??? (green) days afterwards respectively. {\bf (GB: can you calculate the rms difference of the delays? It could be a useful number to quote)}.}
+%\label{fig:delays}
+%\end{center}\vspace{1cm}
 %
 \begin{minipage}{\columnwidth}
     \makeatletter
@@ -184,11 +180,27 @@ Visibilities were then Fourier transformed into an image and deconvolved using t
 
 A similar procedure was repeated for three different nights, spaced 10 days apart. Figure~\ref{fig:delays} and~\ref{fig:bandpass} show that the instrumental response is fairly stable tens of days.
 
-\begin{center}\vspace{1cm}
-\includegraphics[width=0.4\linewidth]{gc_first_cal.png}
-\captionof{figure}{Snapshot image of the Galactic centre. The angular resolution is $\sim 2^\circ$ and the $120-180$~MHz bandwidth is synthesized. We can note that the Galactic centre is slightly resolved even at the HERA--19 resolution.}
+%\begin{center}\vspace{1cm}
+%\includegraphics[width=0.4\linewidth]{gc_first_cal.png}
+%\captionof{figure}{Snapshot image of the Galactic centre. The angular resolution is $\sim 2^\circ$ and the $120-180$~MHz bandwidth is synthesized. We can note that the Galactic centre is slightly resolved even at the HERA--19 resolution.}
+%\label{fig:gc_first_cal}
+%\end{center}\vspace{1cm}
+\begin{minipage}{\columnwidth}
+    \makeatletter
+    \newcommand{\@captype}{figure}
+    \makeatother
+    \centering
+    \subfloat[Bandpass: Amplitude]{%
+      \includegraphics[width=0.47\linewidth]{gc_first_cal.png}%
+%      \label{fig:evaluation:revenue}%
+    }\qquad%
+    \subfloat[Bandpass: Phase]{%
+      \includegraphics[width=0.47\linewidth]{cal_sources.png}%
+%      \label{fig:evaluation:avgPrice}%
+    }
+    \caption{Left: snapshot image of the Galactic centre at 150~MHz (using a 60~MHz bandwidth). The angular resolution is $\sim 2^\circ$ and the image covers the whole HERA field ov view. Units are arbitrary. Note that the Galactic centre is slightly resolved even at the HERA--19 resolution. Right: same as the left panel but for the PMN~J2101-2802 and PMN~2107-2526 sources used for absolute flux density calibration.}
 \label{fig:gc_first_cal}
-\end{center}\vspace{1cm}
+  \end{minipage}
 %
 %\subsection*{Delay and Bandpass Calibration}
 %\begin{enumerate}
@@ -201,8 +213,8 @@ A similar procedure was repeated for three different nights, spaced 10 days apar
 %The bandpass gain solutions are depicted below for a subset of antennas. The phases are almost flat as the phase slope was removed by the delay calibration step. Again the bandpass gains also seem to be quite stable over time.
 
 %\subsection*{Absolute Flux Calibration}
-\subsection*{All sky images}
-As the instrumental response is fairly stable, we applied calibration solutions to each snapshot observation throughout each night, covering the $0^{\rm h} < {\rm LST} < 6^{\rm h}$ and $10^{\rm h} < {\rm LST} < 24^{\rm h}$ local sidereal time range. At $\alpha \sim 21^{\rm h}$ we could clearly identify two point sources PMN~J2101-2802 and PMN~2107-2526 (Figure~\ref{}) that we could use to set the absolute flux density scale that was arbitrarily set using the Galactic centre. The absolute flux density scaling $C$ was calculated as the beam weighted average of the apparent flux density over various snapshots (i.e. Jacobs et al 2013):
+\subsection*{HERA-19 all sky images}
+As the instrumental response is fairly stable in time, we applied calibration solutions to each snapshot observation throughout each night, covering the $0^{\rm h} < {\rm LST} < 6^{\rm h}$ and $10^{\rm h} < {\rm LST} < 24^{\rm h}$ local sidereal time range. At $\alpha \sim 21^{\rm h}$ we could clearly identify two point sources PMN~J2101-2802 and PMN~2107-2526 (Figure~\ref{fig:gc_first_cal}) that we could use to set the absolute flux density scale that was arbitrarily set using the Galactic centre. The absolute flux density scaling $C$ was calculated as the beam weighted average of the apparent flux density over various snapshots and both sources (i.e. Jacobs et al 2013):
 %\begin{enumerate}
 % \item Find the snapshots containing the two flux calibrators (PMN J2101 2802 and PMN J2107 2526).
 % \item Use Eq.~\eqref{eq:c} to obtain the correct scale factor.
@@ -210,14 +222,18 @@ As the instrumental response is fairly stable, we applied calibration solutions 
 %\end{enumerate}
 %The absolute flux calibration procedure we used is based on the following equation:
 \begin{equation}
-C = \frac{\sum_{kt}(B_{kt}^{\nu})^2\sum_k{M_{k}^{\nu}}}{\sum_{kt}B_{kt}^{\nu}S_{kt}^{\nu}},\label{eq:c}
+%C = \frac{\sum_{kt}(B_{kt}^{\nu})^2\sum_k{M_{k}^{\nu}}}{\sum_{kt}B_{kt}^{\nu}S_{kt}^{\nu}},\label{eq:c}
+C = \frac{\sum_{k,t} b^2_{k,t}}{\sum_{k,t} b_{k,t} s_{k,t}} \sum_k{f_k},
+\label{eq:c}
 \end{equation}
-where $B_{kt}^{\nu}$ is the attenuation factor source $k$ experiences due to the primary beam at time $t$ and frequency $\nu$,
-$S_{kt}^{\nu}$ is the measured uncalibrated apparent flux (not connected to the correct flux scale) of source $k$ at time $t$ and frequency $\nu$ and $M_{k}^{\nu}$ represents the 
-intrinsic flux density of source $k$ at frequency $\nu$. 
-Calibrated images of the delay and bandpass calibrator (Galactic Center) and the absolute flux calibrators (PMN J2101 2802 and PMN J2107 2526) is displayed in
-the following two figures. 
+where $b_{k,t}$ is the primary beam response for source $k$ at time $t$, $S_{k,t}$ is the apparent source flux density of source $k$ at time $t$ and $f_{k}^{\nu}$ is the intrinsic flux density of source $k$. We assumed $s = ???$~Jy and $s = ???$~Jy at 189~MHz for PMN~J2101-2802 and PMN~J2107-2526 respectively (Bernardi et al. 2013). We scaled the flux density of both sources down to 150 ~MHz using a spectral index $\beta = -0.8$.
 
+After applying the scaling factor to each snapshot, we imaged the visibilities again and performed a conservative deconvolution down to a threshold equals to 10\% of the peak image flux density. The individual snapshot images can eventually be comibined in a large scale mosaic by resampling them on the Helapix frame (Gorski et al. 200???). The individual snapshot images were primary beam weighted (i.e., Ord et al. 2010). The final image is shown in Figure~\ref{fig:all-sky}.
+
+\subsection*{Future outlook}
+%\subsection*{Towards the ful buildout (350 HERA dishes)}
+%Calibrated images of the delay and bandpass calibrator (Galactic Center) and the absolute flux calibrators (PMN J2101 2802 and PMN J2107 2526) is displayed in the following two figures. 
+%
 %\begin{minipage}{\columnwidth}
 %    \makeatletter
 %    \newcommand{\@captype}{figure}
@@ -233,7 +249,7 @@ the following two figures.
 %    }
 %    \caption{\color{Green} Calibrators @ 150 MHz.}
 %  \end{minipage}
-  
+%  
 % \begin{table}
 % \caption{The names and properties of the two absolute flux calibrators.\label{tab:sources}}
 % \begin{center}
@@ -246,16 +262,15 @@ the following two figures.
 %   \end{tabular}
 % \end{center}
 % \end{table}
-
-\section*{HEALPIX}
-
-The calibrated snapshots are projected and stitched together (using squared beam weighting) onto a HEALPIX map during the final step of the pipeline. The output HEALPIX map 
-obtained by combining three entire Julian days worth or snapshots is seen below. The acronyms GC and ABS (visible in the figure below) respectively refer 
-to the Galactic center and absolute flux calibrator fields
+%
+%\section*{HEALPIX}
+%
+%The calibrated snapshots are projected and stitched together (using squared beam weighting) onto a HEALPIX map during the final step of the pipeline. The output HEALPIX map obtained by combining three entire Julian days worth or snapshots is seen below. The acronyms GC and ABS (visible in the figure below) respectively refer to the Galactic center and absolute flux calibrator fields
 
 \begin{center}\vspace{1cm}
 \includegraphics[width=1\linewidth]{ALL_SKY0.png}
-\captionof{figure}{\color{Green} HERA-19 @ 150 MHz (2457545, 2457555 and 2457661). The units of the colorbar is Jy.}
+\captionof{figure}{Absolutely calibrated, Healpix re-sampled image at 150~MHz combined three nights of data. The units of the colorbar is Jy~beam${-1}$.}
+\label{fig:all-sky}
 \end{center}\vspace{1cm}
 
 
@@ -409,9 +424,9 @@ to the Galactic center and absolute flux calibrator fields
 \bibliographystyle{plain} % Plain referencing style
 \bibliography{sample} % Use the example bibliography file sample.bib
 
-%\begin{center}\vspace{1cm}
-%\includegraphics[width=0.35\linewidth]{ska_logo.jpg}
-%\end{center}\vspace{1cm}
+\begin{center}\vspace{1cm}
+\includegraphics[width=0.35\linewidth]{ska_logo.jpg}
+\end{center}\vspace{1cm}
 
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS
