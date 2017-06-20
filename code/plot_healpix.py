@@ -11,6 +11,7 @@ from pyrap.tables import table
 import healpy as hp
 import matplotlib
 import healpy as hp
+from pylab import cm
 
 ANT_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
 
@@ -152,7 +153,12 @@ def plot_healpix(file_name="ALL_SKY.FITS",field=0,max_v=60,min_v=0):
 
     #print "haslam = ",haslam
 
-    proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title=file_name,max=max_v,min=min_v)#max=0.4
+    cmap=cm.jet
+    cmap.set_over(cmap(1.0))
+    cmap.set_under('w')
+    cmap.set_bad('gray')
+
+    proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title='',max=max_v,min=min_v,cmap=cmap)#max=0.4
     hp.graticule()
     f = file_name[:-5]
     plt.savefig(f+str(field)+".png")          

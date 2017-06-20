@@ -204,12 +204,14 @@ class redpipe():
               os.system(command)
      
       def print_lst(self,print_values=False):
+          print it.PATH_DATA
           os.chdir(it.PATH_DATA)
           HERA = Observer()
           HERA.lat, HERA.long, HERA.elevation = '-30:43:17', '21:25:40.08', 0.0
           j0 = julian_date(0)
 
           file_names = glob.glob("*.ms")
+          print file_names
           ra_cen = np.zeros((len(file_names),))
           k = 0        
  
