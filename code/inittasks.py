@@ -8,7 +8,9 @@ import glob, os
 PATH_TO_ADD_UVWS = "/home/trienko/HERA/software/capo/dcj/scripts/add_uvws.py"
 CAL_FILE = "hsa7458_v000_HH" 
 PATH_TO_MIR_TO_FITS = "/usr/local/bin/miriad_to_uvfits.py"
+PATH_TO_MIR_TO_FITS_RID = "/home/trienko/HERA/conference/code/miriad2uvfits.py"
 #PATH_DATA = r"/media/trienko/Seagate Expansion Drive/HERA/data/2457661/"
+#PATH_DATA = "/home/trienko/HERA/conference/data/2457661/"
 PATH_DATA = "/home/trienko/HERA/conference/data/TEST/"
 PATH_CODE = "/home/trienko/HERA/conference/code/"
 OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
@@ -86,6 +88,16 @@ class inittasks():
 
 	  os.chdir(PATH_CODE)
 
+      def miriad_to_uvfits_rid(self):
+          command = "sudo python run_miriad2uvfits.py" 
+          print("CMD >>> "+command)
+          os.system(command)
+
+      def uvfits_to_miriad(self):
+          command = "sudo python run_uvfits2miriad.py" 
+          print("CMD >>> "+command)
+          os.system(command)
+
       ##############################
       #Deleting the uvfits files
       ##############################
@@ -150,6 +162,55 @@ class inittasks():
           command = "rm ipython*.log"
           print("CMD >>> "+command)
           os.system(command)
+          os.chdir(PATH_CODE)
+
+      ##############################
+      #Converting ms to uvfits
+      ##############################
+      def ms_to_uv_fits(self):
+          os.chdir(PATH_DATA)
+          for file_name in glob.glob("*C.ms"):
+              file = open("ms_to_uvfits.py","w")
+              fits_file = file_name[:-3]+".uvfits"
+              file.write("default(exportuvfits)\n")
+              file.write("fitsfile=\""+fits_file+"\"\n")
+              file.write("vis=\""+file_name+"\"\n")
+              file.write("inp(exportuvfits)\n")
+              file.write("go(exportuvfits)\n")
+              file.close() 
+              command = "casa -c ms_to_uvfits.py --nogui --nologfile --log2term"
+              print("CMD >>> "+command)
+              os.system(command)
+              #break
+          
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+          os.chdir(PATH_CODE)
+
+      def apply_flags(self):
+          os.chdir(PATH_DATA)
+          file_names = glob.glob("*uvcU.ms")
+          for file_name in file_names:
+              file = open("apply_flags.py","w")
+              file.write("from casa import table as tb\n") 
+              file.write("tb.open(\""+file_name+"\",nomodify=False)\n")
+              #file.write("flags = tb.getcol(\"FLAG\")\n")
+              #file.write("flag_row = tb.getcol(\"FLAG_ROW\")\n")
+              file.write("import pickle\n")
+              file.write("input = open(\""+file_name[:-3]+".flags.p"+"\",\'rb\')\n")
+              file.write("flags = pickle.load(input)\n")
+              file.write("flag_row = pickle.load(input)\n")
+              file.write("input.close()\n")
+              file.write("tb.putcol(\"FLAG\",flags)\n")
+              file.write("tb.putcol(\"FLAG_ROW\",flag_row)\n")
+              file.write("tb.flush()\n")
+              file.write("tb.close()\n")
+              file.close()
+              command = "casa -c apply_flags.py --nogui --nologfile --log2term"
+              print("CMD >>> "+command)
+              os.system(command)
+              #break
           os.chdir(PATH_CODE)
 
       ##############################

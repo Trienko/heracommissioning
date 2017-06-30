@@ -30,7 +30,7 @@ PMN_J2107_2526_FLUX_150 = 47.7*(150.0/189.0)**(-0.8)
 CENA_RA = "13:35:58"
 CENA_DEC = "-34:04:19"
 
-ABS_CAL_P = "2457545_ABS_CAL.p"
+ABS_CAL_P = ''
 
 class absflux():
 
@@ -235,7 +235,11 @@ class absflux():
       
       def apply_c(self):
           global ABS_CAL_P
+                
           os.chdir(it.PATH_DATA)
+          if ABS_CAL_P == '':
+             file_names = glob.glob("*ABS_CAL.p")
+             ABS_CAL_P = file_names[0]
           file_names = glob.glob("*uvcU.ms")
           for file_name in file_names:
               command = "cp -r "+file_name+" "+file_name[:-3]+"C.ms"

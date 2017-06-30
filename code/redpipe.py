@@ -356,6 +356,30 @@ class redpipe():
                 
           os.chdir(it.PATH_CODE)
 
+      def save_flags(self):
+          os.chdir(it.PATH_DATA)
+          file_names = glob.glob("*uvcU.ms")
+          for file_name in file_names:
+              file = open("save_flags.py","w")
+              file.write("from casa import table as tb\n") 
+              file.write("tb.open(\""+file_name+"\",nomodify=False)\n")
+              file.write("flags = tb.getcol(\"FLAG\")\n")
+              file.write("flag_row = tb.getcol(\"FLAG_ROW\")\n")
+              file.write("import pickle\n")
+              file.write("output = open(\""+file_name[:-3]+".flags.p"+"\",\'wb\')\n")
+              file.write("pickle.dump(flags,output)\n")
+              file.write("pickle.dump(flag_row,output)\n")
+              file.write("output.close()\n")
+              #file.write("tb.putcol(\"CORRECTED_DATA\",corrected_data)\n")
+              #file.write("tb.flush()\n")
+              #file.write("tb.close()\n")
+              file.close()
+              command = "casa -c save_flags.py --nogui --nologfile --log2term"
+              print("CMD >>> "+command)
+              os.system(command)
+              #break
+          os.chdir(it.PATH_CODE)
+
       def applycal_gc_all(self,delay=False):
           global BANDBASS_GC_CAL_TABLE
           global DELAY_GC_CAL_TABLE
@@ -701,20 +725,22 @@ def main(argv):
    mask2 = "C"
    delay = False
    decon = False
+   saveflags = False
 
    try:
-      opts, args = getopt.getopt(argv,"hd",["flag_all_basic","flag_ao","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits=","decon_mask"])
+      opts, args = getopt.getopt(argv,"hd",["flag_all_basic","flag_ao","save_flags","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits=","decon_mask"])
    except getopt.GetoptError:
-      print 'python redpipe.py -d --flag_all_basic --flag_ao --bandpass_gc --plot_cal_gc --apply_cal_gc_all --create_images <value> --print_lst --convert_to_fits <value> --decon_mask'
+      print 'python redpipe.py -d --flag_all_basic --flag_ao --save_flags --bandpass_gc --plot_cal_gc --apply_cal_gc_all --create_images <value> --print_lst --convert_to_fits <value> --decon_mask'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
       #print "arg = ",arg
       if opt == '-h':
-         print 'python redpipe.py -d --flag_all_basic --bandpass_gc --plotcal_gc --apply_cal_gc_all --create_images --print_lst --convert_to_fits --decon_mask'
+         print 'python redpipe.py -d --flag_all_basic --save_flags --bandpass_gc --plotcal_gc --apply_cal_gc_all --create_images --print_lst --convert_to_fits --decon_mask'
          print '-d: adds a delay calibration step before the bandpass'
          print '--flag_all_basic: flag known bad channels, autocorrelations and antenna'
          print '--flag_ao: flag with ao flagger using strategy zen.2457545.48707.xx_strategy.rfis'
+         print '--save_flags: save the flags to disk'
          print '--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith'
          print '--plot_cal_gc: plot the calibration bandpass solution obtained from doing a bandpass cal on the ms where gc is at zenith'
          print '--apply_cal_gc_all: apply the bandpass solutions obtained to all the other measurement sets in the directory'
@@ -730,6 +756,8 @@ def main(argv):
            flagallbasic = True
       elif opt == "--flag_ao":
            flagao = True
+      elif opt == "--save_flags":
+           saveflags = True
       elif opt == "--bandpass_gc":
            bandpassgc = True   
       elif opt == "--plot_cal_gc":
@@ -756,6 +784,8 @@ def main(argv):
       red_object.flag_basic_all()
    if flagao:
       red_object.flag_aoflagger()
+   if saveflags:
+      red_object.save_flags()
    if bandpassgc:
       red_object.bandpass_gc(delay=delay)
    if plotcalgc:
@@ -769,6 +799,7 @@ def main(argv):
       red_object.create_images(mask = mask1)
    if converttofits:
       red_object.convert_to_fits(mask = mask2)
+   
    
     		
 if __name__ == "__main__":
