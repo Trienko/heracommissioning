@@ -1,7 +1,8 @@
 import numpy as np
 import pylab as plt
 import glob, os
-
+from pyrap.tables import table
+import pickle
 
 #SETTING LOCATIONS TO ALL THE IMPORTANT SCRIPTS AND DATA FILES
 ##############################################################################################################
@@ -50,6 +51,19 @@ class inittasks():
 
       def __init__(self):
           pass
+
+      #####################################
+      #CASA wrapper around split 
+      #####################################
+      def split_wrapper(self,options={}):
+          CASA_WRAPPER(task="split",options=options)
+          print os.getcwd()
+          command = "casa -c split_script.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command) 
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
 
       ##############################
       #Reading all files with the .uvc extension and running the add_uvws command to add uv_tracks to the miriad files
@@ -145,7 +159,7 @@ class inittasks():
       ##############################
       def uv_fits_to_ms(self):
           os.chdir(PATH_DATA)
-          for file_name in glob.glob("*.uvfits"):
+          for file_name in glob.glob("*U.uvfits"):
               file = open("uvfits_to_ms.py","w")
               msname = file_name[:-7]+".ms"
               file.write("default(importuvfits)\n")
@@ -187,6 +201,91 @@ class inittasks():
           print("CMD >>> "+command)
           os.system(command)
           os.chdir(PATH_CODE)
+
+      def create_time_pickle(self):
+          os.chdir(PATH_DATA)
+          file_names = glob.glob("*uvcU.ms")
+          for file_name in file_names:
+              t=table(file_name)
+              time = t.getcol("TIME")
+              #print "time = ",np.array(time)
+              #print "len(time) = ",len(time)
+              time2 = np.roll(time,1)
+              time2[0] = time[0]
+              dt = time-time2
+              dt = dt[dt>1e-12]
+              start_time = time - dt[0]/3.0
+              end_time = time + dt[0]/3.0
+              output = open(file_name[:-3]+".time.p",'wb')
+              pickle.dump(start_time, output)
+              pickle.dump(end_time, output)
+              output.close()
+              #print "dt = ",len(dt[dt>1e-12])
+              #plt.plot(dt)
+              #plt.show()
+
+          os.chdir(PATH_CODE)
+
+      def compute_time_str(self):
+          os.chdir(PATH_DATA)
+          file_names = glob.glob("*time.p")
+          for file_name in file_names:
+              file = open("time_str.py","w")
+
+	      #file.write("def time_convert(mytime, myunit='s'):\n")
+              #file.write("if type(mytime).__name__ <> 'list': mytime=[mytime]\n")
+              #file.write("myTimestr = []\n")
+              #file.write("for time in mytime:\n")
+              #file.write("q1=qa.quantity(time,myunit)\n")
+              #file.write("time1=qa.time(q1,form='ymd')\n")
+              #file.write("myTimestr.append(time1)\n")
+              #file.write("\n")
+              #file.write("\n")
+              #file.write("return myTimestr\n")
+              #file.write("\n")
+             
+              file.write("import pickle\n")    
+              file.write("execfile(\'time_func.py\')\n")
+              file.write("from casa import table as tb\n")
+              file.write("input = open(\""+file_name+"\",\'rb\')\n")
+              file.write("time_start = pickle.load(input)\n")
+              file.write("time_end = pickle.load(input)\n")
+              file.write("input.close()\n")
+              file.write("time_start_str = time_convert(time_start)\n")
+              file.write("time_end_str = time_convert(time_end)\n")
+              file.write("output = open(\""+file_name[:-2]+".str.p\",\'wb\')\n")
+              file.write("pickle.dump(time_start_str,output)\n")
+	      file.write("pickle.dump(time_end_str,output)\n")
+              file.write("output.close()\n")
+              #file.write("print time_start_str\n")
+              #file.write("print time_end_str\n")
+              #file.write("tb.close()\n")
+              file.close()
+              command = "casa -c time_str.py --nogui --nologfile --log2term"
+              print("CMD >>> "+command)
+              os.system(command)
+              #break
+          os.chdir(PATH_CODE)
+
+      def split_ms(self):
+          os.chdir(PATH_DATA)
+          file_names = glob.glob("*uvcU.ms")
+          #file_names = glob.glob("*time.str.p")
+          for file_name in file_names: 
+              input = open(file_name[:-3]+".time.str.p",'rb')
+              start_str = pickle.load(input)
+              end_str = pickle.load(input)
+              input.close()
+              start_str = np.unique(np.squeeze(np.array(start_str)))
+              end_str = np.unique(np.squeeze(np.array(end_str)))
+              for k in xrange(len(start_str)):
+                  options={}
+                  options["vis"]=file_name
+                  options["outputvis"]=file_name[:-3]+str(k)+".ms"
+                  options["timerange"]=start_str[k]+"~"+end_str[k]
+                  self.split_wrapper(options=options)
+          
+          os.chdir(it.PATH_CODE)
 
       def apply_flags(self):
           os.chdir(PATH_DATA)
