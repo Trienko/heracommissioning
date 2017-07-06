@@ -159,6 +159,7 @@ def plot_healpix(file_name="ALL_SKY.FITS",field=0,max_v=60,min_v=0):
     cmap.set_bad('gray')
 
     proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title='',max=max_v,min=min_v,cmap=cmap)#max=0.4
+    #proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title='',cmap=cmap)
     hp.graticule()
     f = file_name[:-5]
     plt.savefig(f+str(field)+".png")          

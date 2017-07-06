@@ -166,7 +166,7 @@ class redpipe():
           options["spw"] = FLAG_SPW_STRING  
           
 
-          for file_name in glob.glob("*.ms"):
+          for file_name in glob.glob("*U.ms"):
               options["vis"]=file_name
               self.flagdata_wrapper(options=options)
 
@@ -178,7 +178,7 @@ class redpipe():
           options["datacolumn"]='DATA'
           options["antenna"] = FLAG_ANT_STRING  
 
-          for file_name in glob.glob("*.ms"):
+          for file_name in glob.glob("*U.ms"):
               options["vis"]=file_name
               self.flagdata_wrapper(options=options)
 
@@ -190,7 +190,7 @@ class redpipe():
           options["datacolumn"]='DATA'
           options["autocorr"] = True  
 
-          for file_name in glob.glob("*.ms"):
+          for file_name in glob.glob("*U.ms"):
               options["vis"]=file_name
               self.flagdata_wrapper(options=options)
           
@@ -210,7 +210,7 @@ class redpipe():
           HERA.lat, HERA.long, HERA.elevation = '-30:43:17', '21:25:40.08', 0.0
           j0 = julian_date(0)
 
-          file_names = glob.glob("*.ms")
+          file_names = glob.glob("*U.ms")
           print file_names
           ra_cen = np.zeros((len(file_names),))
           k = 0        
@@ -398,7 +398,7 @@ class redpipe():
              DELAY_GC_CAL_TABLE = 'd_'+gc_jd+'.cal'
 
           os.chdir(it.PATH_DATA)
-          file_names = glob.glob("*.ms")
+          file_names = glob.glob("*U.ms")
           for file_name in file_names:
               options={}
               options["vis"] = file_name
@@ -424,7 +424,7 @@ class redpipe():
              os.system(command)
 
           if mask == "U":
-             file_names = glob.glob("*.ms")
+             file_names = glob.glob("*U.ms")
           else:
              file_names = glob.glob("*C.ms")
 

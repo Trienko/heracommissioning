@@ -2,7 +2,8 @@ import os
 
 if __name__ == "__main__":
 
-   command = "python initscript.py --add_uvws --sudo_miriad_to_uvfits --importuvfits --swap_ant"
+   #command = "python initscript.py --add_uvws --sudo_miriad_to_uvfits --importuvfits --swap_ant"
+   command = "python initscript.py --importuvfits --swap_ant"
    print("CMD >>> "+command)
    os.system(command)  
 
