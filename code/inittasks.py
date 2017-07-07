@@ -3,6 +3,7 @@ import pylab as plt
 import glob, os
 from pyrap.tables import table
 import pickle
+from ephem import *
 
 #SETTING LOCATIONS TO ALL THE IMPORTANT SCRIPTS AND DATA FILES
 ##############################################################################################################
@@ -59,6 +60,32 @@ class inittasks():
           CASA_WRAPPER(task="split",options=options)
           print os.getcwd()
           command = "casa -c split_script.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command) 
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+
+      #####################################
+      #CASA wrapper around fixvis 
+      #####################################
+      def fixvis_wrapper(self,options={}):
+          CASA_WRAPPER(task="fixvis",options=options)
+          print os.getcwd()
+          command = "casa -c fixvis_script.py --nogui --nologfile --log2term"
+          print("CMD >>> "+command)
+          os.system(command) 
+          command = "rm ipython*.log"
+          print("CMD >>> "+command)
+          os.system(command)
+
+      #####################################
+      #CASA wrapper around fixvis 
+      #####################################
+      def concat_wrapper(self,options={}):
+          CASA_WRAPPER(task="concat",options=options)
+          print os.getcwd()
+          command = "casa -c concat_script.py --nogui --nologfile --log2term"
           print("CMD >>> "+command)
           os.system(command) 
           command = "rm ipython*.log"
@@ -219,6 +246,7 @@ class inittasks():
               output = open(file_name[:-3]+".time.p",'wb')
               pickle.dump(start_time, output)
               pickle.dump(end_time, output)
+              pickle.dump(time,output)
               output.close()
               #print "dt = ",len(dt[dt>1e-12])
               #plt.plot(dt)
@@ -250,12 +278,15 @@ class inittasks():
               file.write("input = open(\""+file_name+"\",\'rb\')\n")
               file.write("time_start = pickle.load(input)\n")
               file.write("time_end = pickle.load(input)\n")
+              file.write("time = pickle.load(input)\n")
               file.write("input.close()\n")
               file.write("time_start_str = time_convert(time_start)\n")
               file.write("time_end_str = time_convert(time_end)\n")
+              file.write("time = time_convert(time)\n")
               file.write("output = open(\""+file_name[:-2]+".str.p\",\'wb\')\n")
               file.write("pickle.dump(time_start_str,output)\n")
 	      file.write("pickle.dump(time_end_str,output)\n")
+              file.write("pickle.dump(time,output)\n")
               file.write("output.close()\n")
               #file.write("print time_start_str\n")
               #file.write("print time_end_str\n")
@@ -267,25 +298,63 @@ class inittasks():
               #break
           os.chdir(PATH_CODE)
 
-      def split_ms(self):
+      def split_and_unphase_ms(self,unphase=True):
           os.chdir(PATH_DATA)
           file_names = glob.glob("*uvcU.ms")
           #file_names = glob.glob("*time.str.p")
-          for file_name in file_names: 
+          for file_name in [file_names[0]]: 
+              print "file_name = ",file_name
               input = open(file_name[:-3]+".time.str.p",'rb')
               start_str = pickle.load(input)
               end_str = pickle.load(input)
+              time = pickle.load(input)
               input.close()
               start_str = np.unique(np.squeeze(np.array(start_str)))
               end_str = np.unique(np.squeeze(np.array(end_str)))
+              time = np.unique(np.squeeze(np.array(time)))
+              vis_list = []
               for k in xrange(len(start_str)):
                   options={}
                   options["vis"]=file_name
                   options["outputvis"]=file_name[:-3]+str(k)+".ms"
                   options["timerange"]=start_str[k]+"~"+end_str[k]
-                  self.split_wrapper(options=options)
+                  #self.split_wrapper(options=options)
+
+                  if unphase:
+                     options={}
+                     options["vis"]=file_name[:-3]+str(k)+".ms"
+                     options["outputvis"]=file_name[:-3]+str(k)+".ms"
+                     vis_list.append(file_name[:-3]+str(k)+".ms")
+                     HERA = Observer()
+                     HERA.lat, HERA.long, HERA.elevation = '-30:43:17', '21:25:40.08', 0.0 
+                     time_temp = time[k]
+                     t_str = time_temp.split("/")
+                     #print "t_str = ",t_str
+                     HERA.date = t_str[0]+"/"+t_str[1]+"/"+t_str[2]+" "+t_str[3]
+                     sid_str = str(HERA.sidereal_time())
+                     sid_str_split = sid_str.split(":")
+                     fix_vis_str = sid_str_split[0]+"h"+sid_str_split[1]+"m"+str(int(round(float(sid_str_split[2]))))+"s"
+                     print sid_str_split
+                     print time[k]
+                     print "HERA.sidereal_time() = ",str(HERA.sidereal_time())
+                     print fix_vis_str
+                     
+                     options["phasecenter"]='J2000 '+fix_vis_str+' -30d43m17s'
+                     #self.fixvis_wrapper(options=options)
+                     
+              print "vis_list = ",vis_list 
+              options={}
+              options["vis"] = vis_list
+              options["concatvis"] = file_name[:-3]+"P.ms"
+              options["dirtol"] ="720arcmin"                  
+              self.concat_wrapper(options=options)
+                 
+                  
           
-          os.chdir(it.PATH_CODE)
+          os.chdir(PATH_CODE)
+
+      #def rephase_time_slots(self):
+          
 
       def apply_flags(self):
           os.chdir(PATH_DATA)

@@ -10,10 +10,10 @@ if __name__ == "__main__":
    red_object = red.redpipe()
    abs_object = absf.absflux()
 
-   inittasks_object.split_ms()
-   #inittasks_object.compute_time_str()
    #inittasks_object.create_time_pickle()
-
+   #inittasks_object.compute_time_str()
+   inittasks_object.split_and_unphase_ms()
+   
    '''
    inittasks_object.add_uv_tracks()
    #inittasks_object.miriad_to_uvfits_rid()
