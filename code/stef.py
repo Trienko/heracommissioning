@@ -170,6 +170,31 @@ class redundant_stefcal():
           #from IPython import embed; embed() 
           return M  
 
+      def construct_flag_y(self,PQ,F):
+          L = len(PQ.keys())
+          y = np.zeros((L,),dtype=int)    
+
+          for i in xrange(L):
+              pq = PQ[str(i)]
+              #print "pq = ",pq
+              temp_len = len(pq)            
+              for k in xrange(len(pq)):
+                  p = pq[k][0]
+                  q = pq[k][1]
+                  y[i] = y[i] + F[p,q]             
+                     
+          #from IPython import embed; embed() 
+          y[y>0] = 1
+          return y  
+
+      def construct_flag_g(self,F):
+          g = np.zeros((F.shape[0],),dtype=int)
+          for k in xrange(len(g)):
+              row = F[k,:]
+              g[k]= np.sum(row)
+          g[g>0] = 1
+          return g
+
       def convert_M_to_y(self,PQ,M):
           L = len(PQ.keys())
           y = np.zeros((L,),dtype=complex)    
@@ -184,7 +209,29 @@ class redundant_stefcal():
                   y[i] = y[i] + M[p,q]             
               y[i] = y[i]/temp_len
           #from IPython import embed; embed() 
-          return y  
+          return y
+
+      def convert_M_to_y_flag(self,PQ,M,F):
+          L = len(PQ.keys())
+          y = np.zeros((L,),dtype=complex)
+          f = np.zeros((L,),dtype=int)    
+
+          for i in xrange(L):
+              pq = PQ[str(i)]
+              #print "pq = ",pq
+              for k in xrange(len(pq)):
+                  p = pq[k][0]
+                  q = pq[k][1]
+                  y[i] = y[i] + M[p,q] 
+                  f[i] = f[i] + F[p,q]
+            
+              if f[i] == 0:
+                 y[i] = 0
+              else:
+                 y[i] = y[i]/f[i]
+          #from IPython import embed; embed() 
+          return y
+
 
       def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None):
           converged = False
@@ -301,7 +348,11 @@ class redundant_stefcal():
                      data_mat[j,k,:,:] = np.conjugate(data[temp_indx,:,0])
 
                   flag_mat[k,j,:,:] = flag[temp_indx,:,0]
+                  flag_mat[j,k,:,:] = flag[temp_indx,:,0]
+ 
                   flag_row_mat[k,j,:] = flag_row[temp_indx]
+                  flag_row_mat[j,k,:] = flag_row[temp_indx]
+
                   indx_2d = indx_1d[temp_indx] 
 
           #print "data_chunck = ",data_chunck.shape
@@ -322,6 +373,19 @@ class redundant_stefcal():
           plt.show()
           PQ = self.create_PQ(phi,L)
           #print "PQ = ",PQ
+          plt.imshow(np.absolute(flag_row_mat[:,:,25]-1))
+          print np.absolute(flag_row_mat[:,:,25]-1)
+          print phi
+          plt.show()
+          plt.imshow(flag_mat[:,:,25,700])
+          plt.show()
+          y_flag = self.construct_flag_y(PQ,np.absolute(flag_mat[:,:,25,700]-1))
+          g_flag = self.construct_flag_g(np.absolute(flag_mat[:,:,25,700]-1))
+          print "y_flag = ",y_flag
+          print "g_flag = ",g_flag
+          one_array = np.ones(flag_mat[:,:,25,700].shape,dtype=int)
+          y_flag = self.construct_flag_y(PQ,one_array)
+          print "y_flag = ",y_flag
           plt.imshow(np.absolute(data_mat[:,:,25,701]-data_mat[:,:,25,701]*np.eye(19)))
           plt.show()
           z_temp,converged,G,M,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,25,701],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ)
