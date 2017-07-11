@@ -233,10 +233,15 @@ class redundant_stefcal():
           return y
 
 
-      def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None):
+      def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None,F=None):
           converged = False
           N = D.shape[0]
           D = D - D*np.eye(N)
+          
+          if F is not None:
+             D = F*D
+             
+
           L = np.amax(phi)
           temp =np.ones((D.shape[0],D.shape[1]) ,dtype=complex)
     
@@ -248,9 +253,17 @@ class redundant_stefcal():
 
           g_temp = np.ones((N,),dtype=complex)
           #y_temp = np.ones((L,),dtype=complex)
-          y_temp = self.convert_M_to_y(PQ,D)
-          z_temp = np.hstack([g_temp,y_temp])
+          if F is not None:
+             y_temp = self.convert_M_to_y_flag(PQ,D,F)
+             g_flag = self.construct_flag_g(F)
+             g_temp = g_temp*g_flag
+             y_flag = self.construct_flag_y(PQ,F)
+             y_temp = y_temp*y_flag
+          else:
+             g_flag
+             y_temp = self.convert_M_to_y(PQ,D)
 
+          z_temp = np.hstack([g_temp,y_temp])
 
           start = time.time() 
     
@@ -260,26 +273,53 @@ class redundant_stefcal():
               z_old = np.copy(z_temp)
  
               M = self.convert_y_to_M(PQ,y_old,N) #CONVERT y VECTOR TO M matrix
-    
+              
+              if F is not None:
+                 M = F*M
+              
               #plt.imshow(np.absolute(M))
               #plt.show()
               #from IPython import embed; embed()        
         
               for p in xrange(N): #STEFCAL - update antenna gains
-                  z = g_old*M[:,p]
-                  g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))
+                  if F is not None:
+                     if g_flag[p] <> 0:
+                        z = g_old*M[:,p]
+                        g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))                  
+                  else:
+                     z = g_old*M[:,p]
+                     g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))
         
               for l in xrange(L): #UPDATE y
-                  pq = PQ[str(l)]
-                  num = 0
-                  den = 0
-                  for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
-                      p = pq[k][0]
-                      q = pq[k][1]
+                  if F is not None:
+                     if y_flag[l] <> 0:
+                        pq = PQ[str(l)]
+                        num = 0
+                        den = 0
+                        for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
+                            p = pq[k][0]
+                            q = pq[k][1]
 
-                      num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
-                      den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
-                  y_temp[l] = num/den
+                            num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
+                            den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
+                        if np.allclose(den,0):
+                           y_temp[l] = 0
+                        else:
+                           y_temp[l] = num/den
+                  else:
+                     pq = PQ[str(l)]
+                     num = 0
+                     den = 0
+                     for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
+                         p = pq[k][0]
+                         q = pq[k][1]
+
+                         num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
+                         den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
+                     if np.allclose(den,0):
+                        y_temp[l] = 0
+                     else:
+                        y_temp[l] = num/den
          
               g_temp = alpha*g_temp + (1-alpha)*g_old
               y_temp = alpha*y_temp + (1-alpha)*y_old
@@ -383,12 +423,16 @@ class redundant_stefcal():
           g_flag = self.construct_flag_g(np.absolute(flag_mat[:,:,25,700]-1))
           print "y_flag = ",y_flag
           print "g_flag = ",g_flag
+          print flag_mat[:,:,25,700].shape
+          F = np.absolute(flag_mat[:,:,25,701]-1)
           one_array = np.ones(flag_mat[:,:,25,700].shape,dtype=int)
           y_flag = self.construct_flag_y(PQ,one_array)
           print "y_flag = ",y_flag
           plt.imshow(np.absolute(data_mat[:,:,25,701]-data_mat[:,:,25,701]*np.eye(19)))
           plt.show()
-          z_temp,converged,G,M,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,25,701],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ)
+          z_temp,converged,G,M,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,25,701],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F)
+          plt.imshow(np.absolute(G))
+          plt.show()
           print "converged = ",converged
           plt.imshow(np.absolute(M))
           plt.show()
@@ -434,6 +478,7 @@ def plot_before_after_cal_per_t_f(D,G,phi):
         D_new = D[:,:]
         G_new = G[:,:]
         D_cal = D_new*G_new**(-1)
+        print "D_cal = ",D_cal
         for i in xrange(D_new.shape[0]):
             for j in xrange(i+1,D_new.shape[1]):
                 ind = phi[i,j]
