@@ -6,6 +6,7 @@ import numpy as np
 import pylab as plt
 import time
 import matplotlib as mpl
+import pickle
 
 
 class redundant_stefcal():
@@ -236,6 +237,7 @@ class redundant_stefcal():
       def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None,F=None):
           converged = False
           N = D.shape[0]
+          D = np.copy(D)
           D = D - D*np.eye(N)
           
           if F is not None:
@@ -260,7 +262,6 @@ class redundant_stefcal():
              y_flag = self.construct_flag_y(PQ,F)
              y_temp = y_temp*y_flag
           else:
-             g_flag
              y_temp = self.convert_M_to_y(PQ,D)
 
           z_temp = np.hstack([g_temp,y_temp])
@@ -405,14 +406,57 @@ class redundant_stefcal():
       def apply_redundant_stefcal(self,ms_file):
           os.chdir(it.PATH_DATA)
           data_mat,flag_mat,flag_row_mat, indx_2d = self.read_in_D(ms_file)
+          G_mat = np.ones(data_mat.shape,dtype=complex)
+          M_mat = np.ones(data_mat.shape,dtype=complex)
           ant = self.hex_grid(hex_dim=2,l=14.6)
-          #plt.plot(ant[:,0],ant[:,1],'bo')
-          #plt.show()
           phi,zeta,L = self.calculate_phi(ant[:,0],ant[:,1])
           plt.imshow(phi)
           plt.show()
           PQ = self.create_PQ(phi,L)
-          #print "PQ = ",PQ
+         
+          for t in xrange(data_mat.shape[2]):
+              F_time = np.absolute(flag_row_mat[:,:,t]-1)
+              sum_time = np.sum(F_time)
+              if sum_time <> 0:
+                 for f in xrange(data_mat.shape[3]):
+                     F = np.absolute(flag_mat[:,:,t,f]-1)
+                     sum_f = np.sum(F)
+                     if sum_f <> 0:
+                        print "************************"
+                        print "t = ",t
+                        print "f = ",f 
+                        z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,t,f],phi=phi,tau=1e-6,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F)
+                        print "converged = ",converged
+                        print "************************"
+                        G_temp[F==0] = 1
+                        G_mat[:,:,t,f] = G_temp
+                        data_temp = data_mat[:,:,t,f]
+                        M_temp[F==0] = data_temp[F==0]
+                        M_mat[:,:,t,f] = M_temp
+                     else:
+                        G_mat[:,:,t,f] = np.ones((G_mat.shape[0],G_mat.shape[1]),dtype=complex)
+                        M_mat[:,:,t,f] = data_mat[:,:,t,f]
+              else:
+                  G_mat[:,:,t,:] = np.ones((G_mat.shape[0],G_mat.shape[1],1,G_mat.shape[3]),dtype=complex)
+                  M_mat[:,:,t,:] = data_mat[:,:,t,:]    
+
+          #SOME BASIC FINAL PLOTTING
+
+          F = np.absolute(flag_mat[:,:,25,700]-1)
+          G_new = G_mat[:,:,25,700]
+          G_new[F==0] = np.NaN
+          plot_before_after_cal_per_t_f(data_mat[:,:,25,700],G_new,phi)
+          
+          output = open('data.pkl', 'wb')
+
+          # Pickle dictionary using protocol 0.
+          pickle.dump(G_mat, output)
+          pickle.dump(flag_mat,output)
+          pickle.dump(phi,output)
+
+          output.close()
+                                  
+          '''
           plt.imshow(np.absolute(flag_row_mat[:,:,25]-1))
           print np.absolute(flag_row_mat[:,:,25]-1)
           print phi
@@ -430,16 +474,20 @@ class redundant_stefcal():
           print "y_flag = ",y_flag
           plt.imshow(np.absolute(data_mat[:,:,25,701]-data_mat[:,:,25,701]*np.eye(19)))
           plt.show()
-          z_temp,converged,G,M,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,25,701],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F)
+          z_temp,converged,G,M,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,25,700],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=None)
           plt.imshow(np.absolute(G))
           plt.show()
           print "converged = ",converged
           plt.imshow(np.absolute(M))
           plt.show()
-          plt.imshow(np.absolute(data_mat[:,:,25,701]*G**(-1)-data_mat[:,:,25,701]*np.eye(19)*G**(-1)))
+          plt.imshow(np.absolute(data_mat[:,:,25,700]*G**(-1)-data_mat[:,:,25,701]*np.eye(19)*G**(-1)))
           plt.show()
 
-          plot_before_after_cal_per_t_f(data_mat[:,:,25,701],G,phi)
+          G_new = np.copy(G)
+          G_new[F==0] = 1
+
+          print "G_new = ",G_new
+          '''
           os.chdir(it.PATH_CODE)
 
 def find_color_marker(index_value):
