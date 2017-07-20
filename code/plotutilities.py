@@ -82,6 +82,8 @@ class plotutilities():
           options={}          
           options["xaxis"]='freq'
           options["yaxis"]='amp'
+          options["xdatacolumn"] = "corrected"
+          options["ydatacolumn"] = "corrected"
           options["averagedata"]=True
           options["avgtime"]='1000'
           options["coloraxis"]='baseline'

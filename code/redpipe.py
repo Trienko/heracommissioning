@@ -16,7 +16,7 @@ SGR_FLOAT = (17.0 + 45.0/60 + 40.0/3600)*(pi/12)
 BANDBASS_GC_CAL_TABLE = ''
 DELAY_GC_CAL_TABLE = ''
 POINT_SOURCE_MODEL = 'point_source_model.cl'
-AO_STRATEGY = 'cool_strategy.rfis'
+AO_STRATEGY = '11_07_17.rfis'
 
 class redpipe():
 
@@ -496,6 +496,7 @@ class redpipe():
                        txt_file = open(file_name2[:-5]+".mask.txt","r") 
                        lines = txt_file.readlines()
                        txt_file.close()
+                       #print lines
                        options["mask"]=lines
                        fh.close()
             
