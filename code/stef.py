@@ -7,6 +7,8 @@ import pylab as plt
 import time
 import matplotlib as mpl
 import pickle
+import dill
+#from numba import jit
 
 
 class redundant_stefcal():
@@ -154,7 +156,9 @@ class redundant_stefcal():
               PQ[str(i)]=pq
               #print "PQ = ",PQ    
           return PQ 
-
+      
+      #@jit 
+      #@profile
       def convert_y_to_M(self,PQ,y,N):
     
           M = np.zeros((N,N),dtype=complex)
@@ -167,7 +171,8 @@ class redundant_stefcal():
                   q = pq[k][1]
              
                   M[p,q] = y[i]
-                  M[q,p] = np.conjugate(y[i])  
+                  #M[q,p] = y[i].real + y[i].imag*(-1j) 
+                  M[q,p] = np.conjugate(y[i]) 
           #from IPython import embed; embed() 
           return M  
 
@@ -233,7 +238,8 @@ class redundant_stefcal():
           #from IPython import embed; embed() 
           return y
 
-
+      #@profile
+      #@jit
       def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None,F=None):
           converged = False
           N = D.shape[0]
@@ -303,7 +309,7 @@ class redundant_stefcal():
 
                             num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
                             den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
-                        if np.allclose(den,0):
+                        if np.absolute(den) < 1e-6:
                            y_temp[l] = 0
                         else:
                            y_temp[l] = num/den
@@ -317,7 +323,7 @@ class redundant_stefcal():
 
                          num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
                          den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
-                     if np.allclose(den,0):
+                     if np.absolute(den) < 1e-6:
                         y_temp[l] = 0
                      else:
                         y_temp[l] = num/den
@@ -352,12 +358,53 @@ class redundant_stefcal():
           if a < b:
              return a,b,False
           else:
-             return b,a,True 
- 
+             return b,a,True
+
+      def compute_D_cal(self,pickle_name):
+           
+          input = open(pickle_name, 'rb')
+
+          #Pickle dictionary using protocol 0.
+          data_mat = dill.load(input)
+          G_mat = dill.load(input)
+          flag_mat = dill.load(input)
+          phi = dill.load(input)
+          indx_2d = dill.load(input)
+          PQ = dill.load(input) 
+
+          F = np.absolute(flag_mat-1)
+
+          G_mat[F == 0] = 1
+
+          #D_cal = G_mat**(-1)*data_mat
+     
+          D_cal = np.zeros(G_mat.shape,dtype=complex)
+
+          for f in xrange(G_mat.shape[3]):
+              D_cal[:,:,:,f] = G_mat[:,:,:,f]**(-1)*data_mat[:,:,:,f] 
+
+          return D_cal,indx_2d
+
+      def write_to_D(self,ms_file,data_cube,indx_2d):
+          t=table(ms_file,readonly=False)
+          data = t.getcol("CORRECTED_DATA")
+          for k in xrange(data_cube.shape[0]):
+              for j in xrange(data_cube.shape[1]):
+                  p,q,greater = self.find_indices(it.ANT_ID[k],it.ANT_ID[j])
+                  if greater:
+   		     data[indx_2d[k,j,:],:] = np.reshape(np.conjugate(data_cube[k,j,:,:]),data[indx_2d[k,j,:],:].shape)
+                  else:
+                     data[indx_2d[k,j,:],:] = np.reshape(data_cube[k,j,:,:],data[indx_2d[k,j,:],:].shape)
+
+          t.putcol("CORRECTED_DATA",data)
+          t.flush()
+          t.close()        
+
+
       def read_in_D(self,ms_file):
           os.chdir(it.PATH_DATA)
           N = len(it.ANT_ID)
-          B = (N**2 + N)/2 #ASSUMING THE FILE CONTAINS AUTOCORRELATIONS
+          B = (N**2 + N)/2 #ASSUMING THE FILE CONTAINS AUTO-CORRELATIONS
 
           t=table(ms_file)
           data = t.getcol("CORRECTED_DATA")
@@ -394,7 +441,7 @@ class redundant_stefcal():
                   flag_row_mat[k,j,:] = flag_row[temp_indx]
                   flag_row_mat[j,k,:] = flag_row[temp_indx]
 
-                  indx_2d = indx_1d[temp_indx] 
+                  indx_2d[k,j,:] = indx_1d[temp_indx] 
 
           #print "data_chunck = ",data_chunck.shape
           #print data.shape
@@ -402,7 +449,18 @@ class redundant_stefcal():
 
           os.chdir(it.PATH_CODE)
           return data_mat,flag_mat,flag_row_mat,indx_2d
- 
+
+      def plot_a_specific_ts(self,ts,D,F,PQ):
+
+          D_new = np.squeeze(D[:,:,ts,:])
+          F_new = np.squeeze(F[:,:,ts,:])
+   
+          y = convert_M_to_y_flag(PQ,D_new,F)
+
+          
+          
+    
+        
       def apply_redundant_stefcal(self,ms_file):
           os.chdir(it.PATH_DATA)
           data_mat,flag_mat,flag_row_mat, indx_2d = self.read_in_D(ms_file)
@@ -410,22 +468,22 @@ class redundant_stefcal():
           M_mat = np.ones(data_mat.shape,dtype=complex)
           ant = self.hex_grid(hex_dim=2,l=14.6)
           phi,zeta,L = self.calculate_phi(ant[:,0],ant[:,1])
-          plt.imshow(phi)
-          plt.show()
+          #plt.imshow(phi)
+          #plt.show()
           PQ = self.create_PQ(phi,L)
          
-          for t in xrange(data_mat.shape[2]):
+          for t in xrange(data_mat.shape[2]):#data_mat.shape[2]
               F_time = np.absolute(flag_row_mat[:,:,t]-1)
               sum_time = np.sum(F_time)
               if sum_time <> 0:
                  for f in xrange(data_mat.shape[3]):
-                     F = np.absolute(flag_mat[:,:,t,f]-1)
+                     F = np.absolute(flag_mat[:,:,t,f]-1)#FLAGGING STILLL NOT CORRECT NEED TO INCORPORATE TIME FLAGS
                      sum_f = np.sum(F)
                      if sum_f <> 0:
                         print "************************"
                         print "t = ",t
                         print "f = ",f 
-                        z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,t,f],phi=phi,tau=1e-6,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F)
+                        z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,t,f],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F)
                         print "converged = ",converged
                         print "************************"
                         G_temp[F==0] = 1
@@ -442,18 +500,21 @@ class redundant_stefcal():
 
           #SOME BASIC FINAL PLOTTING
 
-          F = np.absolute(flag_mat[:,:,25,700]-1)
-          G_new = G_mat[:,:,25,700]
-          G_new[F==0] = np.NaN
-          plot_before_after_cal_per_t_f(data_mat[:,:,25,700],G_new,phi)
+          #F = np.absolute(flag_mat[:,:,25,700]-1)
+          #G_new = G_mat[:,:,25,700]
+          #G_new[F==0] = np.NaN
+          #plot_before_after_cal_per_t_f(data_mat[:,:,25,700],G_new,phi)
           
           output = open('data.pkl', 'wb')
 
-          # Pickle dictionary using protocol 0.
-          pickle.dump(G_mat, output)
-          pickle.dump(flag_mat,output)
-          pickle.dump(phi,output)
-
+          #Pickle dictionary using protocol 0.
+          dill.dump(data_mat, output)
+          dill.dump(G_mat, output)
+          dill.dump(flag_mat,output)
+          dill.dump(phi,output)
+          dill.dump(indx_2d,output)
+          dill.dump(PQ,output)
+          
           output.close()
                                   
           '''
@@ -550,14 +611,81 @@ def plot_before_after_cal_per_t_f(D,G,phi):
         plt.title("After Calibration",fontsize=15)
         plt.show()
 
+def investigate_G(pickle_name,ts=25):
+    input = open(pickle_name, 'rb')
+
+    #Pickle dictionary using protocol 0.
+    data_mat = dill.load(input)
+    G_mat = dill.load(input)
+    flag_mat = dill.load(input)
+    phi = dill.load(input)
+    indx_2d = dill.load(input)
+    PQ = dill.load(input)
+   
+    F = np.absolute(flag_mat-1)
+
+    G_mat[F == 0] = 1
+
+    #D_cal = G_mat**(-1)*data_mat
+     
+    D_cal = np.zeros(G_mat.shape,dtype=complex)
+
+    for f in xrange(G_mat.shape[3]):
+        D_cal[:,:,:,f] = G_mat[:,:,:,f]**(-1)*data_mat[:,:,:,f]
+
+    input.close()
+
+    print G_mat.shape
+
+    G_mat[F==0] = np.NaN
+
+    plot_before_after_cal_per_t_f(data_mat[:,:,ts,700],G_mat[:,:,ts,700],phi)
+
+    result = np.zeros((len(PQ.keys()),D_cal.shape[3]),dtype=complex)
+
+    for f in xrange(D_cal.shape[3]):
+        for l in xrange(len(PQ.keys())):
+            pq = PQ[str(l)]
+            total = 0
+            avg_total = 0
+            for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
+                p = pq[k][0]
+                q = pq[k][1]
+
+                if not(np.isnan(G_mat[p,q,ts,f])):
+                   total = total + G_mat[p,q,ts,f] 
+                   avg_total = avg_total + 1 
+            if avg_total <> 0:
+               result[l,f] = total/avg_total
+            
+
+    #for l in xrange(len(PQ.keys())):
+    #    plt.plot(np.absolute(result[l,:]))
+    #plt.plot(np.absolute(result[0,:]))
+    #plt.plot(result[2,:].real,result[2,:].imag,"bo")
+    #plt.plot(result[1,:].real,result[1,:].imag,"ro")
+    #plt.show()    
+
+    for l in xrange(len(PQ.keys())):
+        c_final,m_final = find_color_marker(l+1)
+        #print c_final
+        #print m_final
+        plt.plot(result[l,:].real,result[l,:].imag,c_final+m_final,ms=10)
+    #plt.plot(np.angle(result[1,:]))
+    plt.show()               
+    
 if __name__ == "__main__":
    red_cal = redundant_stefcal()
    os.chdir(it.PATH_DATA)
    file_names = glob.glob("*uvcUC.ms")
-   os.chdir(it.PATH_CODE)
-   red_cal.apply_redundant_stefcal(file_names[0])
+   #os.chdir(it.PATH_CODE)
+   #red_cal.apply_redundant_stefcal(file_names[0])
 
-   #data_mat,flag_mat,flag_row_mat, indx_2d = red_cal.read_in_D(file_names[0])
+   investigate_G(pickle_name="data.pkl")
+   #D,idx = red_cal.compute_D_cal("data.pkl")
+   #red_cal.write_to_D(file_names[0],D,idx)
+
+   #data_mat,flag_mat,flag_row_mat,indx_2d = red_cal.read_in_D(file_names[0])
 
    #plt.plot(data_mat[0,3,30,:])
    #plt.show()
