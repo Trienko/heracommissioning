@@ -8,10 +8,12 @@ import time
 import matplotlib as mpl
 import pickle
 import dill
+from concurrent import futures
+import multiprocessing
 #from numba import jit
 
 
-class redundant_stefcal():
+class redundant_stefcal(object):
       
       def __init__(self):
           pass
@@ -241,6 +243,11 @@ class redundant_stefcal():
       #@profile
       #@jit
       def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None,F=None):
+          sum_f = np.sum(F)
+          if sum_f == 0:
+             #print "HALLO"
+             return None,False,None,None,None,None,None,None 
+
           converged = False
           N = D.shape[0]
           D = np.copy(D)
@@ -457,11 +464,7 @@ class redundant_stefcal():
    
           y = convert_M_to_y_flag(PQ,D_new,F)
 
-          
-          
-    
-        
-      def apply_redundant_stefcal(self,ms_file):
+      def apply_redundant_stefcal_multi(self,ms_file):
           os.chdir(it.PATH_DATA)
           data_mat,flag_mat,flag_row_mat, indx_2d = self.read_in_D(ms_file)
           G_mat = np.ones(data_mat.shape,dtype=complex)
@@ -471,40 +474,63 @@ class redundant_stefcal():
           #plt.imshow(phi)
           #plt.show()
           PQ = self.create_PQ(phi,L)
-         
-          for t in xrange(data_mat.shape[2]):#data_mat.shape[2]
-              F_time = np.absolute(flag_row_mat[:,:,t]-1)
-              sum_time = np.sum(F_time)
-              if sum_time <> 0:
-                 for f in xrange(data_mat.shape[3]):
-                     F = np.absolute(flag_mat[:,:,t,f]-1)#FLAGGING STILLL NOT CORRECT NEED TO INCORPORATE TIME FLAGS
-                     sum_f = np.sum(F)
-                     if sum_f <> 0:
-                        print "************************"
-                        print "t = ",t
-                        print "f = ",f 
-                        z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,t,f],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F)
-                        print "converged = ",converged
-                        print "************************"
-                        G_temp[F==0] = 1
-                        G_mat[:,:,t,f] = G_temp
-                        data_temp = data_mat[:,:,t,f]
-                        M_temp[F==0] = data_temp[F==0]
-                        M_mat[:,:,t,f] = M_temp
-                     else:
-                        G_mat[:,:,t,f] = np.ones((G_mat.shape[0],G_mat.shape[1]),dtype=complex)
-                        M_mat[:,:,t,f] = data_mat[:,:,t,f]
-              else:
-                  G_mat[:,:,t,:] = np.ones((G_mat.shape[0],G_mat.shape[1],1,G_mat.shape[3]),dtype=complex)
-                  M_mat[:,:,t,:] = data_mat[:,:,t,:]    
+          start_b = time.time()
+          with futures.ProcessPoolExecutor(max_workers=4) as executor:
+               for t in xrange(1):#data_mat.shape[2]
+              	    F_time = np.absolute(flag_row_mat[:,:,t]-1)
+                    sum_time = np.sum(F_time)
+                    if sum_time <> 0:
+                      #TODO:: NEED TO SHIFT FLAGGING INTO THE FUNCTION
+                      future_to_f = dict((executor.submit(self.redundant_StEFCal, D=data_mat[:,:,t,f],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=np.absolute(flag_mat[:,:,t,f]-1)), f)
+                         for f in xrange(data_mat.shape[3]))
+                      counter = 0
+                      for future in futures.as_completed(future_to_f):
+                          counter = counter + 1
+                          
+                          f = future_to_f[future]
+                          print "***************"
+                          print "t = ",t
+                          print "f = ",f
+                          print "counter = ",counter
+                           
+                          z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = future.result()
+                          print "converged = ",converged
+                          print "***************"
+                          if converged:
+                             F = np.absolute(flag_mat[:,:,t,f]-1)
+                             G_temp[F==0] = 1
+                             G_mat[:,:,t,f] = G_temp
+                             data_temp = data_mat[:,:,t,f]
+                             M_temp[F==0] = data_temp[F==0]
+                             M_mat[:,:,t,f] = M_temp
+                             #TODO:: STILL NEED TO DO SOMETHING IF FLAGGED IN CHANNEL
+                          else:
+                             G_mat[:,:,t,f] = np.ones((G_mat.shape[0],G_mat.shape[1]),dtype=complex)
+                             M_mat[:,:,t,f] = data_mat[:,:,t,f]
+                    else:
+                       G_mat[:,:,t,:] = np.ones((G_mat.shape[0],G_mat.shape[1],1,G_mat.shape[3]),dtype=complex)
+                       M_mat[:,:,t,:] = data_mat[:,:,t,:]    
+          stop_b = time.time()
 
+          print "TIME M:: ",(stop_b-start_b)
           #SOME BASIC FINAL PLOTTING
 
-          #F = np.absolute(flag_mat[:,:,25,700]-1)
-          #G_new = G_mat[:,:,25,700]
+          #F = np.absolute(flag_mat[:,:,0,700]-1)
+          #G_new = G_mat[:,:,0,700]
           #G_new[F==0] = np.NaN
-          #plot_before_after_cal_per_t_f(data_mat[:,:,25,700],G_new,phi)
-          
+          #plot_before_after_cal_per_t_f(data_mat[:,:,0,700],G_new,phi)
+
+          F = np.absolute(flag_mat-1)
+          G_mat[F == 0] = 1
+
+          #D_cal = G_mat**(-1)*data_mat
+     
+          D_cal = np.zeros(G_mat.shape,dtype=complex)
+
+          for f in xrange(G_mat.shape[3]):
+              D_cal[:,:,:,f] = G_mat[:,:,:,f]**(-1)*data_mat[:,:,:,f] 
+
+          '''
           output = open('data.pkl', 'wb')
 
           #Pickle dictionary using protocol 0.
@@ -516,7 +542,7 @@ class redundant_stefcal():
           dill.dump(PQ,output)
           
           output.close()
-                                  
+          '''                        
           '''
           plt.imshow(np.absolute(flag_row_mat[:,:,25]-1))
           print np.absolute(flag_row_mat[:,:,25]-1)
@@ -549,7 +575,114 @@ class redundant_stefcal():
 
           print "G_new = ",G_new
           '''
+          os.chdir(it.PATH_CODE)    
+          return D_cal,indx_2d      
+
+      def apply_redundant_stefcal(self,ms_file):
+          os.chdir(it.PATH_DATA)
+          data_mat,flag_mat,flag_row_mat, indx_2d = self.read_in_D(ms_file)
+          G_mat = np.ones(data_mat.shape,dtype=complex)
+          M_mat = np.ones(data_mat.shape,dtype=complex)
+          ant = self.hex_grid(hex_dim=2,l=14.6)
+          phi,zeta,L = self.calculate_phi(ant[:,0],ant[:,1])
+          #plt.imshow(phi)
+          #plt.show()
+          PQ = self.create_PQ(phi,L)
+          
+          start_b = time.time()
+          for t in xrange(data_mat.shape[2]):#data_mat.shape[2]
+              F_time = np.absolute(flag_row_mat[:,:,t]-1)
+              sum_time = np.sum(F_time)
+              print "t = ",t
+              if sum_time <> 0:
+                 for f in xrange(data_mat.shape[3]):
+                     F = np.absolute(flag_mat[:,:,t,f]-1)#FLAGGING STILLL NOT CORRECT NEED TO INCORPORATE TIME FLAGS
+                     sum_f = np.sum(F)
+                     if sum_f <> 0:
+                        #print "************************"
+                        print "t = ",t
+                        #print "f = ",f 
+                        z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,t,f],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F)
+                        #print "converged = ",converged
+                        #print "************************"
+                        G_temp[F==0] = 1
+                        G_mat[:,:,t,f] = G_temp
+                        data_temp = data_mat[:,:,t,f]
+                        M_temp[F==0] = data_temp[F==0]
+                        M_mat[:,:,t,f] = M_temp
+                     else:
+                        G_mat[:,:,t,f] = np.ones((G_mat.shape[0],G_mat.shape[1]),dtype=complex)
+                        M_mat[:,:,t,f] = data_mat[:,:,t,f]
+              else:
+                  G_mat[:,:,t,:] = np.ones((G_mat.shape[0],G_mat.shape[1],1,G_mat.shape[3]),dtype=complex)
+                  M_mat[:,:,t,:] = data_mat[:,:,t,:] 
+          stop_b = time.time() 
+
+          print "TIME S:: (seconds)",(stop_b-start_b)
+
+          #SOME BASIC FINAL PLOTTING
+
+          #F = np.absolute(flag_mat[:,:,0,700]-1)
+          #G_new = G_mat[:,:,0,700]
+          #G_new[F==0] = np.NaN
+          #plot_before_after_cal_per_t_f(data_mat[:,:,0,700],G_new,phi)
+          '''
+          output = open('data.pkl', 'wb')
+
+          #Pickle dictionary using protocol 0.
+          dill.dump(data_mat, output)
+          dill.dump(G_mat, output)
+          dill.dump(flag_mat,output)
+          dill.dump(phi,output)
+          dill.dump(indx_2d,output)
+          dill.dump(PQ,output)
+          
+          output.close()
+          '''                        
+          '''
+          plt.imshow(np.absolute(flag_row_mat[:,:,25]-1))
+          print np.absolute(flag_row_mat[:,:,25]-1)
+          print phi
+          plt.show()
+          plt.imshow(flag_mat[:,:,25,700])
+          plt.show()
+          y_flag = self.construct_flag_y(PQ,np.absolute(flag_mat[:,:,25,700]-1))
+          g_flag = self.construct_flag_g(np.absolute(flag_mat[:,:,25,700]-1))
+          print "y_flag = ",y_flag
+          print "g_flag = ",g_flag
+          print flag_mat[:,:,25,700].shape
+          F = np.absolute(flag_mat[:,:,25,701]-1)
+          one_array = np.ones(flag_mat[:,:,25,700].shape,dtype=int)
+          y_flag = self.construct_flag_y(PQ,one_array)
+          print "y_flag = ",y_flag
+          plt.imshow(np.absolute(data_mat[:,:,25,701]-data_mat[:,:,25,701]*np.eye(19)))
+          plt.show()
+          z_temp,converged,G,M,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,25,700],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=None)
+          plt.imshow(np.absolute(G))
+          plt.show()
+          print "converged = ",converged
+          plt.imshow(np.absolute(M))
+          plt.show()
+          plt.imshow(np.absolute(data_mat[:,:,25,700]*G**(-1)-data_mat[:,:,25,701]*np.eye(19)*G**(-1)))
+          plt.show()
+
+          G_new = np.copy(G)
+          G_new[F==0] = 1
+
+          print "G_new = ",G_new
+          '''
+          F = np.absolute(flag_mat-1)
+          G_mat[F == 0] = 1
+
+          #D_cal = G_mat**(-1)*data_mat
+     
+          D_cal = np.zeros(G_mat.shape,dtype=complex)
+
+          for f in xrange(G_mat.shape[3]):
+              D_cal[:,:,:,f] = G_mat[:,:,:,f]**(-1)*data_mat[:,:,:,f] 
+
           os.chdir(it.PATH_CODE)
+          return D_cal,indx_2d 
 
 def find_color_marker(index_value):
     color = np.array(['b','g','r','c','m','y','k'])
@@ -675,18 +808,30 @@ def investigate_G(pickle_name,ts=25):
     plt.show()               
     
 if __name__ == "__main__":
+   
+   ms_names = np.array(["zen.2457545.43140.xx.HH.uvcUC.ms","zen.2457545.43836.xx.HH.uvcUC.ms","zen.2457545.44532.xx.HH.uvcUC.ms","zen.2457545.45228.xx.HH.uvcUC.ms","zen.2457545.45924.xx.HH.uvcUC.ms","zen.2457545.46620.xx.HH.uvcUC.ms","zen.2457545.47315.xx.HH.uvcUC.ms","zen.2457545.48011.xx.HH.uvcUC.ms","zen.2457545.48707.xx.HH.uvcUC.ms","zen.2457545.49403.xx.HH.uvcUC.ms","zen.2457545.50099.xx.HH.uvcUC.ms","zen.2457545.50795.xx.HH.uvcUC.ms","zen.2457545.51491.xx.HH.uvcUC.ms"])
+
    red_cal = redundant_stefcal()
-   os.chdir(it.PATH_DATA)
-   file_names = glob.glob("*uvcUC.ms")
+   
+   #os.chdir(it.PATH_DATA)
+   #file_names = glob.glob("*uvcUC.ms")
    #os.chdir(it.PATH_CODE)
-   #red_cal.apply_redundant_stefcal(file_names[0])
 
-   investigate_G(pickle_name="data.pkl")
-   #D,idx = red_cal.compute_D_cal("data.pkl")
-   #red_cal.write_to_D(file_names[0],D,idx)
+   for ms_name in ms_names: 
+       print "###################"
+       print "ms_name = ",msname
+       #red_cal.apply_redundant_stefcal_multi(file_names[0])
+       D,idx = red_cal.apply_redundant_stefcal(msname)
+       os.chdir(it.PATH_DATA)
+       red_cal.write_to_D(msname,D,idx)
+       os.chdir(it.PATH_CODE)
+       print "###################"
+       #investigate_G(pickle_name="data.pkl")
+       #D,idx = red_cal.compute_D_cal("data.pkl")
+       #red_cal.write_to_D(file_names[0],D,idx)
 
-   #data_mat,flag_mat,flag_row_mat,indx_2d = red_cal.read_in_D(file_names[0])
+       #data_mat,flag_mat,flag_row_mat,indx_2d = red_cal.read_in_D(file_names[0])
 
-   #plt.plot(data_mat[0,3,30,:])
-   #plt.show()
+       #plt.plot(data_mat[0,3,30,:])
+       #plt.show()
 
