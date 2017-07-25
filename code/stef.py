@@ -180,14 +180,18 @@ class redundant_stefcal(object):
 
       def convert_y_to_M_vec(self,A1,A2,P,y,N):
           M = np.zeros((N,N),dtype=complex)
-
-          for i in xrange(len(y)):
-              idx = (P==i)
-              idxA1 = A1[idx] 
-              idxA2 = A2[idx] 
-              y_c = np.conjugate(y[i])
-              M[idxA1,idxA2]=y[i]
-              M[idxA2,idxA1]=y_c
+         
+          y_c = np.conjugate(y)
+          M[A1,A2] = y[P]
+          M[A2,A1] = y_c[P]          
+            
+          #for i in xrange(len(y)):
+          #    idx = (P==i)
+          #    idxA1 = A1[idx] 
+          #    idxA2 = A2[idx] 
+          #    y_c = np.conjugate(y[i])
+          #    M[idxA1,idxA2]=y[i]
+          #    M[idxA2,idxA1]=y_c
 
           return M
 
@@ -269,14 +273,14 @@ class redundant_stefcal(object):
               num_red_temp = len(A1[P==k])
               num_red = num_red + num_red_temp
               red_sum_idx = np.append(red_sum_idx,np.array([num_red]))
-              print "k = ",num_red
+              #print "k = ",num_red
           
-          print "red_sum_idx = ",red_sum_idx
+          #print "red_sum_idx = ",red_sum_idx
           red_sum_idx = red_sum_idx[:-1]
 
-          print "np.reduceat = ",np.add.reduceat(P,red_sum_idx)
+          #print "np.reduceat = ",np.add.reduceat(P,red_sum_idx)
 
-          return A1,A2,P      
+          return A1,A2,P,red_sum_idx      
 
 
       def convert_M_to_y_flag(self,PQ,M,F):
@@ -302,7 +306,7 @@ class redundant_stefcal(object):
 
       #@profile
       #@jit
-      def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None,F=None,A1=None,A2=None,P=None):
+      def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None,F=None,A1=None,A2=None,P=None,red_sum_idx=None):
           sum_f = np.sum(F)
           if sum_f == 0:
              #print "HALLO"
@@ -315,8 +319,7 @@ class redundant_stefcal(object):
           
           if F is not None:
              D = F*D
-             
-
+          
           L = np.amax(phi)
           temp =np.ones((D.shape[0],D.shape[1]) ,dtype=complex)
     
@@ -357,69 +360,106 @@ class redundant_stefcal(object):
               
               #plt.imshow(np.absolute(M))
               #plt.show()
-              #from IPython import embed; embed()        
-        
-              for p in xrange(N): #STEFCAL - update antenna gains
-                  if F is not None:
-                     if g_flag[p] <> 0:
-                        z = g_old*M[:,p]
-                        g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))                  
-                  else:
-                     z = g_old*M[:,p]
-                     g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))
-        
+              #from IPython import embed; embed()
+              
+              #VECTORIZED STEFCAL        
               g_old_c = np.conjugate(g_old)
+              g_row = np.reshape(g_old,(1,N))
+              g_row_c = np.reshape(g_old_c,(1,N))
+               
+              Z = g_row*M.T
+              Z_star = g_row_c*M
 
-              for l in xrange(L): #UPDATE y
-                  if F is not None:
-                     
-                     if y_flag[l] <> 0:
-                        if A1 is None:
-                           pq = PQ[str(l)]
-                           num = 0
-                           den = 0
-                           for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
-                               p = pq[k][0]
-                               q = pq[k][1]
+              num = np.sum(Z*D,axis=1)
+              den = np.sum(Z*Z_star,axis=1)
 
-                               num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
-                               den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
-                           if np.absolute(den) < 1e-6:
-                              y_temp[l] = 0
-                           else:
-                              y_temp[l] = num/den
-                        else:
+              den_a = np.absolute(den)
+              val_den_idx = (den_a>=1e-6)
+              not_val_den_idx = (den_a<1e-6)
+
+              g_temp[val_den_idx] = num[val_den_idx]/den[val_den_idx]
+              g_temp[not_val_den_idx] = 0
+
+              if F is not None:
+                 g_temp = g_temp*g_flag
+
+              #for p in xrange(N): #OLD STEFCAL - update antenna gains
+              #    if F is not None:
+              #       if g_flag[p] <> 0:
+              #          z = g_old*M[:,p]
+              #          g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))                  
+              #    else:
+              #       z = g_old*M[:,p]
+              #       g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))
+        
+              #VECTORIZED UPDATE Y-STEP
+              g_old_a = np.absolute(g_old)**2
+
+              num = g_old_c[A1]*g_old[A2]*D[A1,A2]
+              den = g_old_a[A1]*g_old_a[A2]
+
+              num = np.add.reduceat(num,red_sum_idx)
+              den = np.add.reduceat(den,red_sum_idx)
+
+              den_a = np.absolute(den)
+              val_den_idx = (den_a>=1e-6)
+              not_val_den_idx = (den_a<1e-6)
+
+              y_temp[val_den_idx] = num[val_den_idx]/den[val_den_idx]
+              y_temp[not_val_den_idx] = 0
+              if F is not None:
+                 y_temp = y_temp*y_flag
+              
+              #for l in xrange(L): #UPDATE y
+              #    if F is not None:
+              #       
+              #       if y_flag[l] <> 0:
+              #         if A1 is None:
+              #             pq = PQ[str(l)]
+              #             num = 0
+              #             den = 0
+              #             for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
+              #                 p = pq[k][0]
+              #                 q = pq[k][1]
+
+              #                 num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
+              #                 den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
+              #             if np.absolute(den) < 1e-6:
+              #                y_temp[l] = 0
+              #             else:
+              #                y_temp[l] = num/den
+              #          else:
                            #print "HALLO DARKNESS MY OLD FRIEND"
-                           idx = (P==l)
-                           idxA1 = A1[idx] 
-                           idxA2 = A2[idx]
-                           gA1 = g_old[idxA1]
-                           gA1c = g_old_c[idxA1]
-                           gA2 = g_old[idxA2]
+              #             idx = (P==l)
+              #             idxA1 = A1[idx] 
+              #             idxA2 = A2[idx]
+              #             gA1 = g_old[idxA1]
+              #             gA1c = g_old_c[idxA1]
+              #             gA2 = g_old[idxA2]
 
-                           num = np.sum(gA1c*gA2*D[idxA1,idxA2])
-                           den = np.sum(np.absolute(gA1)**2*np.absolute(g_old[idxA2])**2)
-                           if np.absolute(den) < 1e-6:
-                              y_temp[l] = 0
-                           else:
-                              y_temp[l] = num/den 
-                           #y_c = np.conjugate(y[i])
-                           #M[idxA1,idxA2]=y[i]
-                           #M[idxA2,idxA1]=y_c
-                  else:
-                     pq = PQ[str(l)]
-                     num = 0
-                     den = 0
-                     for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
-                         p = pq[k][0]
-                         q = pq[k][1]
+              #             num = np.sum(gA1c*gA2*D[idxA1,idxA2])
+              #             den = np.sum(np.absolute(gA1)**2*np.absolute(g_old[idxA2])**2)
+              #             if np.absolute(den) < 1e-6:
+              #                y_temp[l] = 0
+              #             else:
+              #                y_temp[l] = num/den 
+              #             #y_c = np.conjugate(y[i])
+              #             #M[idxA1,idxA2]=y[i]
+              #             #M[idxA2,idxA1]=y_c
+              #    else:
+              #       pq = PQ[str(l)]
+              #       num = 0
+              #       den = 0
+              #       for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
+              #           p = pq[k][0]
+              #           q = pq[k][1]
 
-                         num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
-                         den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
-                     if np.absolute(den) < 1e-6:
-                        y_temp[l] = 0
-                     else:
-                        y_temp[l] = num/den
+              #           num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
+              #           den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
+              #       if np.absolute(den) < 1e-6:
+              #          y_temp[l] = 0
+              #       else:
+              #          y_temp[l] = num/den
          
               g_temp = alpha*g_temp + (1-alpha)*g_old
               y_temp = alpha*y_temp + (1-alpha)*y_old
@@ -671,7 +711,7 @@ class redundant_stefcal(object):
           M_mat = np.ones(data_mat.shape,dtype=complex)
           ant = self.hex_grid(hex_dim=2,l=14.6)
           phi,zeta,L = self.calculate_phi(ant[:,0],ant[:,1])
-          A1,A2,P = self.construct_A_and_P(phi)
+          A1,A2,P,red_sum_idx = self.construct_A_and_P(phi)
           
           #A1 = None
           #A2 = None
@@ -692,8 +732,8 @@ class redundant_stefcal(object):
                      if sum_f <> 0:
                         #print "************************"
                         #print "t = ",t
-                        print "f = ",f 
-                        z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,t,f],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F,A1=A1,A2=A2,P=P)
+                        #print "f = ",f 
+                        z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,t,f],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F,A1=A1,A2=A2,P=P,red_sum_idx=red_sum_idx)
                         #print "converged = ",converged
                         #print "************************"
                         G_temp[F==0] = 1
@@ -906,12 +946,12 @@ if __name__ == "__main__":
 
    ant = red_cal.hex_grid(hex_dim=2,l=14.6)
    phi,zeta,L = red_cal.calculate_phi(ant[:,0],ant[:,1])
-   A1,A2,P = red_cal.construct_A_and_P(phi)
+   A1,A2,P,red_sum_idx = red_cal.construct_A_and_P(phi)
 
-   #os.chdir(it.PATH_DATA)
-   #file_names = glob.glob("*uvcUC.ms")
-   #os.chdir(it.PATH_CODE)
-   #red_cal.apply_redundant_stefcal(file_names[0])
+   os.chdir(it.PATH_DATA)
+   file_names = glob.glob("*uvcUC.ms")
+   os.chdir(it.PATH_CODE)
+   red_cal.apply_redundant_stefcal(file_names[0])
 
    #print "A1 = ",A1
    #print "A2 = ",A2
@@ -944,3 +984,152 @@ if __name__ == "__main__":
        #plt.plot(data_mat[0,3,30,:])
        #plt.show()
    '''  
+   '''
+   OLD STEFCAL FUNC
+      #@profile
+      #@jit
+      def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None,F=None,A1=None,A2=None,P=None,red_sum_idx=None):
+          sum_f = np.sum(F)
+          if sum_f == 0:
+             #print "HALLO"
+             return None,False,None,None,None,None,None,None 
+
+          converged = False
+          N = D.shape[0]
+          D = np.copy(D)
+          D = D - D*np.eye(N)
+          
+          if F is not None:
+             D = F*D
+             
+
+          L = np.amax(phi)
+          temp =np.ones((D.shape[0],D.shape[1]) ,dtype=complex)
+    
+          error_vector = np.array([])
+
+          if A1 is None:
+             #EXTRACT BASELINE INDICES FOR EACH REDUNDANT SPACING
+             if PQ is None:
+                PQ = self.create_PQ(phi,L)
+
+          g_temp = np.ones((N,),dtype=complex)
+          #y_temp = np.ones((L,),dtype=complex)
+          if F is not None:
+             y_temp = self.convert_M_to_y_flag(PQ,D,F)
+             g_flag = self.construct_flag_g(F)
+             g_temp = g_temp*g_flag
+             y_flag = self.construct_flag_y(PQ,F)
+             y_temp = y_temp*y_flag
+          else:
+             y_temp = self.convert_M_to_y(PQ,D)
+
+          z_temp = np.hstack([g_temp,y_temp])
+
+          start = time.time() 
+    
+          for i in xrange(max_itr): #MAX NUMBER OF ITRS
+              g_old = np.copy(g_temp)
+              y_old = np.copy(y_temp)
+              z_old = np.copy(z_temp)
+ 
+              if A1 is not None:
+                 M = self.convert_y_to_M_vec(A1,A2,P,y_old,N) #CONVERT y VECTOR TO M matrix
+              else:
+                 M = self.convert_y_to_M(PQ,y_old,N) #CONVERT y VECTOR TO M matrix
+              
+              if F is not None:
+                 M = F*M
+              
+              #plt.imshow(np.absolute(M))
+              #plt.show()
+              #from IPython import embed; embed()        
+        
+              for p in xrange(N): #STEFCAL - update antenna gains
+                  if F is not None:
+                     if g_flag[p] <> 0:
+                        z = g_old*M[:,p]
+                        g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))                  
+                  else:
+                     z = g_old*M[:,p]
+                     g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))
+        
+              g_old_c = np.conjugate(g_old)
+
+              for l in xrange(L): #UPDATE y
+                  if F is not None:
+                     
+                     if y_flag[l] <> 0:
+                        if A1 is None:
+                           pq = PQ[str(l)]
+                           num = 0
+                           den = 0
+                           for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
+                               p = pq[k][0]
+                               q = pq[k][1]
+
+                               num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
+                               den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
+                           if np.absolute(den) < 1e-6:
+                              y_temp[l] = 0
+                           else:
+                              y_temp[l] = num/den
+                        else:
+                           #print "HALLO DARKNESS MY OLD FRIEND"
+                           idx = (P==l)
+                           idxA1 = A1[idx] 
+                           idxA2 = A2[idx]
+                           gA1 = g_old[idxA1]
+                           gA1c = g_old_c[idxA1]
+                           gA2 = g_old[idxA2]
+
+                           num = np.sum(gA1c*gA2*D[idxA1,idxA2])
+                           den = np.sum(np.absolute(gA1)**2*np.absolute(g_old[idxA2])**2)
+                           if np.absolute(den) < 1e-6:
+                              y_temp[l] = 0
+                           else:
+                              y_temp[l] = num/den 
+                           #y_c = np.conjugate(y[i])
+                           #M[idxA1,idxA2]=y[i]
+                           #M[idxA2,idxA1]=y_c
+                  else:
+                     pq = PQ[str(l)]
+                     num = 0
+                     den = 0
+                     for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
+                         p = pq[k][0]
+                         q = pq[k][1]
+
+                         num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
+                         den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
+                     if np.absolute(den) < 1e-6:
+                        y_temp[l] = 0
+                     else:
+                        y_temp[l] = num/den
+         
+              g_temp = alpha*g_temp + (1-alpha)*g_old
+              y_temp = alpha*y_temp + (1-alpha)*y_old
+              z_temp = np.hstack([g_temp,y_temp]) #final update
+              #print "g_temp =",g_temp
+              #print "y_temp =",y_temp        
+
+              #e = np.sqrt(np.sum(np.absolute(z_temp-z_old)**2))/np.sqrt(np.sum(np.absolute(z_temp)**2))
+              #print "e = ",e
+
+              err = np.sqrt(np.sum(np.absolute(z_temp-z_old)**2))/np.sqrt(np.sum(np.absolute(z_temp)**2))
+
+              error_vector = np.append(error_vector,np.array([err]))
+
+              if (err <= tau):
+                 converged = True 
+                 break
+
+          #print "i = ",i
+          #print "norm = ",np.sqrt(np.sum(np.absolute(z_temp-z_old)**2))/np.sqrt(np.sum(np.absolute(z_temp)**2))
+          stop = time.time()
+          G = np.dot(np.diag(g_temp),temp)
+          G = np.dot(G,np.diag(g_temp.conj()))  
+          M = self.convert_y_to_M(PQ,y_temp,N)         
+
+          return z_temp,converged,G,M,start,stop,i,error_vector
+   '''
