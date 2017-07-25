@@ -178,6 +178,19 @@ class redundant_stefcal(object):
           #from IPython import embed; embed() 
           return M  
 
+      def convert_y_to_M_vec(self,A1,A2,P,y,N):
+          M = np.zeros((N,N),dtype=complex)
+
+          for i in xrange(len(y)):
+              idx = (P==i)
+              idxA1 = A1[idx] 
+              idxA2 = A2[idx] 
+              y_c = np.conjugate(y[i])
+              M[idxA1,idxA2]=y[i]
+              M[idxA2,idxA1]=y_c
+
+          return M
+
       def construct_flag_y(self,PQ,F):
           L = len(PQ.keys())
           y = np.zeros((L,),dtype=int)    
@@ -219,6 +232,53 @@ class redundant_stefcal(object):
           #from IPython import embed; embed() 
           return y
 
+
+      def construct_A_and_P(self,phi):
+          N = phi.shape[0]
+          B = (N**2 - N)/2 #ASSUMING THE FILE CONTAINS AUTO-CORRELATIONS
+          
+          A1 = np.zeros((B,),dtype=int)
+          A2 = np.zeros((B,),dtype=int)
+          P = np.zeros((B,),dtype=int)
+          
+          counter = 0
+          for k in xrange(N):
+              for j in xrange(k+1,N):
+                  A1[counter] = k
+                  A2[counter] = j
+                  P[counter] = phi[k,j]-1
+                  counter = counter + 1
+
+          idx_sort = np.argsort(P)
+
+          P = P[idx_sort]
+          A1 = A1[idx_sort]
+          A2 = A2[idx_sort]
+
+          print "P = ",P
+
+          L = np.amax(phi)
+
+          print "L = ",L
+          print "L2 = ",np.amax(phi)
+
+          red_sum_idx  = np.array([0]) 
+
+          num_red = 0
+          for k in xrange(L):
+              num_red_temp = len(A1[P==k])
+              num_red = num_red + num_red_temp
+              red_sum_idx = np.append(red_sum_idx,np.array([num_red]))
+              print "k = ",num_red
+          
+          print "red_sum_idx = ",red_sum_idx
+          red_sum_idx = red_sum_idx[:-1]
+
+          print "np.reduceat = ",np.add.reduceat(P,red_sum_idx)
+
+          return A1,A2,P      
+
+
       def convert_M_to_y_flag(self,PQ,M,F):
           L = len(PQ.keys())
           y = np.zeros((L,),dtype=complex)
@@ -242,7 +302,7 @@ class redundant_stefcal(object):
 
       #@profile
       #@jit
-      def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None,F=None):
+      def redundant_StEFCal(self,D,phi,tau=1e-3,alpha=0.3,max_itr=10,PQ=None,F=None,A1=None,A2=None,P=None):
           sum_f = np.sum(F)
           if sum_f == 0:
              #print "HALLO"
@@ -262,9 +322,10 @@ class redundant_stefcal(object):
     
           error_vector = np.array([])
 
-          #EXTRACT BASELINE INDICES FOR EACH REDUNDANT SPACING
-          if PQ is not None:
-             PQ = self.create_PQ(phi,L)
+          if A1 is None:
+             #EXTRACT BASELINE INDICES FOR EACH REDUNDANT SPACING
+             if PQ is None:
+                PQ = self.create_PQ(phi,L)
 
           g_temp = np.ones((N,),dtype=complex)
           #y_temp = np.ones((L,),dtype=complex)
@@ -286,7 +347,10 @@ class redundant_stefcal(object):
               y_old = np.copy(y_temp)
               z_old = np.copy(z_temp)
  
-              M = self.convert_y_to_M(PQ,y_old,N) #CONVERT y VECTOR TO M matrix
+              if A1 is not None:
+                 M = self.convert_y_to_M_vec(A1,A2,P,y_old,N) #CONVERT y VECTOR TO M matrix
+              else:
+                 M = self.convert_y_to_M(PQ,y_old,N) #CONVERT y VECTOR TO M matrix
               
               if F is not None:
                  M = F*M
@@ -304,22 +368,44 @@ class redundant_stefcal(object):
                      z = g_old*M[:,p]
                      g_temp[p] = np.sum(np.conj(D[:,p])*z)/(np.sum(np.conj(z)*z))
         
+              g_old_c = np.conjugate(g_old)
+
               for l in xrange(L): #UPDATE y
                   if F is not None:
+                     
                      if y_flag[l] <> 0:
-                        pq = PQ[str(l)]
-                        num = 0
-                        den = 0
-                        for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
-                            p = pq[k][0]
-                            q = pq[k][1]
+                        if A1 is None:
+                           pq = PQ[str(l)]
+                           num = 0
+                           den = 0
+                           for k in xrange(len(pq)): #loop through all baselines for each redundant spacing
+                               p = pq[k][0]
+                               q = pq[k][1]
 
-                            num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
-                            den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
-                        if np.absolute(den) < 1e-6:
-                           y_temp[l] = 0
+                               num = num + np.conjugate(g_old[p])*g_old[q]*D[p,q]
+                               den = den + np.absolute(g_old[p])**2*np.absolute(g_old[q])**2
+                           if np.absolute(den) < 1e-6:
+                              y_temp[l] = 0
+                           else:
+                              y_temp[l] = num/den
                         else:
-                           y_temp[l] = num/den
+                           #print "HALLO DARKNESS MY OLD FRIEND"
+                           idx = (P==l)
+                           idxA1 = A1[idx] 
+                           idxA2 = A2[idx]
+                           gA1 = g_old[idxA1]
+                           gA1c = g_old_c[idxA1]
+                           gA2 = g_old[idxA2]
+
+                           num = np.sum(gA1c*gA2*D[idxA1,idxA2])
+                           den = np.sum(np.absolute(gA1)**2*np.absolute(g_old[idxA2])**2)
+                           if np.absolute(den) < 1e-6:
+                              y_temp[l] = 0
+                           else:
+                              y_temp[l] = num/den 
+                           #y_c = np.conjugate(y[i])
+                           #M[idxA1,idxA2]=y[i]
+                           #M[idxA2,idxA1]=y_c
                   else:
                      pq = PQ[str(l)]
                      num = 0
@@ -519,7 +605,7 @@ class redundant_stefcal(object):
           #G_new = G_mat[:,:,0,700]
           #G_new[F==0] = np.NaN
           #plot_before_after_cal_per_t_f(data_mat[:,:,0,700],G_new,phi)
-
+          '''
           F = np.absolute(flag_mat-1)
           G_mat[F == 0] = 1
 
@@ -529,7 +615,7 @@ class redundant_stefcal(object):
 
           for f in xrange(G_mat.shape[3]):
               D_cal[:,:,:,f] = G_mat[:,:,:,f]**(-1)*data_mat[:,:,:,f] 
-
+          '''
           '''
           output = open('data.pkl', 'wb')
 
@@ -585,12 +671,17 @@ class redundant_stefcal(object):
           M_mat = np.ones(data_mat.shape,dtype=complex)
           ant = self.hex_grid(hex_dim=2,l=14.6)
           phi,zeta,L = self.calculate_phi(ant[:,0],ant[:,1])
+          A1,A2,P = self.construct_A_and_P(phi)
+          
+          #A1 = None
+          #A2 = None
+          #P = None
           #plt.imshow(phi)
           #plt.show()
           PQ = self.create_PQ(phi,L)
           
           start_b = time.time()
-          for t in xrange(data_mat.shape[2]):#data_mat.shape[2]
+          for t in xrange(1):#data_mat.shape[2]
               F_time = np.absolute(flag_row_mat[:,:,t]-1)
               sum_time = np.sum(F_time)
               print "t = ",t
@@ -600,9 +691,9 @@ class redundant_stefcal(object):
                      sum_f = np.sum(F)
                      if sum_f <> 0:
                         #print "************************"
-                        print "t = ",t
-                        #print "f = ",f 
-                        z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,t,f],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F)
+                        #print "t = ",t
+                        print "f = ",f 
+                        z_temp,converged,G_temp,M_temp,start,stop,i,error_vector = self.redundant_StEFCal(D=data_mat[:,:,t,f],phi=phi,tau=1e-9,alpha=1.0/3.0,max_itr=1000,PQ=PQ,F=F,A1=A1,A2=A2,P=P)
                         #print "converged = ",converged
                         #print "************************"
                         G_temp[F==0] = 1
@@ -622,10 +713,10 @@ class redundant_stefcal(object):
 
           #SOME BASIC FINAL PLOTTING
 
-          #F = np.absolute(flag_mat[:,:,0,700]-1)
-          #G_new = G_mat[:,:,0,700]
-          #G_new[F==0] = np.NaN
-          #plot_before_after_cal_per_t_f(data_mat[:,:,0,700],G_new,phi)
+          F = np.absolute(flag_mat[:,:,0,700]-1)
+          G_new = G_mat[:,:,0,700]
+          G_new[F==0] = np.NaN
+          plot_before_after_cal_per_t_f(data_mat[:,:,0,700],G_new,phi)
           '''
           output = open('data.pkl', 'wb')
 
@@ -671,6 +762,7 @@ class redundant_stefcal(object):
 
           print "G_new = ",G_new
           '''
+          '''
           F = np.absolute(flag_mat-1)
           G_mat[F == 0] = 1
 
@@ -683,6 +775,7 @@ class redundant_stefcal(object):
 
           os.chdir(it.PATH_CODE)
           return D_cal,indx_2d 
+          '''
 
 def find_color_marker(index_value):
     color = np.array(['b','g','r','c','m','y','k'])
@@ -809,6 +902,22 @@ def investigate_G(pickle_name,ts=25):
     
 if __name__ == "__main__":
    
+   red_cal = redundant_stefcal()
+
+   ant = red_cal.hex_grid(hex_dim=2,l=14.6)
+   phi,zeta,L = red_cal.calculate_phi(ant[:,0],ant[:,1])
+   A1,A2,P = red_cal.construct_A_and_P(phi)
+
+   #os.chdir(it.PATH_DATA)
+   #file_names = glob.glob("*uvcUC.ms")
+   #os.chdir(it.PATH_CODE)
+   #red_cal.apply_redundant_stefcal(file_names[0])
+
+   #print "A1 = ",A1
+   #print "A2 = ",A2
+   #print "P = ",P 
+
+   '''
    ms_names = np.array(["zen.2457545.43140.xx.HH.uvcUC.ms","zen.2457545.43836.xx.HH.uvcUC.ms","zen.2457545.44532.xx.HH.uvcUC.ms","zen.2457545.45228.xx.HH.uvcUC.ms","zen.2457545.45924.xx.HH.uvcUC.ms","zen.2457545.46620.xx.HH.uvcUC.ms","zen.2457545.47315.xx.HH.uvcUC.ms","zen.2457545.48011.xx.HH.uvcUC.ms","zen.2457545.48707.xx.HH.uvcUC.ms","zen.2457545.49403.xx.HH.uvcUC.ms","zen.2457545.50099.xx.HH.uvcUC.ms","zen.2457545.50795.xx.HH.uvcUC.ms","zen.2457545.51491.xx.HH.uvcUC.ms"])
 
    red_cal = redundant_stefcal()
@@ -834,4 +943,4 @@ if __name__ == "__main__":
 
        #plt.plot(data_mat[0,3,30,:])
        #plt.show()
-
+   '''  
