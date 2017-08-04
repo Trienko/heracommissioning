@@ -7,7 +7,8 @@ def miriad_to_uvfits():
     os.chdir(it.PATH_DATA) 
     file_names = glob.glob("*.uvcU")
     for file_name in file_names:
-        command = "python " + it.PATH_TO_MIR_TO_FITS_RID + " --nophs --uvfits --pyuvdata " + file_name
+        #command = "python " + it.PATH_TO_MIR_TO_FITS_RID + " --nophs --uvfits --pyuvdata " + file_name
+        command = "python " + it.PATH_TO_MIR_TO_FITS_RID + " --onephs --uvfits --pyuvdata " + file_name
         print("CMD >>> "+command)
         os.system(command) 
         command = "mv "+file_name+"M"+".uvfits "+file_name+".uvfits"

@@ -101,19 +101,19 @@ class stripe():
                    
              hp.write_map("ALL_SKY.fits",np.array([c,m,w]),dtype=np.float64,coord='C')            
  
-      def plot_healpix(self,file_name="Abhik.fits",field=0):
-          if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
-             
+      def plot_healpix(self,file_name="gauss_beam.hpx.fits",field=0):
+          #if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
+             print "HALLO"
 
-             os.chdir(plutil.FIGURE_PATH+"IMAGES/")
+             #os.chdir(plutil.FIGURE_PATH+"IMAGES/")
              
              #file_names = glob.glob("*_healpix.fits") 
 
              haslam = hp.read_map(file_name,field=field)
             
-             for x in xrange(len(haslam)):
-                 if np.allclose(haslam[x],0.0):
-                    haslam[x] = hp.UNSEEN 
+             #for x in xrange(len(haslam)):
+             #    if np.allclose(haslam[x],0.0):
+             #       haslam[x] = hp.UNSEEN 
 
              #print "haslam = ",haslam
 
@@ -122,10 +122,10 @@ class stripe():
              cmap.set_under('w')
              cmap.set_bad('gray')
 
-             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title='HERA-19 @ 150 MHz',max=40,min=0,cmap=cmap)#max=0.4
+             proj_map = hp.mollview(haslam,coord=['C'], xsize=2000,return_projected_map=True,title='HERA-19 @ 150 MHz',cmap=cmap)#max=0.4
              hp.graticule()
              f = file_name[:-5]
-             plt.savefig(plutil.FIGURE_PATH+"IMAGES/"+f+str(field)+".png")          
+             #plt.savefig(plutil.FIGURE_PATH+"IMAGES/"+f+str(field)+".png")          
 
              plt.show()
 
@@ -134,7 +134,7 @@ class stripe():
              #haslam_mask.mask = np.logical_not(mask)
              #hp.mollview(haslam_mask.filled())
              #plt.show()
-             os.chdir(it.PATH_CODE)
+             #os.chdir(it.PATH_CODE)
 
       def call_save_map(self):
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
@@ -312,9 +312,9 @@ def main(argv):
     if allsky:
         s.make_all_sky_map()
     if plthlpx:
-	s.plot_healpix(file_name="ALL_SKY.fits",field=0)
-        s.plot_healpix(file_name="ALL_SKY.fits",field=1)
-        s.plot_healpix(file_name="ALL_SKY.fits",field=2)
+	s.plot_healpix(field=0)
+        #s.plot_healpix(file_name="ALL_SKY.fits",field=1)
+        #s.plot_healpix(file_name="ALL_SKY.fits",field=2)
            
              
 if __name__ == "__main__":

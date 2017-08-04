@@ -67,6 +67,41 @@ class plotutilities():
           os.chdir(it.PATH_CODE)
 
       ######################################
+      #Plot all correlations of all the ms in the data directory using the plotms CASA task
+      ######################################           
+      def plot_cross_correlations_all(self,ymax = 6,add_desc=""):
+          os.chdir(it.PATH_DATA)
+          options={}          
+          options["xaxis"]='freq'
+          options["yaxis"]='amp'
+          options["averagedata"]=True
+          options["avgtime"]='1000'
+          options["coloraxis"]='baseline'
+          options["antenna"]='*&'
+          options["expformat"]='png'
+          options["showgui"]=False
+          options["overwrite"]=True
+          options["plotrange"]=[0,0,0,ymax]
+         
+          if not os.path.isdir(FIGURE_PATH):
+             command = "mkdir "+FIGURE_PATH
+             print("CMD >>> "+command)
+             os.system(command)
+
+          if not os.path.isdir(FIGURE_PATH+"CROSS/"):
+             command = "mkdir "+FIGURE_PATH+"CROSS/"
+             print("CMD >>> "+command)
+             os.system(command) 
+
+          for file_name in glob.glob("*.ms"):
+              options["vis"]=file_name
+              options["plotfile"]=FIGURE_PATH+"CROSS/"+file_name[:-3]+'_CROSS'+add_desc+'.png'
+
+              self.plotms_wrapper(options=options)
+    
+          os.chdir(it.PATH_CODE)
+
+      ######################################
       #Plot all the visibilities for all the redundant groups
       ######################################
       def plot_redundant_groups_all(self,add_desc="",ymax=6,per_baseline=False):
@@ -132,6 +167,7 @@ class plotutilities():
                   self.plotms_wrapper(options=options)
                   #self.plotms
           os.chdir(it.PATH_CODE)
+
 
       ######################################
       #Plot the 19 HEX HERA layout correctly numbering the antennas with id or name (name = id + 1) depending on the value of plot_id
@@ -311,13 +347,14 @@ def main(argv):
    plt_red = False
    plt_lay = False   
    plot_id = False
+   plt_cross = False
    per_baseline = False
    ymax = 6
 
    try:
-      opts, args = getopt.getopt(argv,"harl",["id_true=","ymax=","per_baseline="])
+      opts, args = getopt.getopt(argv,"harlc",["id_true=","ymax=","per_baseline="])
    except getopt.GetoptError:
-      print 'python plotutilities.py -a -r -l --id_true <value> --per_baseline <value> --ymax <value>'
+      print 'python plotutilities.py -a -r -l -c --id_true <value> --per_baseline <value> --ymax <value>'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
@@ -327,6 +364,7 @@ def main(argv):
          print '-a: plot all the autocorrelations for all the measurement sets in current directory'
          print '-r: plot all the correlations associated with the different baseline groups for all the measurement sets in current directory'
          print '-l: plot the HERA-19 layout with antenna labels'
+         print '-c: plot all cross-correlations'
          print '--ymax <value>: (must be a real number) On the correlation plots this is the chosen maximum y-value. Default is 6.'
          print '--per_baseline <value>: (must be a boolean) Produce per-baseline correlation plots. Default is False.' 
          print '--id_true <value>: (must be a boolean) On the HERA-19 layout plot use CASA antenna names or HERA wiki ids. Default is False.'
@@ -342,6 +380,8 @@ def main(argv):
            if arg == "True":
               plot_id = True
               print "plot_id = ",plot_id
+      elif opt == "-c":
+           plt_cross = True
       elif opt == "--ymax":
               ymax = float(arg)
               #print "ymax = ",ymax
@@ -357,6 +397,8 @@ def main(argv):
       plot_object.plot_redundant_groups_all(ymax=ymax,per_baseline=per_baseline)
    if plt_lay:
       plot_object.plot_hex_grid(plot_id=plot_id)
+   if plt_cross:
+      plot_object.plot_cross_correlations_all(ymax=ymax)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
