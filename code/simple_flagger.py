@@ -203,17 +203,19 @@ def flag_data(data_mat, flag_mat, med_filter_size=9, sigma_factor=0.01, agreemen
 
     plt.show()
     '''	     		
-    flag_mat[new_flag_mat==1] = 1
+    #flag_mat[new_flag_mat==1] = 1
+
+    flag_mat = new_flag_mat
     
     return flag_mat    
 
 if __name__ == "__main__":
    
    f = flagger()
-   data_mat,flag_mat,flag_row_mat,indx_2d = f.read_in_D(ms_file="zen.2457661.16694.xx.HH.uvcUC.ms",column="DATA",telescope="HERA19",flag_ant=np.array([]))
-   flag_mat = flag_data(data_mat, flag_mat, med_filter_size=9, sigma_factor=0.01, agreement=35)
+   data_mat,flag_mat,flag_row_mat,indx_2d = f.read_in_D(ms_file="zen.2457661.16694.xx.HH.uvcU.ms",column="DATA",telescope="HERA19",flag_ant=np.array([]))
+   flag_mat = flag_data(data_mat, flag_mat, med_filter_size=9, sigma_factor=0.02, agreement=30)
 
-   f.write_to_D(ms_file="zen.2457661.16694.xx.HH.uvcUC.ms",data_cube=flag_mat,indx_2d=indx_2d, column="FLAG", telescope="HERA19")
+   f.write_to_D(ms_file="zen.2457661.16694.xx.HH.uvcU.ms",data_cube=flag_mat,indx_2d=indx_2d, column="FLAG", telescope="HERA19")
 
    #print flag_mat[0,1,0,0].type   
    '''

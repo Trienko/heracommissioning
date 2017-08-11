@@ -16,7 +16,7 @@ SGR_FLOAT = (17.0 + 45.0/60 + 40.0/3600)*(pi/12)
 BANDBASS_GC_CAL_TABLE = ''
 DELAY_GC_CAL_TABLE = ''
 POINT_SOURCE_MODEL = 'point_source_model.cl'
-AO_STRATEGY = '11_07_17.rfis'
+AO_STRATEGY = '10_08_17.rfis'
 
 class redpipe():
 
@@ -280,6 +280,10 @@ class redpipe():
           options["vis"]=gc_name
           options["solint"]='inf'
           options["combine"]='scan'
+          options["fillgaps"] = 10
+          options["minsnr"] = 3
+          options["bandtype"] = 'B'
+          #options["minblperant"] = 11
           options["caltable"] = BANDBASS_GC_CAL_TABLE 
           if delay:
              options["gaintable"] = DELAY_GC_CAL_TABLE
