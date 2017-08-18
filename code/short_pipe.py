@@ -10,9 +10,14 @@ if __name__ == "__main__":
    red_object = red.redpipe()
    abs_object = absf.absflux()
 
-   inittasks_object.create_time_pickle_N()
-   inittasks_object.compute_time_str_N()
-   inittasks_object.split_and_unphase_ms_N()
+   inittasks_object.split_sim_ms(ms_file="simvis-noiseless.ms",dummy_ms="dummy.ms",column="DATA")
+   inittasks_object.create_t0_pickle()
+   inittasks_object.compute_t0_str()
+   inittasks_object.rename_rephase_split_ms()
+
+   #inittasks_object.create_time_pickle_N()
+   #inittasks_object.compute_time_str_N()
+   #inittasks_object.split_and_unphase_ms_N()
    
    #inittasks_object.compute_time_str()
    #inittasks_object.split_and_unphase_ms()

@@ -13,8 +13,8 @@ PATH_TO_MIR_TO_FITS = "/usr/local/bin/miriad_to_uvfits.py"
 PATH_TO_MIR_TO_FITS_RID = "/home/trienko/HERA/conference/code/miriad2uvfits.py"
 #PATH_DATA = r"/media/trienko/Seagate Expansion Drive/HERA/data/2457661/"
 #PATH_DATA = "/home/trienko/HERA/conference/data/2457661/"
-#PATH_DATA = "/home/trienko/HERA/conference/data/SIM_DATA/"
 PATH_DATA = "/home/trienko/HERA/conference/data/SIM_DATA/"
+#PATH_DATA = "/home/trienko/HERA/conference/data/KWAZI/"
 PATH_CODE = "/home/trienko/HERA/conference/code/"
 OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
 ANT_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
@@ -455,6 +455,159 @@ class inittasks():
               print("CMD >>> "+command)
               os.system(command)
               #break
+          os.chdir(PATH_CODE)
+      
+      def create_t0_pickle(self):
+          os.chdir(PATH_DATA)
+          file_names = glob.glob("*.tmp*")
+          for file_name in file_names:
+              if file_name[-2:] <> ".p":
+                 t=table(file_name)
+                 time = t.getcol("TIME")
+                 t.close()
+                 output = open(file_name+".time.p",'wb')
+                 pickle.dump(np.array([time[0]]), output)
+                 output.close()
+          os.chdir(PATH_CODE)
+
+      def compute_t0_str(self):
+          os.chdir(PATH_DATA)
+          file_names = glob.glob("*time.p")
+          for file_name in file_names:
+              file = open("time_str.py","w")
+              file.write("import pickle\n")    
+              file.write("execfile(\'time_func.py\')\n")
+              file.write("input = open(\""+file_name+"\",\'rb\')\n")
+              file.write("t0 = pickle.load(input)\n")
+              file.write("input.close()\n")
+              file.write("t0_str = time_convert(t0)\n")
+              file.write("output = open(\""+file_name[:-2]+".str.p\",\'wb\')\n")
+              file.write("pickle.dump(t0_str,output)\n")
+              file.write("output.close()\n")
+              file.close()
+              command = "casa -c time_str.py --nogui --nologfile --log2term"
+              print("CMD >>> "+command)
+              os.system(command)
+          os.chdir(PATH_CODE)
+
+      def rename_rephase_split_ms(self,rephase=True):
+          os.chdir(PATH_DATA)
+          file_names = glob.glob("*.tmp*")
+          for file_name in file_names:
+              if file_name[-2:] <> ".p":
+                 input = open(file_name+".time.str.p",'rb')
+                 t0_str = pickle.load(input)[0][0]
+ 
+                 print "t0_str = ",t0_str
+                 
+                 HERA = Observer()
+                 HERA.lat, HERA.long, HERA.elevation = '-30:43:17', '21:25:40.08', 0.0 
+                 j0 = julian_date(0)
+
+                
+                 t_str = t0_str.split("/")
+                 HERA.date = t_str[0]+"/"+t_str[1]+"/"+t_str[2]+" "+t_str[3]
+                 print file_name
+                 print HERA.date     
+
+                 sid_str = str(HERA.sidereal_time())
+                 print "sid_str =",sid_str
+
+
+                 sid_str_split = sid_str.split(":")
+                 fix_vis_str = sid_str_split[0]+"h"+sid_str_split[1]+"m"+str(int(round(float(sid_str_split[2]))))+"s"
+                 print "fix_vis =",fix_vis_str
+                 HERA_date_str = '{:<013}'.format(float(HERA.date)+j0)
+                 new_file_name = "zen."+HERA_date_str+".xx.HH.S.uvcU.ms"                 
+                 command = "mv "+file_name+" "+new_file_name
+                 print("CMD >>> "+command)
+                 os.system(command)
+                 if rephase:
+                    options={}
+                    options["vis"]=new_file_name
+                    options["outputvis"]=new_file_name
+                    options["phasecenter"]='J2000 '+fix_vis_str+' -30d43m17s'
+                    self.fixvis_wrapper(options=options)
+
+          os.chdir(PATH_CODE)
+                 
+
+      def split_sim_ms(self,ms_file,dummy_ms="dummy.ms",column="DATA",L=30):
+          os.chdir(PATH_DATA)
+
+          dummy_t=table(dummy_ms)
+          dummy_data = dummy_t.getcol(column)
+          dummy_ant1 = dummy_t.getcol("ANTENNA1")
+          dummy_ant2 = dummy_t.getcol("ANTENNA2")
+          dummy_uvw = dummy_t.getcol("UVW")
+          dummy_time = dummy_t.getcol("TIME")
+          dummy_flagrow = dummy_t.getcol("FLAG_ROW")
+          dummy_t.close()
+
+          ts = (dummy_data.shape[0])/L
+          chan = dummy_data.shape[1] 
+
+          t = table(ms_file)
+          data = t.getcol(column)
+          ant1 = t.getcol("ANTENNA1")
+          ant2 = t.getcol("ANTENNA2")
+          uvw = t.getcol("UVW")
+          time = t.getcol("TIME")
+          flagrow = t.getcol("FLAG_ROW")
+          t.close()                 
+
+          not_finished = True
+
+          l = 0
+          h = ts*L
+          
+          dl = 0
+          dh = ts*L
+
+          counter = 0
+
+          while not_finished:
+                              
+                if h > data.shape[0]:
+                   h = data.shape[0]
+                   dh = h - l
+                   dummy_flagrow[dh:] = True
+                   not_finished = False
+
+                new_dummy = dummy_ms + ".tmp" + str(counter)
+
+                command = "cp -r " + dummy_ms + " " + new_dummy 
+                print("CMD >>> "+command)
+                os.system(command) 
+                
+                #print "counter = ",counter 
+                #print "l = ",l
+                #print "h = ",h
+
+                dummy_data[dl:dh,:,:] = data[l:h,:,:]
+                dummy_ant1[dl:dh] = ant1[l:h]
+                dummy_ant2[dl:dh] = ant2[l:h]
+                dummy_uvw[dl:dh,:] = uvw[l:h,:]
+                dummy_time[dl:dh] = time[l:h]
+                dummy_flagrow[dl:dh] = flagrow[l:h]
+                
+                dummy_t=table(new_dummy,readonly=False)
+                dummy_t.putcol(column,dummy_data) 
+                dummy_t.putcol("ANTENNA1",dummy_ant1)
+                dummy_t.putcol("ANTENNA2",dummy_ant2)
+                dummy_t.putcol("UVW",dummy_uvw)
+                dummy_t.putcol("TIME",dummy_time)
+                dummy_t.putcol("FLAG_ROW",dummy_flagrow) 
+                 
+                dummy_t.close()             
+                
+                l += ts*L
+                h += ts*L
+                counter += 1
+          
+          #print "ts = ",ts
+          #print "chan = ",chan
+          
           os.chdir(PATH_CODE)
 
       def split_and_unphase_ms(self,unphase=True):
