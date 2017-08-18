@@ -16,7 +16,7 @@ SGR_FLOAT = (17.0 + 45.0/60 + 40.0/3600)*(pi/12)
 BANDBASS_GC_CAL_TABLE = ''
 DELAY_GC_CAL_TABLE = ''
 POINT_SOURCE_MODEL = 'point_source_model.cl'
-AO_STRATEGY = '10_08_17.rfis'
+AO_STRATEGY = 'Kshitij_11_07_17.rfis'
 
 class redpipe():
 
@@ -371,8 +371,9 @@ class redpipe():
          
           options={} 
           options["mode"]='rflag'
-          options["timedevscale"]=10.0
-          options["freqdevscale"]=5.0
+	  #options["mode"]='rflag'
+          #options["timedevscale"]=10.0
+          #options["freqdevscale"]=5.0
           options["datacolumn"]='DATA'
           options["combinescans"] = True
 
@@ -384,7 +385,8 @@ class redpipe():
                   print ant_strcom[antstr]  
                   options["antenna"]=ant_strcom[antstr]  
                   self.flagdata_wrapper(options=options)
-              
+             
+	   
           os.chdir(it.PATH_CODE)
           
 
@@ -471,7 +473,7 @@ class redpipe():
           options={}
           options["vis"]=gc_name
           #options["solint"]='inf'
-	  options["solint"]='inf,3ch'# infinite in time, 3ch pre-averaged
+	  options["solint"]='inf,5ch'# infinite in time, 5ch pre-averaged
           options["combine"]='scan'
           options["fillgaps"] = 10
           options["minsnr"] = 3
@@ -914,6 +916,7 @@ def main(argv):
    red_object = redpipe()
    findrendgr = False
    flagallbasic = False
+   flagao = False
    bandpassgc = False
    plotcalgc = False
    applycalgcall = False
@@ -939,7 +942,7 @@ def main(argv):
          print '-d: adds a delay calibration step before the bandpass'
          print '--find_red_gr: find redundant groups for HERA-19'
          print '--flag_all_basic: flag known bad channels, autocorrelations and antenna'
-         print '--flag_ao: flag with ao flagger using strategy zen.2457545.48707.xx_strategy.rfis'
+         print '--flag_ao: flag with ao flagger using a strategy'
          print '--save_flags: save the flags to disk'
          print '--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith'
          print '--plot_cal_gc: plot the calibration bandpass solution obtained from doing a bandpass cal on the ms where gc is at zenith'
