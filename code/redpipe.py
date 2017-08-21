@@ -988,6 +988,7 @@ def main(argv):
    if findrendgr:
       antno=red_object.find_redundant_groups_all()   
    if flagallbasic:
+      antno = red_object.find_redundant_groups_all()
       red_object.flag_basic_all(antno)
    if flagao:
       red_object.flag_aoflagger()

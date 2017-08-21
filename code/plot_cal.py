@@ -221,8 +221,64 @@ def plot_bandpass_2(idx):
     
     plt.show()
 
+def plot_gaincal(file_name):
+    t=table(file_name)
+    #print "t.colnames() = ",t.colnames()
+    ANT = np.array(t.getcol("ANTENNA1"))  
+    CPAR = np.array(t.getcol("CPARAM"))
+    TIME = np.array(t.getcol("TIME"))
+
+    #print "ANT = ",ANT.shape
+
+    #CPAR_new = CPAR[ANT == 20]
+
+    #TIME_new = TIME[ANT == 20]
+
+    #print "CPAR = ",CPAR_new[:,0,0]
+    #print "TIME = ",TIME_new
+
+    #plt.plot(TIME_new, np.angle(CPAR_new[:,0,0]))
+    #plt.show()
+
+    ant_id = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
+
+    file_txt = open("gain_ant_time.txt",'w')
+ 
+    for k in xrange(len(ant_id)):
+        CPAR_new = CPAR[ANT == ant_id[k]]
+        CPAR_new = CPAR_new[:,0,0]
+        TIME_new = TIME[ANT == ant_id[k]]
+
+        for t in xrange(len(TIME_new)):
+            str_line = str(ant_id[k])+"\t"+str(TIME_new[t])+"\t"+str(CPAR_new[t]).strip("()") 
+
+            file_txt.write(str_line+"\n")
+    file_txt.close() 
+
+        #plt.plot(TIME_new,np.angle(CPAR_new))
+
+    #plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
 if __name__ == "__main__":
-   idx = plot_delays()
+   plot_gaincal(file_name='gaincal_table')
+   #idx = plot_delays()
    #plot_bandpass_2(idx=[0,1])
    
 
