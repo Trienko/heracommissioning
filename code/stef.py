@@ -15,7 +15,7 @@ from concurrent.futures.process import ProcessPoolExecutor
 import getopt
 #from numba import jit
 
-PATH_DATA = "/home/trienko/HERA/conference/data/STEF2/"
+PATH_DATA = "/home/trienko/HERA/conference/data/PMN_TEST/"
 PATH_CODE = "/home/trienko/HERA/conference/code/"
 
 HERA19_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
@@ -800,10 +800,9 @@ class redundant_stefcal(object):
           #PICKLE GAIN TO DISK
          
           os.chdir(PATH_DATA)
-          ms_file_split = ms_file.split(ms_file)
 
-          last = ms_file_split[-1].upper()
-
+          last = ms_file.split(".")[-1].upper()
+          
           if last == "MS":
              ms_file = ms_file[:-3]+"_RGAIN.pkl"
           else:

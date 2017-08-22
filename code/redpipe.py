@@ -623,13 +623,14 @@ class redpipe():
              os.system(command)
 
           if mask == "U":
-             file_names = glob.glob("*U.ms")
+             file_names = glob.glob("*S.ms")
           else:
              file_names = glob.glob("*C.ms")
 
           #print "file_names = ",file_names
 
           #file_names = ["zen.2457545.47315.xx.HH.uvcUC.ms"]
+          print "file_names = ",file_names
 
           for file_name in file_names:
               
