@@ -15,7 +15,7 @@ from concurrent.futures.process import ProcessPoolExecutor
 import getopt
 #from numba import jit
 
-PATH_DATA = "/home/trienko/HERA/conference/data/PMN_TEST/"
+PATH_DATA = "/home/trienko/HERA/conference/data/STEF1/"
 PATH_CODE = "/home/trienko/HERA/conference/code/"
 
 HERA19_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])

@@ -623,14 +623,14 @@ class redpipe():
              os.system(command)
 
           if mask == "U":
-             file_names = glob.glob("*S.ms")
+             file_names = glob.glob("*U.ms")
           else:
              file_names = glob.glob("*C.ms")
 
           #print "file_names = ",file_names
 
           #file_names = ["zen.2457545.47315.xx.HH.uvcUC.ms"]
-          print "file_names = ",file_names
+          #print "file_names = ",file_names
 
           for file_name in file_names:
               
@@ -691,7 +691,7 @@ class redpipe():
                        #img_std = np.std(image[0:n_block,0:n_block])
                        max_v = np.amax(image[0:n_block,0:n_block])
 		       options["threshold"]=str(max_v/imp_factor)+'Jy'
-                       options["niter"]=100
+                       options["niter"]=10
                        mask_list = []
                        txt_file = open(file_name2[:-5]+".mask.txt","r") 
                        lines = txt_file.readlines()
@@ -719,7 +719,7 @@ class redpipe():
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")
 
              if mask == "U":
-                file_names = glob.glob("*.image")
+                file_names = glob.glob("*U.image")
              else:
                 file_names = glob.glob("*C.image")
           

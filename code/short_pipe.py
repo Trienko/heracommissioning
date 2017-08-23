@@ -5,15 +5,39 @@ import redpipe as red
 import absolute_flux as absf
 
 if __name__ == "__main__":
-   
-   inittasks_object = it.inittasks()
-   red_object = red.redpipe()
-   abs_object = absf.absflux()
 
-   inittasks_object.split_sim_ms(ms_file="simvis-noiseless.ms",dummy_ms="dummy.ms",column="DATA")
-   inittasks_object.create_t0_pickle()
-   inittasks_object.compute_t0_str()
-   inittasks_object.rename_rephase_split_ms()
+   command = "python initscript.py --add_uvws --miriad_to_uvfits --importuvfits"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python redpipe.py -d --flag_all_basic --bandpass_gc --apply_cal_gc_all --create_images U --convert_to_fits U"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python stripe.py --create_beams U"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python absolute_flux.py --abs_cal"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python redpipe.py --create_images C --convert_to_fits C"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   #command = "python redpipe.py --create_images C --convert_to_fits C"
+   #print("CMD >>> "+command)
+   #os.system(command)
+  
+   #inittasks_object = it.inittasks()
+   #red_object = red.redpipe()
+   #abs_object = absf.absflux()
+
+   #inittasks_object.split_sim_ms(ms_file="simvis-noiseless.ms",dummy_ms="dummy.ms",column="DATA")
+   #inittasks_object.create_t0_pickle()
+   #inittasks_object.compute_t0_str()
+   #inittasks_object.rename_rephase_split_ms()
 
    #inittasks_object.create_time_pickle_N()
    #inittasks_object.compute_time_str_N()
