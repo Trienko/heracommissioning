@@ -158,10 +158,11 @@ def plot_psf(fits_file="psf.fits"):
 
 
 if __name__=="__main__":
+   
    #plot_psf()
-   plot_fits(fits_file=GC_FILE)
+   #plot_fits(fits_file=GC_FILE)
    #plot_fits(fits_file=GC_FILE3)
-   plot_fits2(fits_file=ABS_FILE)
+   #plot_fits2(fits_file=ABS_FILE)
    #make_video() 
     
     

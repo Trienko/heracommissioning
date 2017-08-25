@@ -609,7 +609,7 @@ class redpipe():
 	      self.applycal_wrapper(options=options)
           os.chdir(it.PATH_CODE)
 
-      def create_images(self,mask="U",n_block = 75, imp_factor = 30):
+      def create_images(self,mask="U", n_block = 75, imp_factor = 30):
           os.chdir(it.PATH_DATA)
           
           if not os.path.isdir(plutil.FIGURE_PATH):
@@ -624,6 +624,8 @@ class redpipe():
 
           if mask == "U":
              file_names = glob.glob("*U.ms")
+          elif mask == "F":
+             file_names = glob.glob("*F.ms")
           else:
              file_names = glob.glob("*C.ms")
 
@@ -676,6 +678,18 @@ class redpipe():
 
               #print plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt"
 
+              if mask == "F":
+                 if os.path.isfile(plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"):
+                    file_name2 = plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".fits"
+                    fh = pf.open(file_name2)
+                    image = fh[0].data
+                    image = np.copy(image[0,0,:,:])
+                    img_std = np.std(image[0:n_block,0:n_block])
+                    max_v = np.amax(image)
+                    if max_v > 3*img_std:
+                       options["threshold"]=str(max_v/10)+'Jy'
+                       options["niter"]=10
+                    
               if mask == "C":
                  #print "HALLO C"
                  print plutil.FIGURE_PATH+"IMAGES/"+file_name[:-3]+".mask.txt"
@@ -720,6 +734,8 @@ class redpipe():
 
              if mask == "U":
                 file_names = glob.glob("*U.image")
+             elif mask == "F":
+                file_names = glob.glob("*F.image")
              else:
                 file_names = glob.glob("*C.image")
           
@@ -948,9 +964,9 @@ def main(argv):
          print '--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith'
          print '--plot_cal_gc: plot the calibration bandpass solution obtained from doing a bandpass cal on the ms where gc is at zenith'
          print '--apply_cal_gc_all: apply the bandpass solutions obtained to all the other measurement sets in the directory'
-         print '--create_images <value>: call clean and viewer to create some basic images (U - uncalibrated fluxscale, C - calibrated)' 
+         print '--create_images <value>: call clean and viewer to create some basic images (U - uncalibrated fluxscale, C - calibrated, F - Phased)' 
          print '--print_lst: converts the file names to lst and prints them'
-         print '--convert_to_fits <value>: convert .image files to .fits (U - uncalibrated fluxscale, C - calibrated)'
+         print '--convert_to_fits <value>: convert .image files to .fits (U - uncalibrated fluxscale, C - calibrated, F - Phased)'
          print '--decon_mask: create a decon mask'
          print "REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY"
          sys.exit()
@@ -974,11 +990,15 @@ def main(argv):
            createimages = True
            if arg == "U":
               mask1 = "U"
+           elif arg == "F":
+              mask1 = "F"
       elif opt == "--convert_to_fits":
            #print "HALLO"
            converttofits = True
            if arg == "U":
               mask2 = "U"
+           elif arg == "F":
+              mask2 = "F"
       elif opt == "--print_lst":
 	   msname = red_object.print_lst(print_values=True)
            print "Final MS: ",msname

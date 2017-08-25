@@ -3,6 +3,9 @@ import inittasks as it
 from pyrap.tables import table
 import os
 import glob
+import stripe as s
+import plotutilities as plutil
+import pyfits
 
 #rad2deg = lambda val: val * 180./np.pi
 #deg2rad = lambda val: val * np.pi/180
@@ -31,9 +34,13 @@ class imager():
           return l,m #lm in radians
 
 
-      def fix_vis_beam_creator(self,min_spacing=16,search_string="*C.ms",dec_shift="-30d43m17s"):
-          file_names,ra_h,ra_m,l,m = self.create_dictionary_lm(min_spacing=min_spacing,search_string=search_string,dec_shift=dec_shift)
+      def fix_vis_beam_creator(self,min_spacing=16,search_string="*C.ms",dec_shift="-30d43m17s"):#dec_shift="-30d43m17s"
+          rad2deg = lambda val: val * 180./np.pi
+
+          file_names,ra_h,ra_m,l,m,hours_m_vec,minutes_m_vec = self.create_dictionary_lm(min_spacing=min_spacing,search_string=search_string,dec_shift=dec_shift)
           
+          os.chdir(it.PATH_DATA)
+
           #COPY OF MS
           '''
           for file_name in file_names:
@@ -45,15 +52,129 @@ class imager():
  
           k = 0
           for file_name in file_names:
+              options={}
               options["vis"]=file_name
               options["outputvis"]=file_name[:-3]+"F.ms"
-              fix_vis_str = str(int(ra_h)) + "h" + str(int(ra_m)) + "m" 
+              fix_vis_str = str(int(ra_h[k])) + "h" + str(int(ra_m[k])) + "m" 
               options["phasecenter"]='J2000 '+fix_vis_str+' '+dec_shift
-              self.fixvis_wrapper(options) 
+              #self.fixvis_wrapper(options) 
+              k+=1
+
+          os.chdir(it.PATH_CODE)
+
+          command = "python redpipe.py --create_images F --convert_to_fits F" 
           
+          #DIRTY IMAGE
+          print("CMD >>> "+command)
+          #os.system(command)
 
-                                
+          #DECOVOLVE
+          print("CMD >>> "+command)
+          #os.system(command)
+          
+          os.chdir(it.PATH_DATA)
 
+          k = 0
+          for file_name in file_names:
+              new_file_name = file_name[:-3]+"F.fits" 
+              s_obj = s.stripe()
+              #s_obj.create_gauss_beam_fits(input_image=new_file_name,produce_beam=True,produce_beam_sqr=True,apply_beam=True,mask="F",l = rad2deg(l[k]), m = rad2deg(m[k]))
+              k += 1 
+
+          #print "diff = ",(ra_m[1]-ra_m[0])/60.0*15
+          
+          for k in xrange(len(minutes_m_vec)):
+              ra_deg = (hours_m_vec[k] + minutes_m_vec[k]/60.0)*15
+              list_val = self.find_fits_files_at_ra(ra_deg=ra_deg) 
+              self.add_and_weigh(list_val,hours_m_vec[k],minutes_m_vec[k])
+              #print str(hours_m_vec[k])+"h"+str(minutes_m_vec[k])+"m"
+              #print "listval = ",list_val  
+        
+          os.chdir(it.PATH_CODE)
+
+      def add_and_weigh(self,file_names,ra_h,ra_m):
+          ra_h = int(ra_h)
+          ra_m = int(ra_m)
+          direc = plutil.FIGURE_PATH+"IMAGES/"
+          if os.path.isdir(direc):
+             os.chdir(direc)
+             first = True
+             if len(file_names) > 0:
+                for file_name in file_names:
+                    if first:
+                       command = "cp "+file_name+" "+str(ra_h)+"_"+str(ra_m)+"_S.fits"  
+                       print("CMD >>> "+command)
+                       os.system(command) 
+                       command = "cp "+file_name+" "+str(ra_h)+"_"+str(ra_m)+"_I.fits"  
+                       print("CMD >>> "+command)
+                       os.system(command)   
+                       command = "cp "+file_name+" "+str(ra_h)+"_"+str(ra_m)+"_W.fits"  
+                       print("CMD >>> "+command)
+                       os.system(command)
+
+                       fh = pyfits.open(file_name)
+                       image = fh[0].data
+                       image_S = image[0,0,:,:]
+                       image_S[:,:] = 0
+                       image_I = np.copy(image_S)
+                       image_W = np.copy(image_S)       
+                       fh.close()
+                       first = False
+                     
+                    file_split = file_name.split(".")
+                    beam_file = file_split[0]+"."+file_split[1]+"."+file_split[2]+"."+file_split[3]+"."+file_split[4]+".FsB.fits"                             
+                    fh = pyfits.open(file_name)
+                    image = fh[0].data
+                    image = image[0,0,:,:]
+                    fh.close()
+
+                    image_S = image_S + image
+
+                    fh = pyfits.open(beam_file)
+                    image = fh[0].data
+                    image = image[0,0,:,:]
+                    fh.close()
+
+                    image_W = image_W + image
+
+                fh = pyfits.open(str(ra_h)+"_"+str(ra_m)+"_S.fits")
+                fh[0].data[0,0,:,:] = image_S
+                fh.writeto(str(ra_h)+"_"+str(ra_m)+"_S.fits",clobber=True)
+                fh.close()
+
+                fh = pyfits.open(str(ra_h)+"_"+str(ra_m)+"_W.fits")
+                fh[0].data[0,0,:,:] = image_W
+                fh.writeto(str(ra_h)+"_"+str(ra_m)+"_W.fits",clobber=True)
+                fh.close()	
+
+                #image_I[image_W>1e-3] = image_S[image_W>1e-3]/image_W[image_W>1e-3]
+                #image_I[image_W<1e-3] = np.NaN
+                image_I = image_S/image_W 
+
+                fh = pyfits.open(str(ra_h)+"_"+str(ra_m)+"_I.fits")
+                fh[0].data[0,0,:,:] = image_I
+                fh.writeto(str(ra_h)+"_"+str(ra_m)+"_I.fits",clobber=True)
+                fh.close() 
+          os.chdir(it.PATH_CODE)   
+
+      def find_fits_files_at_ra(self,ra_deg,search_string="*CFB.fits"):
+          direc = plutil.FIGURE_PATH+"IMAGES/"
+          fits_list = np.array([])
+          if os.path.isdir(direc):
+             os.chdir(direc)
+             file_names = glob.glob(search_string)
+             for fits_file in file_names:
+                 ff = pyfits.open(fits_file)
+                 header_v = ff[0].header
+                 ra_0 = header_v["crval1"]#degrees
+                 dec_0 = header_v["crval2"]#degrees
+                 ff.close()
+
+                 if np.absolute(ra_deg - ra_0) < 1:
+                     fits_list = np.append(fits_list,np.array([fits_file]))
+          os.chdir(it.PATH_CODE)
+          return fits_list       
+                
       def create_dictionary_lm(self,min_spacing=16,search_string="*C.ms",dec_shift="-30d43m17s"):
           
           rad2deg = lambda val: val * 180./np.pi
@@ -71,13 +192,22 @@ class imager():
           l = np.zeros((len(file_names),))
           m = np.zeros((len(file_names),))
           
+          negative = False
+          if dec_shift[0] == "-":
+             negative = True
+             dec_shift = dec_shift[1:]
+ 
           dec_split = dec_shift.split("d")
           d_str = dec_split[0]
           dec_split = dec_split[1].split("m")
           m_str = dec_split[0]
           s_str = dec_split[1]
           s_str = s_str[:-1]
-          dec_shift = deg2rad(float(d_str)+float(m_str)/60 + float(s_str)/3600) 
+           
+          if negative:
+             dec_shift = -1*deg2rad(float(d_str)+float(m_str)/60 + float(s_str)/3600) 
+          else:
+             dec_shift = deg2rad(float(d_str)+float(m_str)/60 + float(s_str)/3600) 
 
 
           print "d_str = ",d_str
@@ -104,18 +234,18 @@ class imager():
               #options["phasecenter"]='J2000 '+fix_vis_str+' -30d43m17s'
                
 
-          #print "ra_cen = ",ra_cen
-          #print "dec_cen = ",dec_cen
-          #print "dec_shift = ",dec_shift
-          #print "ra_shift = ",ra_shift
-          #print "ra_h = ",ra_h
-          #print "ra_m = ",ra_m  
-          #print "h = ",h
-          #print "l = ",l * 180./np.pi
-          #print "m = ",m * 180./np.pi
+          print "ra_cen = ",ra_cen
+          print "dec_cen = ",dec_cen * 180./np.pi
+          print "dec_shift = ",dec_shift * 180./np.pi
+          print "ra_shift = ",ra_shift
+          print "ra_h = ",ra_h
+          print "ra_m = ",ra_m  
+          print "h = ",h
+          print "l = ",l * 180./np.pi
+          print "m = ",m * 180./np.pi
               
           os.chdir(it.PATH_CODE)
-          return file_names,ra_h,ra_m,l,m
+          return file_names,ra_h,ra_m,l,m,hours_m_vec,minutes_m_vec
 
       def create_ph_center_hour_vec(self,min_spacing=16):
           hours = 0

@@ -162,8 +162,8 @@ class stripe():
                  self.create_gauss_beam_fits(input_image=file_name,mask=mask)
              os.chdir(it.PATH_CODE)
 
-      def create_gauss_beam_fits(self,input_image="zen.2457545.47315.xx.HH.uvcU.fits",produce_beam=True,produce_beam_sqr=True,apply_beam=True,mask="C"):
-	  
+      def create_gauss_beam_fits(self,input_image="zen.2457545.47315.xx.HH.uvcU.fits",produce_beam=True,produce_beam_sqr=True,apply_beam=True,mask="C",l = 0, m = 0):
+          #NB l and m must be in degrees	  
           if os.path.isdir(plutil.FIGURE_PATH+"IMAGES/"):
              
              os.chdir(plutil.FIGURE_PATH+"IMAGES/")
@@ -209,7 +209,7 @@ class stripe():
                  x = x_0
                  
                  for j in xrange(n):
-                     image_v[i,j] = np.exp(-1*(x**2/(2*sigma**2) + y**2/(2*sigma**2)))  
+                     image_v[i,j] = np.exp(-1*((x+l)**2/(2*sigma**2) + (y+m)**2/(2*sigma**2)))  
                      x += cell_dim
                      #print "x = ",x
                      #print "y = ",y
@@ -226,6 +226,8 @@ class stripe():
 
                 if mask == "C":
                    output_image = input_image[:-10]+"CB.fits" 
+                elif mask == "F":
+                   output_image = input_image[:-11]+"FB.fits"
                 else:
                    output_image = input_image[:-9]+"B.fits" 
 
@@ -242,7 +244,9 @@ class stripe():
              if produce_beam_sqr:
 
                 if mask == "C":
-                   output_image = input_image[:-10]+"CsB.fits" 
+                   output_image = input_image[:-10]+"CsB.fits"
+                elif mask == "F":
+                   output_image = input_image[:-11]+"FsB.fits"                    
                 else:
 	           output_image = input_image[:-9]+"sB.fits"
 
