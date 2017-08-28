@@ -135,6 +135,7 @@ class imager():
                     image = image[0,0,:,:]
                     fh.close()
 
+                    print "file_name = ",file_name
                     image_W = image_W + image
 
                 fh = pyfits.open(str(ra_h)+"_"+str(ra_m)+"_S.fits")
@@ -147,9 +148,9 @@ class imager():
                 fh.writeto(str(ra_h)+"_"+str(ra_m)+"_W.fits",clobber=True)
                 fh.close()	
 
-                #image_I[image_W>1e-3] = image_S[image_W>1e-3]/image_W[image_W>1e-3]
-                #image_I[image_W<1e-3] = np.NaN
-                image_I = image_S/image_W 
+                image_I[image_W>0.1] = image_S[image_W>0.1]/image_W[image_W>0.1]
+                image_I[image_W<0.1] = np.NaN
+                #image_I = image_S/image_W 
 
                 fh = pyfits.open(str(ra_h)+"_"+str(ra_m)+"_I.fits")
                 fh[0].data[0,0,:,:] = image_I
