@@ -15,7 +15,7 @@ from concurrent.futures.process import ProcessPoolExecutor
 import getopt
 #from numba import jit
 
-PATH_DATA = "/home/trienko/HERA/conference/data/STEF1/"
+PATH_DATA = "/home/trienko/HERA/conference/data/PAPER/trienko/"
 PATH_CODE = "/home/trienko/HERA/conference/code/"
 
 HERA19_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
@@ -458,12 +458,17 @@ class redundant_stefcal(object):
           data = t.getcol(column)
           for k in xrange(data_cube.shape[0]):
               for j in xrange(k+1,data_cube.shape[1]):
-                  p,q,greater = self.find_indices(ANT_ID[k],ANT_ID[j])
-                  if greater:
-   		     data[indx_2d[k,j,:],:] = np.reshape(np.conjugate(data_cube[k,j,:,:]),data[indx_2d[k,j,:],:].shape)
-                  else:
-                     data[indx_2d[k,j,:],:] = np.reshape(data_cube[k,j,:,:],data[indx_2d[k,j,:],:].shape)
-
+                  #print "********************************"
+                  #print "k = ",k
+                  #print "j = ",j
+                  #print "********************************"
+                  
+                  if indx_2d[k,j,0] <> -1:
+                      p,q,greater = self.find_indices(ANT_ID[k],ANT_ID[j])
+                      if greater:
+   		         data[indx_2d[k,j,:],:] = np.reshape(np.conjugate(data_cube[k,j,:,:]),data[indx_2d[k,j,:],:].shape)
+                      else:
+                         data[indx_2d[k,j,:],:] = np.reshape(data_cube[k,j,:,:],data[indx_2d[k,j,:],:].shape)
           t.putcol(column,data)
           t.flush()
           t.close()
@@ -484,14 +489,17 @@ class redundant_stefcal(object):
              print("CMD >>> "+command)
              value = os.system(command)
             
-             print "value = ",value
+             #print "value = ",value
           else:
              ms_file_new = ms_file
           
           os.chdir(PATH_CODE)
 
           data_mat,flag_mat,flag_row_mat,indx_2d = self.read_in_D(ms_file,column=in_column,telescope=telescope,flag_ant=flag_ant)
-          
+
+          flag_mat = np.array([])
+          flag_row_mat = np.array([])          
+
           os.chdir(PATH_DATA)
 
           if last == "MS":
@@ -524,6 +532,15 @@ class redundant_stefcal(object):
 
           self.write_to_D(ms_file_new,data_mat,indx_2d,column=out_column,telescope=telescope) 
           
+      def find_ts(self,ant1,ant2,ANT_ID,N):
+          for k in xrange(N):
+              for j in xrange(k+1,N): 
+                  p,q,greater = self.find_indices(ANT_ID[k],ANT_ID[j])
+                  temp_indx = np.logical_and(ant1==p,ant2==q)
+                  ant_t = ant1[temp_indx] 
+                  if len(ant_t) > 0:
+                     return len(ant_t)
+
       def read_in_D(self,ms_file,column="CORRECTED_DATA",telescope="HERA19",flag_ant=np.array([])):
           os.chdir(PATH_DATA)
 
@@ -547,7 +564,13 @@ class redundant_stefcal(object):
           ant2 = t.getcol("ANTENNA2")
           indx_1d = np.arange(data.shape[0])
 
-          ts = data.shape[0]/B
+          ts = self.find_ts(ant1=ant1,ant2=ant2,ANT_ID=ANT_ID,N=N)
+           
+          #print "ts = ",ts
+          
+          if ts == 0:
+             ts = data.shape[0]/B
+          
           chans = data.shape[1]
 
           data_mat = np.zeros((N,N,ts,chans),dtype=complex)
@@ -565,21 +588,25 @@ class redundant_stefcal(object):
                   #print "q = ",q
                   #print "******************"
                   temp_indx = np.logical_and(ant1==p,ant2==q)
-                  
-                  if greater:
-                     data_mat[k,j,:,:] = np.conjugate(data[temp_indx,:,0])
-                     data_mat[j,k,:,:] = data[temp_indx,:,0]
-                  else:
-                     data_mat[k,j,:,:] = data[temp_indx,:,0]
-                     data_mat[j,k,:,:] = np.conjugate(data[temp_indx,:,0])
+                  ant_t = ant1[temp_indx]
+                  if len(ant_t) > 0:
 
-                  flag_mat[k,j,:,:] = flag[temp_indx,:,0]
-                  flag_mat[j,k,:,:] = flag[temp_indx,:,0]
+                     if greater:
+                        data_mat[k,j,:,:] = np.conjugate(data[temp_indx,:,0])
+                        data_mat[j,k,:,:] = data[temp_indx,:,0]
+                     else:
+                        data_mat[k,j,:,:] = data[temp_indx,:,0]
+                        data_mat[j,k,:,:] = np.conjugate(data[temp_indx,:,0])
+
+                     flag_mat[k,j,:,:] = flag[temp_indx,:,0]
+                     flag_mat[j,k,:,:] = flag[temp_indx,:,0]
  
-                  flag_row_mat[k,j,:] = flag_row[temp_indx]
-                  flag_row_mat[j,k,:] = flag_row[temp_indx]
+                     flag_row_mat[k,j,:] = flag_row[temp_indx]
+                     flag_row_mat[j,k,:] = flag_row[temp_indx]
 
-                  indx_2d[k,j,:] = indx_1d[temp_indx] 
+                     indx_2d[k,j,:] = indx_1d[temp_indx]
+                  else:
+                     indx_2d[k,j,:] = -1  
 
           #print "data_chunck = ",data_chunck.shape
           #print data.shape

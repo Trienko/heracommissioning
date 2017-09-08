@@ -670,7 +670,8 @@ class redpipe():
               options["mode"]='mfs'
               options["cell"]=['10arcmin','10arcmin']
               options["weighting"]='uniform'
-              options["imsize"]=[240,240]
+              #options["imsize"]=[240,240]
+              options["imsize"]=[60,60]
               options["gridmode"]='widefield'
               options["wprojplanes"]=128
               options["gain"]=0.2

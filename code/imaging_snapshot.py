@@ -34,7 +34,7 @@ class imager():
           return l,m #lm in radians
 
 
-      def fix_vis_beam_creator(self,min_spacing=16,search_string="*C.ms",dec_shift="-30d43m17s"):#dec_shift="-30d43m17s"
+      def fix_vis_beam_creator(self,min_spacing=30,search_string="*C.ms",dec_shift="-30d43m17s"):#dec_shift="-30d43m17s"
           rad2deg = lambda val: val * 180./np.pi
 
           file_names,ra_h,ra_m,l,m,hours_m_vec,minutes_m_vec = self.create_dictionary_lm(min_spacing=min_spacing,search_string=search_string,dec_shift=dec_shift)
@@ -57,7 +57,7 @@ class imager():
               options["outputvis"]=file_name[:-3]+"F.ms"
               fix_vis_str = str(int(ra_h[k])) + "h" + str(int(ra_m[k])) + "m" 
               options["phasecenter"]='J2000 '+fix_vis_str+' '+dec_shift
-              #self.fixvis_wrapper(options) 
+              self.fixvis_wrapper(options) 
               k+=1
 
           os.chdir(it.PATH_CODE)
@@ -66,11 +66,11 @@ class imager():
           
           #DIRTY IMAGE
           print("CMD >>> "+command)
-          #os.system(command)
+          os.system(command)
 
           #DECOVOLVE
           print("CMD >>> "+command)
-          #os.system(command)
+          os.system(command)
           
           os.chdir(it.PATH_DATA)
 
@@ -78,7 +78,7 @@ class imager():
           for file_name in file_names:
               new_file_name = file_name[:-3]+"F.fits" 
               s_obj = s.stripe()
-              #s_obj.create_gauss_beam_fits(input_image=new_file_name,produce_beam=True,produce_beam_sqr=True,apply_beam=True,mask="F",l = rad2deg(l[k]), m = rad2deg(m[k]))
+              s_obj.create_gauss_beam_fits(input_image=new_file_name,produce_beam=True,produce_beam_sqr=True,apply_beam=True,mask="F",l = rad2deg(l[k]), m = rad2deg(m[k]))
               k += 1 
 
           #print "diff = ",(ra_m[1]-ra_m[0])/60.0*15
