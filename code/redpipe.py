@@ -609,6 +609,47 @@ class redpipe():
 	      self.applycal_wrapper(options=options)
           os.chdir(it.PATH_CODE)
 
+      def applycal_gc_specific(self,delay=False):
+          temp_dir = it.PATH_DATA
+          it.PATH_DATA = it.SPEC_GC_DIR
+               
+          global BANDBASS_GC_CAL_TABLE
+          global DELAY_GC_CAL_TABLE
+          if BANDBASS_GC_CAL_TABLE == '':
+             gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
+	     gc_name_split = gc_name.split('.')
+             gc_jd = gc_name_split[1]+'.'+gc_name_split[2]
+          
+             BANDBASS_GC_CAL_TABLE = 'b_'+gc_jd+'.cal'
+
+             command = "cp -r "+it.SPEC_GC_DIR+BANDBASS_GC_CAL_TABLE+" "+temp_dir+"."
+             print("CMD >>> "+command)
+             os.system(command)
+
+          if DELAY_GC_CAL_TABLE == '':
+             gc_name = self.print_lst(print_values=False) #print lst flips between code and data dir already needs to be placed first
+	     gc_name_split = gc_name.split('.')
+             gc_jd = gc_name_split[1]+'.'+gc_name_split[2]
+          
+             DELAY_GC_CAL_TABLE = 'd_'+gc_jd+'.cal'
+             command = "cp -r "+it.SPEC_GC_DIR+DELAY_GC_CAL_TABLE+" "+temp_dir+"."
+             print("CMD >>> "+command)
+             os.system(command)
+
+          it.PATH_DATA = temp_dir
+          os.chdir(it.PATH_DATA)
+          file_names = glob.glob("*U.ms")
+          for file_name in file_names:
+              options={}
+              options["vis"] = file_name
+              if delay:
+                 options["gaintable"]=[DELAY_GC_CAL_TABLE,BANDBASS_GC_CAL_TABLE]
+              else:   
+                 options["gaintable"]=BANDBASS_GC_CAL_TABLE
+              
+	      self.applycal_wrapper(options=options)
+          os.chdir(it.PATH_CODE)
+
       def create_images(self,mask="U", n_block = 75, imp_factor = 30):
           os.chdir(it.PATH_DATA)
           
@@ -670,8 +711,8 @@ class redpipe():
               options["mode"]='mfs'
               options["cell"]=['10arcmin','10arcmin']
               options["weighting"]='uniform'
-              #options["imsize"]=[240,240]
-              options["imsize"]=[60,60]
+              options["imsize"]=[240,240]
+              #options["imsize"]=[60,60]
               options["gridmode"]='widefield'
               options["wprojplanes"]=128
               options["gain"]=0.2
@@ -938,6 +979,7 @@ def main(argv):
    bandpassgc = False
    plotcalgc = False
    applycalgcall = False
+   applycalgcspec = False
    createimages = False
    converttofits = False
    flagao = False
@@ -948,9 +990,9 @@ def main(argv):
    saveflags = False
 
    try:
-      opts, args = getopt.getopt(argv,"hd",["find_red_gr","flag_all_basic","flag_ao","save_flags","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits=","decon_mask"])
+      opts, args = getopt.getopt(argv,"hd",["find_red_gr","flag_all_basic","flag_ao","save_flags","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits=","decon_mask","apply_cal_gc_spec"])
    except getopt.GetoptError:
-      print 'python redpipe.py -d --find_red_gr --flag_all_basic --flag_ao --save_flags --bandpass_gc --plot_cal_gc --apply_cal_gc_all --create_images <value> --print_lst --convert_to_fits <value> --decon_mask'
+      print 'python redpipe.py -d --find_red_gr --flag_all_basic --flag_ao --save_flags --bandpass_gc --plot_cal_gc --apply_cal_gc_all --apply_cal_gc_spec --create_images <value> --print_lst --convert_to_fits <value> --decon_mask'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
@@ -965,6 +1007,7 @@ def main(argv):
          print '--bandpass_gc: do a bandpass calibration on the snapshot where the galactic center is at zenith'
          print '--plot_cal_gc: plot the calibration bandpass solution obtained from doing a bandpass cal on the ms where gc is at zenith'
          print '--apply_cal_gc_all: apply the bandpass solutions obtained to all the other measurement sets in the directory'
+         print '--apply_cal_gc_spec: apply the cal solutions obtained in dir SPEC_GC_DIR to current data directory'
          print '--create_images <value>: call clean and viewer to create some basic images (U - uncalibrated fluxscale, C - calibrated, F - Phased)' 
          print '--print_lst: converts the file names to lst and prints them'
          print '--convert_to_fits <value>: convert .image files to .fits (U - uncalibrated fluxscale, C - calibrated, F - Phased)'
@@ -987,6 +1030,8 @@ def main(argv):
            plotcalgc = True
       elif opt == "--apply_cal_gc_all":
            applycalgcall = True
+      elif opt == "--apply_cal_gc_spec":
+           applycalgcspec = True
       elif opt == "--create_images":
            createimages = True
            if arg == "U":
@@ -1022,6 +1067,8 @@ def main(argv):
       red_object.plot_cal_gc(delay=delay)
    if applycalgcall:
       red_object.applycal_gc_all(delay=delay)
+   if applycalgcspec:
+      red_object.applycal_gc_spec(delay=delay)
    if decon:
       #print "HALLO 2"
       red_object.produce_decon_mask()

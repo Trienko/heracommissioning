@@ -264,6 +264,48 @@ class absflux():
               #break
           os.chdir(it.PATH_CODE)
 
+      def apply_c_spec(self):
+          global ABS_CAL_P
+
+          temp_dir = it.PATH_DATA
+          it.PATH_DATA = it.SPEC_GC_DIR 
+                
+          os.chdir(it.PATH_DATA)
+          if ABS_CAL_P == '':
+             file_names = glob.glob("*ABS_CAL.p")
+             ABS_CAL_P = file_names[0]
+             
+             command = "cp -r "+it.SPEC_GC_DIR+ABS_CAL_P+" "+temp_dir+"."
+             print("CMD >>> "+command)
+             os.system(command)
+
+          it.PATH_DATA = temp_dir
+          os.chdir(it.PATH_DATA)
+
+          file_names = glob.glob("*uvcU.ms")
+          for file_name in file_names:
+              command = "cp -r "+file_name+" "+file_name[:-3]+"C.ms"
+              print("CMD >>> "+command)
+              os.system(command)
+              file = open("abs_flux_cal.py","w")
+              file.write("from casa import table as tb\n") 
+              file.write("tb.open(\""+file_name[:-3]+"C.ms"+"\",nomodify=False)\n")
+              file.write("corrected_data = tb.getcol(\"CORRECTED_DATA\")\n")
+              file.write("import pickle\n")
+              file.write("input = open(\""+ABS_CAL_P+"\",\'rb\')\n")
+              file.write("c = pickle.load(input)\n")
+              file.write("input.close()\n")
+              file.write("corrected_data = c*corrected_data\n")
+              file.write("tb.putcol(\"CORRECTED_DATA\",corrected_data)\n")
+              file.write("tb.flush()\n")
+              file.write("tb.close()\n")
+              file.close()
+              command = "casa -c abs_flux_cal.py --nogui --nologfile --log2term"
+              print("CMD >>> "+command)
+              os.system(command)
+              #break
+          os.chdir(it.PATH_CODE)
+
       def compute_c(self):
           global ABS_CAL_P
           mask = np.zeros((2,2),dtype=float)
@@ -356,30 +398,34 @@ def main(argv):
     a = absflux()
     abscal = False
     applycal = False
-   
+    apply_spec = False
 
     try:
-       opts, args = getopt.getopt(argv,"h", ["abs_cal"])
+       opts, args = getopt.getopt(argv,"h", ["abs_cal","apply_spec"])
     except getopt.GetoptError:
-       print 'python absolute_flux.py --abs_cal'
+       print 'python absolute_flux.py --abs_cal --apply_spec'
        sys.exit(2)
     for opt, arg in opts:
         print "opt = ",opt
         print "arg = ",arg
         if opt == '-h':
-           print 'python absolute_flux.py --abs_cal'
+           print 'python absolute_flux.py --abs_cal --apply_spec'
            print '--abs_cal: 1. Absolute calibrate the data using PMN J2101 2802 and PMN J2107 2526. 2. Apply to all ms in JD dir.'
+           print '--apply_spec: Apply the absolute scaling from the JD pointed to by SPEC_GC_DIR
            sys.exit()
         elif opt == "--abs_cal":
              #print "HALLO"
              abscal = True
              applycal = True
-
+        elif opt == "--apply_spec":
+             apply_spec = True
     if abscal:
         c = a.compute_c()
         print "c = ",c
     if applycal:
         a.apply_c()
+    if apply_spec:
+        a.apply_c_spec()
              
 
 if __name__ == "__main__":

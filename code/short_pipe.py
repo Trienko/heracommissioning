@@ -1,16 +1,92 @@
 import inittasks as it
-import pyuvdata
-import glob, os
-import redpipe as red
-import absolute_flux as absf
+#import pyuvdata
+#import glob, os
+#import redpipe as red
+#import absolute_flux as absf
 
 if __name__ == "__main__":
+
+   #CALIBRATING FIRST MS
+   #***********************************************************************************
+   it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457545/"
 
    command = "python initscript.py --add_uvws --miriad_to_uvfits --importuvfits"
    print("CMD >>> "+command)
    os.system(command)
 
-   command = "python redpipe.py -d --flag_all_basic --bandpass_gc --apply_cal_gc_all --create_images U --convert_to_fits U"
+   command = "python redpipe.py -d --flag_all_basic --bandpass_gc --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python stripe.py --create_beams U"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python absolute_flux.py --abs_cal"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python redpipe.py --create_images C --convert_to_fits C"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   #CALIBRATING SECOND MS
+   #***********************************************************************************
+   it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457555/"
+
+   command = "python initscript.py --add_uvws --miriad_to_uvfits --importuvfits"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python redpipe.py -d --flag_all_basic --bandpass_gc --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python stripe.py --create_beams U"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python absolute_flux.py --abs_cal"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python redpipe.py --create_images C --convert_to_fits C"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   #CALIBRATING THIRD MS
+   #***********************************************************************************
+   it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
+
+   command = "python initscript.py --add_uvws --miriad_to_uvfits --importuvfits"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python redpipe.py -d --flag_all_basic --bandpass_gc --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python stripe.py --create_beams U"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python absolute_flux.py --abs_cal"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python redpipe.py --create_images C --convert_to_fits C"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   #CALIBRATING FOURTH MS
+   #***********************************************************************************
+   it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
+
+   command = "python initscript.py --add_uvws --miriad_to_uvfits --importuvfits"
+   print("CMD >>> "+command)
+   os.system(command)
+
+   command = "python redpipe.py -d --flag_all_basic --bandpass_gc --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
    print("CMD >>> "+command)
    os.system(command)
 

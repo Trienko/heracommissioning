@@ -7,17 +7,18 @@ from ephem import *
 
 #SETTING LOCATIONS TO ALL THE IMPORTANT SCRIPTS AND DATA FILES
 ##############################################################################################################
-PATH_TO_ADD_UVWS = "/home/trienko/HERA/software/capo/dcj/scripts/add_uvws.py"
-CAL_FILE = "hsa7458_v000_HH" 
+PATH_TO_ADD_UVWS = "/home/tlgrobler/software/capo/dcj/scripts/add_uvws.py"
+CAL_FILE = "hsa7458_v001" 
 PATH_TO_MIR_TO_FITS = "/usr/local/bin/miriad_to_uvfits.py"
 PATH_TO_MIR_TO_FITS_RID = "/home/trienko/HERA/conference/code/miriad2uvfits.py"
 #PATH_DATA = r"/media/trienko/Seagate Expansion Drive/HERA/data/2457661/"
-PATH_DATA = "/home/trienko/HERA/conference/data/2457661/"
+PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/TEST_PIPE/"
 #PATH_DATA = "/home/trienko/HERA/conference/data/IMG/"
 #PATH_DATA = "/home/trienko/HERA/conference/data/KWAZI/"
-PATH_CODE = "/home/trienko/HERA/conference/code/"
+PATH_CODE = "/home/tlgrobler//heracommissioning/code/"
 OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
 ANT_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
+SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
 ##############################################################################################################
 
 #GENERAL CASA WRAPPER FUNCTION
