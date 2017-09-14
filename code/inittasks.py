@@ -4,6 +4,9 @@ import glob, os
 from pyrap.tables import table
 import pickle
 from ephem import *
+import getopt
+import sys
+
 
 #SETTING LOCATIONS TO ALL THE IMPORTANT SCRIPTS AND DATA FILES
 ##############################################################################################################
@@ -273,7 +276,7 @@ class inittasks():
               pickle.dump(final_end_time,output)
               #output.close()
               #print "dt = ",len(dt[dt>1e-12])
-              #plt.plot(dt)
+              #plt.plot(dt)sys.argv[1:]
               #plt.show()
 
           os.chdir(PATH_CODE)
@@ -740,9 +743,20 @@ class inittasks():
                  
 
 if __name__ == "__main__":
-      
-   #I NEED TO BE SUDO TO RUN THIS TASK WHICH IS WHY I HAVE WRITTEN A WRAPPER AROUND THIS CLASS WHICH CAN CALL THIS PYTHON FILE
+   argv = sys.argv[1:]
    inittasks_object = inittasks()
+   
+   #I NEED TO BE SUDO TO RUN THIS TASK WHICH IS WHY I HAVE WRITTEN A WRAPPER AROUND THIS CLASS WHICH CAN CALL THIS PYTHON FILE   
+   try:
+      opts, args = getopt.getopt(argv,"h",["set_data_path="])
+   except getopt.GetoptError:
+      sys.exit(2)
+   for opt, arg in opts:
+       if opt == '-h': 
+          print "WRAPPER"
+       elif opt == "--set_data_path":
+         inittasks_object.PATH_DATA = arg  
+
    inittasks_object.miriad_to_uvfits()
 
 

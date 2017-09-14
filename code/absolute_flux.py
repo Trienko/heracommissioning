@@ -401,9 +401,9 @@ def main(argv):
     apply_spec = False
 
     try:
-       opts, args = getopt.getopt(argv,"h", ["abs_cal","apply_spec"])
+       opts, args = getopt.getopt(argv,"h", ["abs_cal","apply_spec","set_data_path="])
     except getopt.GetoptError:
-       print 'python absolute_flux.py --abs_cal --apply_spec'
+       print 'python absolute_flux.py --abs_cal --apply_spec --set_data_path <path>'
        sys.exit(2)
     for opt, arg in opts:
         print "opt = ",opt
@@ -411,8 +411,11 @@ def main(argv):
         if opt == '-h':
            print 'python absolute_flux.py --abs_cal --apply_spec'
            print '--abs_cal: 1. Absolute calibrate the data using PMN J2101 2802 and PMN J2107 2526. 2. Apply to all ms in JD dir.'
-           print '--apply_spec: Apply the absolute scaling from the JD pointed to by SPEC_GC_DIR
+           print '--apply_spec: Apply the absolute scaling from the JD pointed to by SPEC_GC_DIR"
+           print '--set_data_path: sets the path to the data directory'
            sys.exit()
+        elif opt == "--set_data_path":
+             it.PATH_DATA = arg
         elif opt == "--abs_cal":
              #print "HALLO"
              abscal = True

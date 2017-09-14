@@ -10,6 +10,7 @@ import healpy as hp
 import pyfits as pf
 from pylab import cm
 
+
 class stripe():
 
       def __init__(self):
@@ -284,20 +285,23 @@ def main(argv):
    
 
     try:
-       opts, args = getopt.getopt(argv,"h", ["create_beams=","call_mk_map_mod","make_all_sky_map","plot_healpix"])
+       opts, args = getopt.getopt(argv,"h", ["create_beams=","call_mk_map_mod","make_all_sky_map","plot_healpix","set_data_path="])
     except getopt.GetoptError:
-       print 'python stripe.py --create_beams <value> --call_mk_map_mod --make_all_sky_map --plot_healpix'
+       print 'python stripe.py --create_beams <value> --call_mk_map_mod --make_all_sky_map --plot_healpix --set_data_path <path>'
        sys.exit(2)
     for opt, arg in opts:
-        print "opt = ",opt
-        print "arg = ",arg
+        #print "opt = ",opt
+        #print "arg = ",arg
         if opt == '-h':
            print 'python stripe.py --create_beams --call_mk_map_mod --make_all_sky_map --plot_healpix'
            print '--create_beams <value>: creating different kind of beam files, a beam, a beam times sky and a beam square file. Create beams for absolute calibrated data or not (C or U).'
            print '--call_mk_map_mod: project all fits files to individual healpix projected fits files'
            print '--make_all_sky_map: make an all sky healpix map from the individual healpix-fits files (use squared beam weighting)'
            print '--plot_healpix: plot the all sky healpix'
+           print "--set_data_path <path>: set the location of the data directory"
            sys.exit()
+        elif opt == "--set_data_path":
+           it.PATH_DATA = arg
         elif opt == "--create_beams":
            createbeams = True
            if arg == "C":

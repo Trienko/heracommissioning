@@ -990,9 +990,9 @@ def main(argv):
    saveflags = False
 
    try:
-      opts, args = getopt.getopt(argv,"hd",["find_red_gr","flag_all_basic","flag_ao","save_flags","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits=","decon_mask","apply_cal_gc_spec"])
+      opts, args = getopt.getopt(argv,"hd",["find_red_gr","flag_all_basic","flag_ao","save_flags","bandpass_gc","plot_cal_gc","apply_cal_gc_all","create_images=","print_lst","convert_to_fits=","decon_mask","apply_cal_gc_spec","set_data_path="])
    except getopt.GetoptError:
-      print 'python redpipe.py -d --find_red_gr --flag_all_basic --flag_ao --save_flags --bandpass_gc --plot_cal_gc --apply_cal_gc_all --apply_cal_gc_spec --create_images <value> --print_lst --convert_to_fits <value> --decon_mask'
+      print 'python redpipe.py -d --find_red_gr --flag_all_basic --flag_ao --save_flags --bandpass_gc --plot_cal_gc --apply_cal_gc_all --apply_cal_gc_spec --create_images <value> --print_lst --convert_to_fits <value> --decon_mask --set_data_path <path>'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
@@ -1012,8 +1012,11 @@ def main(argv):
          print '--print_lst: converts the file names to lst and prints them'
          print '--convert_to_fits <value>: convert .image files to .fits (U - uncalibrated fluxscale, C - calibrated, F - Phased)'
          print '--decon_mask: create a decon mask'
+         print '--set_data_path: sets the path to the data directory'
          print "REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY"
          sys.exit()
+      elif opt == "--set_data_path":
+         it.PATH_DATA = arg
       elif opt == '-d':
            delay = True
       elif opt == "--find_red_gr":
