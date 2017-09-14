@@ -80,21 +80,22 @@ if __name__ == "__main__":
 
    #CALIBRATING FOURTH MS
    #***********************************************************************************
-   it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
+   it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457748/"
+   it.SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
 
    command = "python initscript.py --add_uvws --miriad_to_uvfits --importuvfits"
    print("CMD >>> "+command)
    os.system(command)
 
-   command = "python redpipe.py -d --flag_all_basic --bandpass_gc --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
+   command = "python redpipe.py -d --flag_all_basic --apply_cal_gc_spec --create_images U --convert_to_fits U"
    print("CMD >>> "+command)
    os.system(command)
 
-   command = "python stripe.py --create_beams U"
-   print("CMD >>> "+command)
-   os.system(command)
+   #command = "python stripe.py --create_beams U"
+   #print("CMD >>> "+command)
+   #os.system(command)
 
-   command = "python absolute_flux.py --abs_cal"
+   command = "python absolute_flux.py --apply_spec"
    print("CMD >>> "+command)
    os.system(command)
 
