@@ -301,7 +301,8 @@ def main(argv):
            print "--set_data_path <path>: set the location of the data directory"
            sys.exit()
         elif opt == "--set_data_path":
-           it.PATH_DATA = arg
+           inittasks_object = it.inittasks()
+           inittasks_object.set_PATH_DATA(arg)
         elif opt == "--create_beams":
            createbeams = True
            if arg == "C":

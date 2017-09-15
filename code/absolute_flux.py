@@ -266,10 +266,11 @@ class absflux():
 
       def apply_c_spec(self):
           global ABS_CAL_P
-
+           
           temp_dir = it.PATH_DATA
-          it.PATH_DATA = it.SPEC_GC_DIR 
-                
+          inittasks_object = it.inittasks()
+          inittasks_object.set_PATH_DATA(it.SPEC_GC_DIR)
+
           os.chdir(it.PATH_DATA)
           if ABS_CAL_P == '':
              file_names = glob.glob("*ABS_CAL.p")
@@ -279,7 +280,7 @@ class absflux():
              print("CMD >>> "+command)
              os.system(command)
 
-          it.PATH_DATA = temp_dir
+          inittasks_object.set_PATH_DATA(temp_dir)
           os.chdir(it.PATH_DATA)
 
           file_names = glob.glob("*uvcU.ms")
@@ -415,7 +416,8 @@ def main(argv):
            print '--set_data_path: sets the path to the data directory'
            sys.exit()
         elif opt == "--set_data_path":
-             it.PATH_DATA = arg
+             inittasks_object = it.inittasks()
+             inittasks_object.set_PATH_DATA(arg)
         elif opt == "--abs_cal":
              #print "HALLO"
              abscal = True

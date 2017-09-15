@@ -611,8 +611,9 @@ class redpipe():
 
       def applycal_gc_specific(self,delay=False):
           temp_dir = it.PATH_DATA
-          it.PATH_DATA = it.SPEC_GC_DIR
-               
+          inittasks_object = it.inittasks()
+          inittasks_object.set_PATH_DATA(it.SPEC_GC_DIR)
+                         
           global BANDBASS_GC_CAL_TABLE
           global DELAY_GC_CAL_TABLE
           if BANDBASS_GC_CAL_TABLE == '':
@@ -636,7 +637,7 @@ class redpipe():
              print("CMD >>> "+command)
              os.system(command)
 
-          it.PATH_DATA = temp_dir
+          inittasks_object.set_PATH_DATA(temp_dir)
           os.chdir(it.PATH_DATA)
           file_names = glob.glob("*U.ms")
           for file_name in file_names:
@@ -847,7 +848,7 @@ class redpipe():
                           #plt.imshow(image)
                           #plt.show()
                           
-                          idx_unr = np.unravel_index(image.argmax(), image.shape)
+                          idx_unr = np.unravel_index(image.argmax(), image.applycal_gc_specificshape)
 
                           x = idx_unr[0]
                           y = idx_unr[1]
@@ -1016,7 +1017,10 @@ def main(argv):
          print "REMEMBER THAT HSA7458_V000_HH.PY AND CREATE_PS.PY HAS TO BE IN YOUR DATA DIRECTORY"
          sys.exit()
       elif opt == "--set_data_path":
-         it.PATH_DATA = arg
+           #print it.PATH_DATA
+           inittasks_object = it.inittasks()
+           inittasks_object.set_PATH_DATA(arg)
+           #print it.PATH_DATA
       elif opt == '-d':
            delay = True
       elif opt == "--find_red_gr":
@@ -1071,7 +1075,7 @@ def main(argv):
    if applycalgcall:
       red_object.applycal_gc_all(delay=delay)
    if applycalgcspec:
-      red_object.applycal_gc_spec(delay=delay)
+      red_object.applycal_gc_specific(delay=delay)
    if decon:
       #print "HALLO 2"
       red_object.produce_decon_mask()

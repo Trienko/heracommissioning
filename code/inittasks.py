@@ -21,7 +21,8 @@ PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/TEST_PIP
 PATH_CODE = "/home/tlgrobler//heracommissioning/code/"
 OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
 ANT_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
-SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
+#SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
+SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/TEST_PIPE/"
 ##############################################################################################################
 
 #GENERAL CASA WRAPPER FUNCTION
@@ -102,6 +103,7 @@ class inittasks():
       ##############################
       def add_uv_tracks(self):
           os.chdir(PATH_DATA)
+          print "PATH_DATA = ",PATH_DATA
            
           for file in glob.glob("*.uvc"):
               command = "python " + PATH_TO_ADD_UVWS + " -C " + CAL_FILE +" "+ file
@@ -233,6 +235,10 @@ class inittasks():
           print("CMD >>> "+command)
           os.system(command)
           os.chdir(PATH_CODE)
+
+      def set_PATH_DATA(self,path_data):
+          global PATH_DATA
+          PATH_DATA = path_data
 
       def create_time_pickle_N(self,N=56):
           os.chdir(PATH_DATA)
@@ -755,7 +761,7 @@ if __name__ == "__main__":
        if opt == '-h': 
           print "WRAPPER"
        elif opt == "--set_data_path":
-         inittasks_object.PATH_DATA = arg  
+          inittasks_object.set_PATH_DATA(arg) 
 
    inittasks_object.miriad_to_uvfits()
 

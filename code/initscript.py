@@ -1,21 +1,21 @@
 import numpy as np
 import pylab as plt
 import glob, os
-import inittasks
+import inittasks as it
 import sys, getopt
 
 def main(argv):
-   inittasks_object = inittasks.inittasks()
+   inittasks_object = it.inittasks()
       
    try:
-      opts, args = getopt.getopt(argv,"h",["add_uvws","miriad_to_uvfits","sudo_miriad_to_uvfits","add_HERA","importuvfits","swap_ant","del_uvfits","del_uvcU","del_ms","split_sim_ms","set_data_path="])
+      opts, args = getopt.getopt(argv,"h",["set_data_path=","add_uvws","miriad_to_uvfits","sudo_miriad_to_uvfits","add_HERA","importuvfits","swap_ant","del_uvfits","del_uvcU","del_ms","split_sim_ms"])
    except getopt.GetoptError:
       print 'python initscript.py -h --add_uvws --miriad_to_uvfits --sudo_miriad_to_uvfits --add_HERA --importuvfits --swap_ant --del_uvfits --del_uvcU --del_ms --split_sim_ms --set_data_path <path>'
       sys.exit(2)
    for opt, arg in opts:
       #print "opt = ",opt
       if opt == '-h':
-         print 'python initscript.py -h --add_uvws --miriad_to_uvfits --sudo_miriad_to_uvfits --add_HERA --importuvfits --swap_ant --del_uvfits --del_uvcU --del_ms --split_sim_ms --set_data_path <path>'
+         print 'python initscript.py -h --set_data_path <path> --add_uvws --miriad_to_uvfits --sudo_miriad_to_uvfits --add_HERA --importuvfits --swap_ant --del_uvfits --del_uvcU --del_ms --split_sim_ms'
          print "--add_uvws: adds uv-tracks to miriad data sets"
          print "--miriad_to_uvfits: converts miriad data sets to uvfits format"
          print "--sudo_miriad_to_uvfits: converts miriad data sets to uvfits format (as root)"
@@ -30,13 +30,14 @@ def main(argv):
          print "REMEMBER TO SET THE LOCATIONS TO ALL THE IMPORTANT SCRIPTS AND DATA FILES IN THE HEADER OF INITTASKS.PY"
          sys.exit()
       elif opt == "--set_data_path":
-         inittasks_object.PATH_DATA = arg
+         inittasks_object.set_PATH_DATA(arg)
+         #print "inittasks_object.PATH_DATA = ",it.PATH_DATA 
       elif opt == "--add_uvws":
          inittasks_object.add_uv_tracks()
       elif opt == "--miriad_to_uvfits":
          inittasks_object.miriad_to_uvfits()
       elif opt == "--sudo_miriad_to_uvfits":
-         command = "sudo ipython inittasks.py --set_data_path "+inittasks_object.PATH_DATA
+         command = "sudo python inittasks.py --set_data_path "+it.PATH_DATA
          print("CMD >>> "+command)
          os.system(command)
       elif opt == "--addHERA":
