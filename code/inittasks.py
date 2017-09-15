@@ -21,8 +21,8 @@ PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/TEST_PIP
 PATH_CODE = "/home/tlgrobler//heracommissioning/code/"
 OBSTABLENAME = "/home/trienko/HERA/software/casa-release-4.7.1-el7/data/geodetic/Observatories/"
 ANT_ID = np.array([80,104,96,64,53,31,65,88,9,20,89,43,105,22,81,10,72,112,97])
-#SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
-SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/TEST_PIPE/"
+SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
+#SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/TEST_PIPE/"
 ##############################################################################################################
 
 #GENERAL CASA WRAPPER FUNCTION
