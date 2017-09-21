@@ -40,25 +40,49 @@ class imager():
           file_names,ra_h,ra_m,l,m,hours_m_vec,minutes_m_vec = self.create_dictionary_lm(min_spacing=min_spacing,search_string=search_string,dec_shift=dec_shift)
           
           os.chdir(it.PATH_DATA)
-
+          
           #COPY OF MS
-          '''
           for file_name in file_names:
-              new_file_name = file_name[-3]+"F.ms"
-              command = "cp - r "+file_name+" "+new_file_name
+              #print "file_name[-3] = ",file_name[-3]
+              new_file_name = file_name[:-3]+"F.ms"
+              command = "cp -r "+file_name+" "+new_file_name
               print("CMD >>> "+command)
               os.system(command)
-          '''
- 
+
+          
+          #COPYING NEEDED PYTHON FILES
+          files_python = np.array(["ClassMS_psa64.py","ModColor.py","ModRotate_psa64.py","rad2hmsdms.py","reallyFixVis_psa64.py","reformat.py",])
+
+          for code_file in files_python:
+              if not os.path.isfile(it.DATA_PATH+code_file):
+                 command = "cp -r "+code_file+" "+it.DATA_PATH+"." 
+                 print("CMD >>> "+command)
+                 os.system(command)  
+          
+          #USING REALLY FIXVIS
           k = 0
+          dec_shift_r=dec_shift.replace("d",":")
+          dec_shift_r=dec_shift_r.replace("m",":")
+          dec_shift_r=dec_shift_r.replace("s","")
+          dec_shift_r = dec_shift_r+".000"
+          
           for file_name in file_names:
-              options={}
-              options["vis"]=file_name
-              options["outputvis"]=file_name[:-3]+"F.ms"
-              fix_vis_str = str(int(ra_h[k])) + "h" + str(int(ra_m[k])) + "m" 
-              options["phasecenter"]='J2000 '+fix_vis_str+' '+dec_shift
-              self.fixvis_wrapper(options) 
+              ms = file_name[:-3]+"F.ms"
+              ra_str = str(int(ra_h[k])) + ":" + str(int(ra_m[k])) + ":00.000"
+              command = "python reallyFixVis_psa64.py --str --ra " + ra_str+" --dec "+dec_shift_r+" "+ms
               k+=1
+
+          #ROTATION USING CASA FIXVIS
+          #dec_shift="-30d43m17s"
+          #k = 0
+          #for file_name in file_names:
+          #    options={}
+          #    options["vis"]=file_name
+          #    options["outputvis"]=file_name[:-3]+"F.ms"
+          #    fix_vis_str = str(int(ra_h[k])) + "h" + str(int(ra_m[k])) + "m" 
+          #    options["phasecenter"]='J2000 '+fix_vis_str+' '+dec_shift
+          #    self.fixvis_wrapper(options) 
+          #    k+=1
 
           os.chdir(it.PATH_CODE)
 
@@ -68,7 +92,7 @@ class imager():
           print("CMD >>> "+command)
           os.system(command)
 
-          #DECOVOLVE
+          #DECONVOLVE
           print("CMD >>> "+command)
           os.system(command)
           
@@ -89,9 +113,8 @@ class imager():
               self.add_and_weigh(list_val,hours_m_vec[k],minutes_m_vec[k])
               #print str(hours_m_vec[k])+"h"+str(minutes_m_vec[k])+"m"
               #print "listval = ",list_val  
-        
           os.chdir(it.PATH_CODE)
-
+          
       def add_and_weigh(self,file_names,ra_h,ra_m):
           ra_h = int(ra_h)
           ra_m = int(ra_m)
@@ -249,6 +272,7 @@ class imager():
           return file_names,ra_h,ra_m,l,m,hours_m_vec,minutes_m_vec
 
       def create_ph_center_hour_vec(self,min_spacing=16):
+          print "min_spacing = ",min_spacing
           hours = 0
           hours_m = 0
           minutes = 0
@@ -296,12 +320,12 @@ class imager():
           #print "h = ",len(hours_vec)
           #print "m = ",len(minutes_vec)
 
-          #print "hm = ",hours_m_vec
-          #print "mm = ",minutes_m_vec
-          #print "h = ",hours_vec
-          #print "m = ",minutes_vec
-          #print "h_r = ",h
-          #print "hm_r = ",hm
+          print "hm = ",hours_m_vec
+          print "mm = ",minutes_m_vec
+          print "h = ",hours_vec
+          print "m = ",minutes_vec
+          print "h_r = ",h
+          print "hm_r = ",hm
           return hours_m_vec,minutes_m_vec,hours_vec,minutes_vec,h,hm
 
               
