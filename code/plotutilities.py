@@ -23,6 +23,13 @@ class plotutilities():
       def __init__(self):
           pass
 
+
+      def set_PATH_DATA(self,path_data):
+          global FIGURE_PATH
+          FIGURE_PATH = path_data+'figures/'
+          inittasks_object = it.inittasks()
+          inittasks_object.set_PATH_DATA(path_data)
+
       
       #####################################
       #CASA wrapper around the plotms task using the CASA_WRAPPER function from inittasks

@@ -303,6 +303,8 @@ def main(argv):
         elif opt == "--set_data_path":
            inittasks_object = it.inittasks()
            inittasks_object.set_PATH_DATA(arg)
+           plt_util_object = plutil.plotutilities()
+           plt_util_object.set_PATH_DATA(arg)
         elif opt == "--create_beams":
            createbeams = True
            if arg == "C":

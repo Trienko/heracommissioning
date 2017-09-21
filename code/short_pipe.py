@@ -14,6 +14,7 @@ if __name__ == "__main__":
 
    #INITIALIZATION
    #***********************************************************************************
+   '''
    command = "python initscript.py --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457545/ --add_uvws --sudo_miriad_to_uvfits --importuvfits"
    print("CMD >>> "+command)
    os.system(command)
@@ -29,8 +30,13 @@ if __name__ == "__main__":
    command = "python initscript.py --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457748/ --add_uvws --sudo miriad_to_uvfits --importuvfits"
    print("CMD >>> "+command)
    os.system(command)
+   '''
+   #command = "python initscript.py --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457748/ --importuvfits"
+   #print("CMD >>> "+command)
+   #os.system(command)
+   
 
-
+   
    #CALIBRATING FIRST MS
    #***********************************************************************************
    #it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457545/"
@@ -42,8 +48,17 @@ if __name__ == "__main__":
    #command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457545/"
    #print("CMD >>> "+command)
    #os.system(command)
-   
-   command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457545/ --flag_all_basic --bandpass_gc --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
+
+   #command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457545/ --plot_cal_gc --create_images U --convert_to_fits U"
+   #print("CMD >>> "+command)
+   #os.system(command)   
+
+
+   #command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457545/ --bandpass_gc --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
+   #print("CMD >>> "+command)
+   #os.system(command)
+
+   command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457545/ --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
    print("CMD >>> "+command)
    os.system(command)
 
@@ -63,7 +78,7 @@ if __name__ == "__main__":
    #***********************************************************************************
    #it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457555/"
 
-   command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457555/ --flag_all_basic --bandpass_gc --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
+   command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457555/ --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
    print("CMD >>> "+command)
    os.system(command)
 
@@ -83,7 +98,7 @@ if __name__ == "__main__":
    #***********************************************************************************
    #it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
 
-   command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/ --flag_all_basic --bandpass_gc --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
+   command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/ --apply_cal_gc_all --plot_cal_gc --create_images U --convert_to_fits U"
    print("CMD >>> "+command)
    os.system(command)
 
@@ -104,7 +119,7 @@ if __name__ == "__main__":
    #it.PATH_DATA = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457748/"
    #it.SPEC_GC_DIR = "/media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457661/"
 
-   command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457748/ --flag_all_basic --apply_cal_gc_spec --create_images U --convert_to_fits U"
+   command = "python redpipe.py -d --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457748/ --apply_cal_gc_spec --create_images U --convert_to_fits U"
    print("CMD >>> "+command)
    os.system(command)
 
@@ -119,6 +134,7 @@ if __name__ == "__main__":
    command = "python redpipe.py --set_data_path /media/tlgrobler/0514a1d6-e58b-451b-8187-92d24de8df69/data/2457748/ --create_images C --convert_to_fits C"
    print("CMD >>> "+command)
    os.system(command)
+  
    '''
    #command = "python redpipe.py --create_images C --convert_to_fits C"
    #print("CMD >>> "+command)
@@ -139,8 +155,7 @@ if __name__ == "__main__":
    
    #inittasks_object.compute_time_str()
    #inittasks_object.split_and_unphase_ms()
-   
-   '''
+
    inittasks_object.add_uv_tracks()
    #inittasks_object.miriad_to_uvfits_rid()
    

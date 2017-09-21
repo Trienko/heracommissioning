@@ -412,12 +412,14 @@ def main(argv):
         if opt == '-h':
            print 'python absolute_flux.py --abs_cal --apply_spec'
            print '--abs_cal: 1. Absolute calibrate the data using PMN J2101 2802 and PMN J2107 2526. 2. Apply to all ms in JD dir.'
-           print '--apply_spec: Apply the absolute scaling from the JD pointed to by SPEC_GC_DIR"
+           print '--apply_spec: Apply the absolute scaling from the JD pointed to by SPEC_GC_DIR'
            print '--set_data_path: sets the path to the data directory'
            sys.exit()
         elif opt == "--set_data_path":
-             inittasks_object = it.inittasks()
-             inittasks_object.set_PATH_DATA(arg)
+           inittasks_object = it.inittasks()
+           inittasks_object.set_PATH_DATA(arg)
+           plt_util_object = plutil.plotutilities()
+           plt_util_object.set_PATH_DATA(arg)
         elif opt == "--abs_cal":
              #print "HALLO"
              abscal = True

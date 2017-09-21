@@ -1020,6 +1020,9 @@ def main(argv):
            #print it.PATH_DATA
            inittasks_object = it.inittasks()
            inittasks_object.set_PATH_DATA(arg)
+           plt_util_object = plutil.plotutilities()
+           plt_util_object.set_PATH_DATA(arg)
+           
            #print it.PATH_DATA
       elif opt == '-d':
            delay = True
