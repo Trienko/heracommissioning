@@ -66,7 +66,7 @@ Two python files working in unison:
 5. Plotting of badpass cal solution in 2
 6. Imaging of all ms in directory
 
-`python redpipe.py --flag_all_basic --bandpass_gc --plot_cal_gc --applycal_gc_all --create_images --print_lst`
+`python redpipe.py --flag_all_basic --bandpass_gc --plot_cal_gc --apply_cal_gc_all --create_images --print_lst`
 
 `--flag_all_basic: flag known bad channels, autocorrelations and antenna`
 
