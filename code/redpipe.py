@@ -731,7 +731,7 @@ class redpipe():
                     max_v = np.amax(image)
                     if max_v > 3*img_std:
                        options["threshold"]=str(max_v/10)+'Jy'
-                       options["niter"]=10
+                       options["niter"]=5
                     
               if mask == "C":
                  #print "HALLO C"
@@ -748,7 +748,7 @@ class redpipe():
                        #img_std = np.std(image[0:n_block,0:n_block])
                        max_v = np.amax(image[0:n_block,0:n_block])
 		       options["threshold"]=str(max_v/imp_factor)+'Jy'
-                       options["niter"]=10
+                       options["niter"]=50
                        mask_list = []
                        txt_file = open(file_name2[:-5]+".mask.txt","r") 
                        lines = txt_file.readlines()
@@ -848,7 +848,7 @@ class redpipe():
                           #plt.imshow(image)
                           #plt.show()
                           
-                          idx_unr = np.unravel_index(image.argmax(), image.applycal_gc_specificshape)
+                          idx_unr = np.unravel_index(image.argmax(), image.shape)
 
                           x = idx_unr[0]
                           y = idx_unr[1]

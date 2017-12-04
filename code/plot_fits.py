@@ -8,10 +8,28 @@ import matplotlib.animation as animation
 #ffmpeg -framerate 1 -i image%03d.png -c:v libx264 -r 30 -pix_fmt yuv420p out.mp4
 from matplotlib import rcParams
 
+#2017-10-03 09:48:48 INFO listobs	  0         zenith              18:00:23.837624 -30.43.18.87239 J2000   0          10640
+#2017-10-03 09:49:46 INFO listobs	  0         zenith              05:24:10.303668 -30.44.09.29414 J2000   0          10640
+#2017-10-03 09:50:09 INFO listobs	  0         zenith              21:01:20.744398 -30.47.16.72729 J2000   0          10640
+
+#-30d43m17s
+
+DEC = np.array([-30-43.0/60-23.837624/3600,-30-44.0/60-9.29414/3600,-30-47.0/60-16.72729/3600,-30-43.0/60-17.0/3600,-30-43.0/60-17.0/3600,-30-43.0/60-17.0/3600])
+RA = np.array([18+0.0/60+23.837624/3600,5+24.0/60+10.303668/3600,21+1.0/60+20.744398/3600,5+15.0/60,18+15.0/60,21+15/60])
+RA = RA*15
+
+W1 = "5_15_I.fits"
+W2 = "18_15_I.fits"
+W3 = "21_15_I.fits" 
 
 GC_FILE = "zen.2457545.47315.xx.HH.uvcUC.fits"
 GC_FILE2 = "zen.2457545.47315.xx.HH.uvcU.fits"
 GC_FILE3 = "zen.2457545.47315.xx.HH.uvcU_raw.fits"
+
+FILE1 = "zen.2457661.16694.xx.HH.uvcUCF.fits"
+FILE2 = "zen.2457661.64018.xx.HH.uvcUCF.fits"
+FILE3 = "zen.2457661.29221.xx.HH.uvcUCF.fits"
+
 
 #GC_FILE2 = "zen.2457555.44531.xx.HH.uvcU.fits"
 ABS_FILE = "zen.2457555.57754.xx.HH.uvcUC.fits"
@@ -118,6 +136,28 @@ def plot_fits(fits_file):
     plt.savefig("GC.png",bbox_inches='tight')
     plt.show()
 
+def plot_fits_gianni(fits_file,k=0):
+    gc = aplpy.FITSFigure(fits_file)
+    gc.show_colorscale(cmap="jet",vmin=0,pmin=0,pmax=100)#vmax, vmin
+    if k <> -1:
+       gc.recenter(RA[k],DEC[k],radius=8)
+    gc.add_grid()
+    gc.grid.set_color('black') 
+    gc.grid.set_alpha(0.5)
+    gc.add_colorbar()
+    gc.axis_labels.set_font(size=16)
+    gc.tick_labels.set_font(size=16) 
+    gc.grid.set_xspacing(5)
+    gc.ticks.set_xspacing(10)
+    gc.colorbar.set_axis_label_text('Jy/beam')
+    gc.colorbar.set_font(size=16)
+    gc.colorbar.set_axis_label_font(size=16)
+    #gc.set_title("Galactic Centre")
+    plt.tight_layout()
+    #rcParams.update({'figure.autolayout': True})
+    plt.savefig(fits_file[:-5]+".png",bbox_inches='tight')
+    plt.show()
+
 def plot_fits2(fits_file):
     gc = aplpy.FITSFigure(fits_file)
     gc.show_colorscale(cmap="cubehelix_r",vmin=0)#vmax, vmin
@@ -158,6 +198,18 @@ def plot_psf(fits_file="psf.fits"):
 
 
 if __name__=="__main__":
+
+
+   print "DEC = ",DEC
+   print "RA = ",RA
+   plot_fits_gianni(fits_file=FILE1,k=0)
+   plot_fits_gianni(fits_file=FILE2,k=1)
+   plot_fits_gianni(fits_file=FILE3,k=2)
+
+ 
+   plot_fits_gianni(fits_file=W1,k=3)
+   plot_fits_gianni(fits_file=W2,k=4)
+   plot_fits_gianni(fits_file=W3,k=5)
    
    #plot_psf()
    #plot_fits(fits_file=GC_FILE)

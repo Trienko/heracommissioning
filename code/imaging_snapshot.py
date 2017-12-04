@@ -54,8 +54,8 @@ class imager():
           files_python = np.array(["ClassMS_psa64.py","ModColor.py","ModRotate_psa64.py","rad2hmsdms.py","reallyFixVis_psa64.py","reformat.py",])
 
           for code_file in files_python:
-              if not os.path.isfile(it.DATA_PATH+code_file):
-                 command = "cp -r "+code_file+" "+it.DATA_PATH+"." 
+              if not os.path.isfile(code_file):
+                 command = "cp -r "+it.PATH_CODE+code_file+" ."
                  print("CMD >>> "+command)
                  os.system(command)  
           
@@ -70,8 +70,10 @@ class imager():
               ms = file_name[:-3]+"F.ms"
               ra_str = str(int(ra_h[k])) + ":" + str(int(ra_m[k])) + ":00.000"
               command = "python reallyFixVis_psa64.py --str --ra " + ra_str+" --dec "+dec_shift_r+" "+ms
+              print("CMD >>> "+command)
+              os.system(command)
               k+=1
-
+          
           #ROTATION USING CASA FIXVIS
           #dec_shift="-30d43m17s"
           #k = 0
@@ -98,6 +100,7 @@ class imager():
           
           os.chdir(it.PATH_DATA)
 
+          
           k = 0
           for file_name in file_names:
               new_file_name = file_name[:-3]+"F.fits" 
@@ -107,14 +110,17 @@ class imager():
 
           #print "diff = ",(ra_m[1]-ra_m[0])/60.0*15
           
+          
           for k in xrange(len(minutes_m_vec)):
               ra_deg = (hours_m_vec[k] + minutes_m_vec[k]/60.0)*15
               list_val = self.find_fits_files_at_ra(ra_deg=ra_deg) 
               self.add_and_weigh(list_val,hours_m_vec[k],minutes_m_vec[k])
               #print str(hours_m_vec[k])+"h"+str(minutes_m_vec[k])+"m"
               #print "listval = ",list_val  
+          
           os.chdir(it.PATH_CODE)
           
+
       def add_and_weigh(self,file_names,ra_h,ra_m):
           ra_h = int(ra_h)
           ra_m = int(ra_m)

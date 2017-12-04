@@ -30,6 +30,12 @@ PMN_J2107_2526_FLUX_150 = 47.7*(150.0/189.0)**(-0.8)
 CENA_RA = "13:35:58"
 CENA_DEC = "-34:04:19"
 
+#NEW SOURCE IDENTIFIED BY GIANNI
+#https://ned.ipac.caltech.edu/cgi-bin/objsearch?search_type=Obj_id&objid=12395&objname=12&img_stamp=YES&hconst=73.0&omegam=0.27&omegav=0.73&corr_z=1
+#https://ned.ipac.caltech.edu/cgi-bin/datasearch?search_type=Photo_id&objid=12395&objname=ESO%20362-%20G%20021&img_stamp=YES&hconst=73.0&omegam=0.27&omegav=0.73&corr_z=1&of=table
+#PMN J0522-3628
+#74.5 @ 160 MHz (on the Baars scale)
+
 ABS_CAL_P = ''
 
 class absflux():
