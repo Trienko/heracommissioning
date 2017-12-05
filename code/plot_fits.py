@@ -14,21 +14,51 @@ from matplotlib import rcParams
 
 #-30d43m17s
 
-DEC = np.array([-30-43.0/60-23.837624/3600,-30-44.0/60-9.29414/3600,-30-47.0/60-16.72729/3600,-30-43.0/60-17.0/3600,-30-43.0/60-17.0/3600,-30-43.0/60-17.0/3600])
-RA = np.array([18+0.0/60+23.837624/3600,5+24.0/60+10.303668/3600,21+1.0/60+20.744398/3600,5+15.0/60,18+15.0/60,21+15/60])
+#DEC = np.array([-30-43.0/60-23.837624/3600,-30-44.0/60-9.29414/3600,-30-47.0/60-16.72729/3600,-30-43.0/60-17.0/3600,-30-43.0/60-17.0/3600,-30-43.0/60-17.0/3600])
+#RA = np.array([18+0.0/60+23.837624/3600,5+24.0/60+10.303668/3600,21+1.0/60+20.744398/3600,5+15.0/60,18+15.0/60,21+15/60])
+#RA = RA*15
+
+RA = np.array([0+15.0/60,0+45.0/60,1+15.0/60,1+45.0/60,2+15.0/60,2+45.0/60,3+15.0/60,3+45.0/60,4+15.0/60,4+45.0/60,5+15.0/60,5+45.0/60,6+15.0/60,6+45.0/60,7+15.0/60,7+45.0/60,8+15.0/60,8+45.0/60,9+15.0/60,9+45.0/60,10+15.0/60,10+45.0/60,11+15.0/60,11+45.0/60,12+15.0/60,12+45.0/60,13+15.0/60,13+45.0/60,14+15.0/60,14+45.0/60,15+15.0/60,15+45.0/60,16+15.0/60,16+45.0/60,17+15.0/60,17+45.0/60,
+18+15.0/60,18+45.0/60,19+15.0/60,19+45.0/60,20+15.0/60,20+45.0/60,21+15.0/60,21+45.0/60,22+15.0/60,22+45.0/60,23+15.0/60,23+45.0/60])
 RA = RA*15
 
-W1 = "5_15_I.fits"
-W2 = "18_15_I.fits"
-W3 = "21_15_I.fits" 
+vm = np.ones((len(RA),))*60
 
-GC_FILE = "zen.2457545.47315.xx.HH.uvcUC.fits"
-GC_FILE2 = "zen.2457545.47315.xx.HH.uvcU.fits"
-GC_FILE3 = "zen.2457545.47315.xx.HH.uvcU_raw.fits"
+vm[5]=350
+vm[6]=350
+vm[7]=350
+vm[8]=50
+vm[9]=50
+vm[10]=50
+vm[11]=50
+vm[26]=60
+vm[27]=60
+vm[33]=650
+vm[34]=650
+vm[35]=650
+vm[36]=650
+vm[41]=80
+vm[42]=80
 
-FILE1 = "zen.2457661.16694.xx.HH.uvcUCF.fits"
-FILE2 = "zen.2457661.64018.xx.HH.uvcUCF.fits"
-FILE3 = "zen.2457661.29221.xx.HH.uvcUCF.fits"
+vm[23:26]=200
+vm[28:33]=200
+vm[37:40]=200
+
+W = np.array(["0_15_I.fits","0_45_I.fits","1_15_I.fits","1_45_I.fits","2_15_I.fits","2_45_I.fits","3_15_I.fits","3_45_I.fits","4_15_I.fits","4_45_I.fits","5_15_I.fits","5_45_I.fits","6_15_I.fits","6_45_I.fits","7_15_I.fits","7_45_I.fits","8_15_I.fits","8_45_I.fits","9_15_I.fits","9_45_I.fits","10_15_I.fits","10_45_I.fits","11_15_I.fits","11_45_I.fits","12_15_I.fits","12_45_I.fits","13_15_I.fits","13_45_I.fits","14_15_I.fits","14_45_I.fits","15_15_I.fits","15_45_I.fits","16_15_I.fits","16_45_I.fits","17_15_I.fits","17_45_I.fits","18_15_I.fits","18_45_I.fits","19_15_I.fits","19_45_I.fits","20_15_I.fits","20_45_I.fits","21_15_I.fits","21_45_I.fits","22_15_I.fits","22_45_I.fits","23_15_I.fits","23_45_I.fits"])
+
+DEC = np.ones((len(RA),))*(-30-43.0/60-17.0/3600)
+
+#W1 = "5_15_I.fits"
+#W2 = "18_15_I.fits"
+#W3 = "21_15_I.fits" 
+
+#GC_FILE = "zen.2457545.47315.xx.HH.uvcUC.fits"
+#GC_FILE2 = "zen.2457545.47315.xx.HH.uvcU.fits"
+#GC_FILE3 = "zen.2457545.47315.xx.HH.uvcU_raw.fits"
+
+#FILE1 = "zen.2457661.16694.xx.HH.uvcUCF.fits"
+#FILE2 = "zen.2457661.64018.xx.HH.uvcUCF.fits"
+#FILE3 = "zen.2457661.29221.xx.HH.uvcUCF.fits"
 
 
 #GC_FILE2 = "zen.2457555.44531.xx.HH.uvcU.fits"
@@ -63,7 +93,7 @@ def make_video():
         gc = aplpy.FITSFigure(file_name)
         file_strip = file_name.split(".")
         beam_name = file_strip[0]+"."+file_strip[1]+"."+file_strip[2]+"."+file_strip[3]+"."+file_strip[4]+".B.fits"
-        gc.show_colorscale(cmap="cubehelix_r",vmin=0,vmax=40)#vmax, vmin
+        gc.show_colorscale(cmap="cubehelix_r",vmin=0,vmax=vm[k])#vmax, vmin
         gc.show_contour(beam_name,colors="blue",alpha=0.5,linewidths=0.8,linestyles="dashed")
         gc.add_grid()
         gc.grid.set_color('black') 
@@ -138,25 +168,29 @@ def plot_fits(fits_file):
 
 def plot_fits_gianni(fits_file,k=0):
     gc = aplpy.FITSFigure(fits_file)
-    gc.show_colorscale(cmap="jet",vmin=0,pmin=0,pmax=100)#vmax, vmin
+    gc.show_colorscale(cmap="jet",vmin=0,pmin=0,pmax=100,vmax=vm[k])#vmax, vmin
     if k <> -1:
        gc.recenter(RA[k],DEC[k],radius=8)
     gc.add_grid()
     gc.grid.set_color('black') 
     gc.grid.set_alpha(0.5)
     gc.add_colorbar()
-    gc.axis_labels.set_font(size=16)
-    gc.tick_labels.set_font(size=16) 
+    gc.axis_labels.set_font(size=7)
+    gc.tick_labels.set_font(size=7) 
     gc.grid.set_xspacing(5)
     gc.ticks.set_xspacing(10)
     gc.colorbar.set_axis_label_text('Jy/beam')
-    gc.colorbar.set_font(size=16)
-    gc.colorbar.set_axis_label_font(size=16)
+    gc.colorbar.set_font(size=7)
+    gc.colorbar.set_axis_label_font(size=7)
     #gc.set_title("Galactic Centre")
     plt.tight_layout()
     #rcParams.update({'figure.autolayout': True})
-    plt.savefig(fits_file[:-5]+".png",bbox_inches='tight')
-    plt.show()
+    if k < 10:
+           plt.savefig("image00"+str(k)+".png",bbbox_inches='tight')
+    else:
+           plt.savefig("image0"+str(k)+".png",bbbox_inches='tight')
+    #plt.savefig(fits_file[:-5]+".png",bbox_inches='tight')
+    #plt.show()
 
 def plot_fits2(fits_file):
     gc = aplpy.FITSFigure(fits_file)
@@ -202,14 +236,24 @@ if __name__=="__main__":
 
    print "DEC = ",DEC
    print "RA = ",RA
-   plot_fits_gianni(fits_file=FILE1,k=0)
-   plot_fits_gianni(fits_file=FILE2,k=1)
-   plot_fits_gianni(fits_file=FILE3,k=2)
+
+   for k in xrange(len(RA)):
+       print "PLOTTING k = ",k
+       print "*****************"
+       plot_fits_gianni(W[k],k=k)
+
+   
+
+
+
+   #plot_fits_gianni(fits_file=FILE1,k=0)
+   #plot_fits_gianni(fits_file=FILE2,k=1)
+   #plot_fits_gianni(fits_file=FILE3,k=2)
 
  
-   plot_fits_gianni(fits_file=W1,k=3)
-   plot_fits_gianni(fits_file=W2,k=4)
-   plot_fits_gianni(fits_file=W3,k=5)
+   #plot_fits_gianni(fits_file=W1,k=3)
+   #plot_fits_gianni(fits_file=W2,k=4)
+   #plot_fits_gianni(fits_file=W3,k=5)
    
    #plot_psf()
    #plot_fits(fits_file=GC_FILE)

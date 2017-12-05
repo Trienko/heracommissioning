@@ -40,6 +40,8 @@ class imager():
           file_names,ra_h,ra_m,l,m,hours_m_vec,minutes_m_vec = self.create_dictionary_lm(min_spacing=min_spacing,search_string=search_string,dec_shift=dec_shift)
           
           os.chdir(it.PATH_DATA)
+
+          print "file_names = ",file_names
           
           #COPY OF MS
           for file_name in file_names:
@@ -89,6 +91,7 @@ class imager():
           os.chdir(it.PATH_CODE)
 
           command = "python redpipe.py --create_images F --convert_to_fits F" 
+          
           
           #DIRTY IMAGE
           print("CMD >>> "+command)
@@ -205,7 +208,7 @@ class imager():
           os.chdir(it.PATH_CODE)
           return fits_list       
                 
-      def create_dictionary_lm(self,min_spacing=16,search_string="*C.ms",dec_shift="-30d43m17s"):
+      def create_dictionary_lm(self,min_spacing=60,search_string="*C.ms",dec_shift="-30d43m17s"):
           
           rad2deg = lambda val: val * 180./np.pi
           deg2rad = lambda val: val * np.pi/180
@@ -277,7 +280,7 @@ class imager():
           os.chdir(it.PATH_CODE)
           return file_names,ra_h,ra_m,l,m,hours_m_vec,minutes_m_vec
 
-      def create_ph_center_hour_vec(self,min_spacing=16):
+      def create_ph_center_hour_vec(self,min_spacing=40):
           print "min_spacing = ",min_spacing
           hours = 0
           hours_m = 0
