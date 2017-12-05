@@ -1,0 +1,728 @@
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.56362.xx.HH.uvcUCF.fits zen.2457555.56362.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file 'zen.2457555.56362.xx.HH.uvcUCFB.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.42444.xx.HH.uvcUCFB.fits 0_15_S.fits
+CMD >>> cp zen.2457661.42444.xx.HH.uvcUCFB.fits 0_15_I.fits
+CMD >>> cp zen.2457661.42444.xx.HH.uvcUCFB.fits 0_15_W.fits
+file_name =  zen.2457661.42444.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.18085.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.19477.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.43140.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.18781.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.41748.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '0_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '0_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '0_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.43836.xx.HH.uvcUCFB.fits 0_45_S.fits
+CMD >>> cp zen.2457661.43836.xx.HH.uvcUCFB.fits 0_45_I.fits
+CMD >>> cp zen.2457661.43836.xx.HH.uvcUCFB.fits 0_45_W.fits
+file_name =  zen.2457661.43836.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.20869.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.20173.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.45228.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.44532.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.21565.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '0_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '0_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '0_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.23653.xx.HH.uvcUCFB.fits 1_15_S.fits
+CMD >>> cp zen.2457748.23653.xx.HH.uvcUCFB.fits 1_15_I.fits
+CMD >>> cp zen.2457748.23653.xx.HH.uvcUCFB.fits 1_15_W.fits
+file_name =  zen.2457748.23653.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.47315.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.22957.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.22261.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.45924.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.46619.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '1_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '1_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '1_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.25741.xx.HH.uvcUCFB.fits 1_45_S.fits
+CMD >>> cp zen.2457748.25741.xx.HH.uvcUCFB.fits 1_45_I.fits
+CMD >>> cp zen.2457748.25741.xx.HH.uvcUCFB.fits 1_45_W.fits
+file_name =  zen.2457748.25741.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.49403.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.48707.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.24349.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.25045.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.48011.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '1_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '1_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '1_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.50795.xx.HH.uvcUCFB.fits 2_15_S.fits
+CMD >>> cp zen.2457661.50795.xx.HH.uvcUCFB.fits 2_15_I.fits
+CMD >>> cp zen.2457661.50795.xx.HH.uvcUCFB.fits 2_15_W.fits
+file_name =  zen.2457661.50795.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.27829.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.50099.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.27133.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.51491.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.26437.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '2_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '2_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '2_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.29916.xx.HH.uvcUCFB.fits 2_45_S.fits
+CMD >>> cp zen.2457748.29916.xx.HH.uvcUCFB.fits 2_45_I.fits
+CMD >>> cp zen.2457748.29916.xx.HH.uvcUCFB.fits 2_45_W.fits
+file_name =  zen.2457748.29916.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.52883.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.28525.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.52187.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.53579.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.29220.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '2_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '2_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '2_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.55667.xx.HH.uvcUCFB.fits 3_15_S.fits
+CMD >>> cp zen.2457661.55667.xx.HH.uvcUCFB.fits 3_15_I.fits
+CMD >>> cp zen.2457661.55667.xx.HH.uvcUCFB.fits 3_15_W.fits
+file_name =  zen.2457661.55667.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.54971.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.30612.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.32004.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.54275.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.31308.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '3_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '3_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '3_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.56363.xx.HH.uvcUCFB.fits 3_45_S.fits
+CMD >>> cp zen.2457661.56363.xx.HH.uvcUCFB.fits 3_45_I.fits
+CMD >>> cp zen.2457661.56363.xx.HH.uvcUCFB.fits 3_45_W.fits
+file_name =  zen.2457661.56363.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.57755.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.34092.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.57059.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.33396.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.32700.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '3_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '3_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '3_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.58451.xx.HH.uvcUCFB.fits 4_15_S.fits
+CMD >>> cp zen.2457661.58451.xx.HH.uvcUCFB.fits 4_15_I.fits
+CMD >>> cp zen.2457661.58451.xx.HH.uvcUCFB.fits 4_15_W.fits
+file_name =  zen.2457661.58451.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.35484.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.59146.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.59842.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.36180.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.34788.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '4_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '4_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '4_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.37572.xx.HH.uvcUCFB.fits 4_45_S.fits
+CMD >>> cp zen.2457748.37572.xx.HH.uvcUCFB.fits 4_45_I.fits
+CMD >>> cp zen.2457748.37572.xx.HH.uvcUCFB.fits 4_45_W.fits
+file_name =  zen.2457748.37572.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.38268.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.61930.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.60538.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.61234.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.36876.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '4_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '4_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '4_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.64018.xx.HH.uvcUCFB.fits 5_15_S.fits
+CMD >>> cp zen.2457661.64018.xx.HH.uvcUCFB.fits 5_15_I.fits
+CMD >>> cp zen.2457661.64018.xx.HH.uvcUCFB.fits 5_15_W.fits
+file_name =  zen.2457661.64018.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.63322.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.38964.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.39660.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.40356.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.62626.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '5_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '5_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '5_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.42443.xx.HH.uvcUCFB.fits 5_45_S.fits
+CMD >>> cp zen.2457748.42443.xx.HH.uvcUCFB.fits 5_45_I.fits
+CMD >>> cp zen.2457748.42443.xx.HH.uvcUCFB.fits 5_45_W.fits
+file_name =  zen.2457748.42443.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.41052.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.41747.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.64714.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.65410.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.66106.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '5_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '5_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '5_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.43139.xx.HH.uvcUCFB.fits 6_15_S.fits
+CMD >>> cp zen.2457748.43139.xx.HH.uvcUCFB.fits 6_15_I.fits
+CMD >>> cp zen.2457748.43139.xx.HH.uvcUCFB.fits 6_15_W.fits
+file_name =  zen.2457748.43139.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.44531.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.43835.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '6_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '6_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '6_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.46619.xx.HH.uvcUCFB.fits 6_45_S.fits
+CMD >>> cp zen.2457748.46619.xx.HH.uvcUCFB.fits 6_45_I.fits
+CMD >>> cp zen.2457748.46619.xx.HH.uvcUCFB.fits 6_45_W.fits
+file_name =  zen.2457748.46619.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.45227.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.45923.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '6_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '6_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '6_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.48011.xx.HH.uvcUCFB.fits 7_15_S.fits
+CMD >>> cp zen.2457748.48011.xx.HH.uvcUCFB.fits 7_15_I.fits
+CMD >>> cp zen.2457748.48011.xx.HH.uvcUCFB.fits 7_15_W.fits
+file_name =  zen.2457748.48011.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.48707.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.47315.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '7_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '7_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '7_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.49403.xx.HH.uvcUCFB.fits 7_45_S.fits
+CMD >>> cp zen.2457748.49403.xx.HH.uvcUCFB.fits 7_45_I.fits
+CMD >>> cp zen.2457748.49403.xx.HH.uvcUCFB.fits 7_45_W.fits
+file_name =  zen.2457748.49403.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.50795.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.50099.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '7_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '7_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '7_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.52187.xx.HH.uvcUCFB.fits 8_15_S.fits
+CMD >>> cp zen.2457748.52187.xx.HH.uvcUCFB.fits 8_15_I.fits
+CMD >>> cp zen.2457748.52187.xx.HH.uvcUCFB.fits 8_15_W.fits
+file_name =  zen.2457748.52187.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.51491.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.52883.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '8_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '8_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '8_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.54970.xx.HH.uvcUCFB.fits 8_45_S.fits
+CMD >>> cp zen.2457748.54970.xx.HH.uvcUCFB.fits 8_45_I.fits
+CMD >>> cp zen.2457748.54970.xx.HH.uvcUCFB.fits 8_45_W.fits
+file_name =  zen.2457748.54970.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.54274.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.53579.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '8_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '8_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '8_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.56362.xx.HH.uvcUCFB.fits 9_15_S.fits
+CMD >>> cp zen.2457748.56362.xx.HH.uvcUCFB.fits 9_15_I.fits
+CMD >>> cp zen.2457748.56362.xx.HH.uvcUCFB.fits 9_15_W.fits
+file_name =  zen.2457748.56362.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.55666.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.57058.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '9_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '9_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '9_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.59146.xx.HH.uvcUCFB.fits 9_45_S.fits
+CMD >>> cp zen.2457748.59146.xx.HH.uvcUCFB.fits 9_45_I.fits
+CMD >>> cp zen.2457748.59146.xx.HH.uvcUCFB.fits 9_45_W.fits
+file_name =  zen.2457748.59146.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.58450.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.57754.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '9_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '9_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '9_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457748.59842.xx.HH.uvcUCFB.fits 10_15_S.fits
+CMD >>> cp zen.2457748.59842.xx.HH.uvcUCFB.fits 10_15_I.fits
+CMD >>> cp zen.2457748.59842.xx.HH.uvcUCFB.fits 10_15_W.fits
+file_name =  zen.2457748.59842.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.16694.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.60538.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.61234.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '10_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '10_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '10_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457545.18086.xx.HH.uvcUCFB.fits 10_45_S.fits
+CMD >>> cp zen.2457545.18086.xx.HH.uvcUCFB.fits 10_45_I.fits
+CMD >>> cp zen.2457545.18086.xx.HH.uvcUCFB.fits 10_45_W.fits
+file_name =  zen.2457545.18086.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.61930.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.17390.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.18782.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.63322.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.62626.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '10_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '10_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '10_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.16693.xx.HH.uvcUCFB.fits 11_15_S.fits
+CMD >>> cp zen.2457555.16693.xx.HH.uvcUCFB.fits 11_15_I.fits
+CMD >>> cp zen.2457555.16693.xx.HH.uvcUCFB.fits 11_15_W.fits
+file_name =  zen.2457555.16693.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.20870.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.20174.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.17389.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.19478.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.64714.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.64018.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.18085.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.65410.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '11_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '11_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '11_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457545.21566.xx.HH.uvcUCFB.fits 11_45_S.fits
+CMD >>> cp zen.2457545.21566.xx.HH.uvcUCFB.fits 11_45_I.fits
+CMD >>> cp zen.2457545.21566.xx.HH.uvcUCFB.fits 11_45_W.fits
+file_name =  zen.2457545.21566.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.22957.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.18781.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.19477.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.22261.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.66106.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.20173.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '11_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '11_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '11_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457545.25045.xx.HH.uvcUCFB.fits 12_15_S.fits
+CMD >>> cp zen.2457545.25045.xx.HH.uvcUCFB.fits 12_15_I.fits
+CMD >>> cp zen.2457545.25045.xx.HH.uvcUCFB.fits 12_15_W.fits
+file_name =  zen.2457545.25045.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.21565.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.22261.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.24349.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.23653.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.20869.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '12_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '12_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '12_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.22957.xx.HH.uvcUCFB.fits 12_45_S.fits
+CMD >>> cp zen.2457555.22957.xx.HH.uvcUCFB.fits 12_45_I.fits
+CMD >>> cp zen.2457555.22957.xx.HH.uvcUCFB.fits 12_45_W.fits
+file_name =  zen.2457555.22957.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.23653.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.25741.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.26437.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.27133.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.24349.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '12_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '12_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '12_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.25045.xx.HH.uvcUCFB.fits 13_15_S.fits
+CMD >>> cp zen.2457555.25045.xx.HH.uvcUCFB.fits 13_15_I.fits
+CMD >>> cp zen.2457555.25045.xx.HH.uvcUCFB.fits 13_15_W.fits
+file_name =  zen.2457555.25045.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.26437.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.28525.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.29221.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.25741.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.27829.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '13_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '13_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '13_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.27829.xx.HH.uvcUCFB.fits 13_45_S.fits
+CMD >>> cp zen.2457555.27829.xx.HH.uvcUCFB.fits 13_45_I.fits
+CMD >>> cp zen.2457555.27829.xx.HH.uvcUCFB.fits 13_45_W.fits
+file_name =  zen.2457555.27829.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.29917.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.30613.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.27133.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.28525.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.31309.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '13_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '13_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '13_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457545.33397.xx.HH.uvcUCFB.fits 14_15_S.fits
+CMD >>> cp zen.2457545.33397.xx.HH.uvcUCFB.fits 14_15_I.fits
+CMD >>> cp zen.2457545.33397.xx.HH.uvcUCFB.fits 14_15_W.fits
+file_name =  zen.2457545.33397.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.29220.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.29916.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.32005.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.32701.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.30612.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '14_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '14_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '14_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457545.35484.xx.HH.uvcUCFB.fits 14_45_S.fits
+CMD >>> cp zen.2457545.35484.xx.HH.uvcUCFB.fits 14_45_I.fits
+CMD >>> cp zen.2457545.35484.xx.HH.uvcUCFB.fits 14_45_W.fits
+file_name =  zen.2457545.35484.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.32700.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.32004.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.34788.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.31308.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.34093.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '14_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '14_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '14_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.34788.xx.HH.uvcUCFB.fits 15_15_S.fits
+CMD >>> cp zen.2457555.34788.xx.HH.uvcUCFB.fits 15_15_I.fits
+CMD >>> cp zen.2457555.34788.xx.HH.uvcUCFB.fits 15_15_W.fits
+file_name =  zen.2457555.34788.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.36180.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.37572.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.34092.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.33396.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.36876.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '15_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '15_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '15_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.36180.xx.HH.uvcUCFB.fits 15_45_S.fits
+CMD >>> cp zen.2457555.36180.xx.HH.uvcUCFB.fits 15_45_I.fits
+CMD >>> cp zen.2457555.36180.xx.HH.uvcUCFB.fits 15_45_W.fits
+file_name =  zen.2457555.36180.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.38268.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.35484.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.38964.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.36876.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.39660.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '15_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '15_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '15_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.38964.xx.HH.uvcUCFB.fits 16_15_S.fits
+CMD >>> cp zen.2457555.38964.xx.HH.uvcUCFB.fits 16_15_I.fits
+CMD >>> cp zen.2457555.38964.xx.HH.uvcUCFB.fits 16_15_W.fits
+file_name =  zen.2457555.38964.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.38268.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.41052.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.41748.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.37572.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.40356.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '16_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '16_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '16_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457545.42444.xx.HH.uvcUCFB.fits 16_45_S.fits
+CMD >>> cp zen.2457545.42444.xx.HH.uvcUCFB.fits 16_45_I.fits
+CMD >>> cp zen.2457545.42444.xx.HH.uvcUCFB.fits 16_45_W.fits
+file_name =  zen.2457545.42444.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.40356.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.39660.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.41052.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.43140.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.43836.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '16_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '16_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '16_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.43139.xx.HH.uvcUCFB.fits 17_15_S.fits
+CMD >>> cp zen.2457555.43139.xx.HH.uvcUCFB.fits 17_15_I.fits
+CMD >>> cp zen.2457555.43139.xx.HH.uvcUCFB.fits 17_15_W.fits
+file_name =  zen.2457555.43139.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.45228.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.44532.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.41747.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.42443.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.45924.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '17_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '17_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '17_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.44531.xx.HH.uvcUCFB.fits 17_45_S.fits
+CMD >>> cp zen.2457555.44531.xx.HH.uvcUCFB.fits 17_45_I.fits
+CMD >>> cp zen.2457555.44531.xx.HH.uvcUCFB.fits 17_45_W.fits
+file_name =  zen.2457555.44531.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.46620.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.47315.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.43835.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.48011.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.45227.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '17_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '17_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '17_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457545.48707.xx.HH.uvcUCFB.fits 18_15_S.fits
+CMD >>> cp zen.2457545.48707.xx.HH.uvcUCFB.fits 18_15_I.fits
+CMD >>> cp zen.2457545.48707.xx.HH.uvcUCFB.fits 18_15_W.fits
+file_name =  zen.2457545.48707.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.17390.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.46619.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.16694.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.49403.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.47315.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.18086.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.50099.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.45923.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '18_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '18_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '18_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.20174.xx.HH.uvcUCFB.fits 18_45_S.fits
+CMD >>> cp zen.2457661.20174.xx.HH.uvcUCFB.fits 18_45_I.fits
+CMD >>> cp zen.2457661.20174.xx.HH.uvcUCFB.fits 18_45_W.fits
+file_name =  zen.2457661.20174.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.49403.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.52187.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.48707.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.19478.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.51491.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.50795.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.48011.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.18782.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '18_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '18_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '18_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.50795.xx.HH.uvcUCFB.fits 19_15_S.fits
+CMD >>> cp zen.2457555.50795.xx.HH.uvcUCFB.fits 19_15_I.fits
+CMD >>> cp zen.2457555.50795.xx.HH.uvcUCFB.fits 19_15_W.fits
+file_name =  zen.2457555.50795.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.53579.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.21566.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.51491.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.20870.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.22261.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.50099.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.54275.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.52883.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '19_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '19_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '19_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.23653.xx.HH.uvcUCFB.fits 19_45_S.fits
+CMD >>> cp zen.2457661.23653.xx.HH.uvcUCFB.fits 19_45_I.fits
+CMD >>> cp zen.2457661.23653.xx.HH.uvcUCFB.fits 19_45_W.fits
+file_name =  zen.2457661.23653.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.22957.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.54971.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.24349.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.55667.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.56363.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.52883.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.53578.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.52187.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '19_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '19_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '19_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.25741.xx.HH.uvcUCFB.fits 20_15_S.fits
+CMD >>> cp zen.2457661.25741.xx.HH.uvcUCFB.fits 20_15_I.fits
+CMD >>> cp zen.2457661.25741.xx.HH.uvcUCFB.fits 20_15_W.fits
+file_name =  zen.2457661.25741.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.55666.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.57755.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.57059.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.26437.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.25045.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.58451.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.54970.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.54274.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '20_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '20_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '20_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.57754.xx.HH.uvcUCFB.fits 20_45_S.fits
+CMD >>> cp zen.2457555.57754.xx.HH.uvcUCFB.fits 20_45_I.fits
+CMD >>> cp zen.2457555.57754.xx.HH.uvcUCFB.fits 20_45_W.fits
+file_name =  zen.2457555.57754.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.59147.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.57058.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.60538.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.59842.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.27829.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.28525.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.27133.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.56362.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '20_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '20_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '20_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457545.61930.xx.HH.uvcUCFB.fits 21_15_S.fits
+CMD >>> cp zen.2457545.61930.xx.HH.uvcUCFB.fits 21_15_I.fits
+CMD >>> cp zen.2457545.61930.xx.HH.uvcUCFB.fits 21_15_W.fits
+file_name =  zen.2457545.61930.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.58450.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.61234.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.62626.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.29917.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.59842.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.59146.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.30613.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.29221.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '21_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '21_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '21_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457545.64018.xx.HH.uvcUCFB.fits 21_45_S.fits
+CMD >>> cp zen.2457545.64018.xx.HH.uvcUCFB.fits 21_45_I.fits
+CMD >>> cp zen.2457545.64018.xx.HH.uvcUCFB.fits 21_45_W.fits
+file_name =  zen.2457545.64018.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.31309.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.60538.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.61234.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.32701.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.63322.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.64714.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.61930.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.32005.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '21_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '21_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '21_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.63322.xx.HH.uvcUCFB.fits 22_15_S.fits
+CMD >>> cp zen.2457555.63322.xx.HH.uvcUCFB.fits 22_15_I.fits
+CMD >>> cp zen.2457555.63322.xx.HH.uvcUCFB.fits 22_15_W.fits
+file_name =  zen.2457555.63322.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.65410.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.34788.xx.HH.uvcUCFB.fits
+file_name =  zen.2457545.66106.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.33397.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.64018.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.62627.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.34092.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '22_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '22_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '22_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457555.65410.xx.HH.uvcUCFB.fits 22_45_S.fits
+CMD >>> cp zen.2457555.65410.xx.HH.uvcUCFB.fits 22_45_I.fits
+CMD >>> cp zen.2457555.65410.xx.HH.uvcUCFB.fits 22_45_W.fits
+file_name =  zen.2457555.65410.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.36876.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.36180.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.35484.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.66106.xx.HH.uvcUCFB.fits
+file_name =  zen.2457555.64714.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '22_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '22_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '22_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.37572.xx.HH.uvcUCFB.fits 23_15_S.fits
+CMD >>> cp zen.2457661.37572.xx.HH.uvcUCFB.fits 23_15_I.fits
+CMD >>> cp zen.2457661.37572.xx.HH.uvcUCFB.fits 23_15_W.fits
+file_name =  zen.2457661.37572.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.38268.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.38964.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '23_15_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '23_15_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '23_15_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+CMD >>> cp zen.2457661.40356.xx.HH.uvcUCFB.fits 23_45_S.fits
+CMD >>> cp zen.2457661.40356.xx.HH.uvcUCFB.fits 23_45_I.fits
+CMD >>> cp zen.2457661.40356.xx.HH.uvcUCFB.fits 23_45_W.fits
+file_name =  zen.2457661.40356.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.16694.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.39660.xx.HH.uvcUCFB.fits
+file_name =  zen.2457748.17389.xx.HH.uvcUCFB.fits
+file_name =  zen.2457661.41052.xx.HH.uvcUCFB.fits
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '23_45_S.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '23_45_W.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+/usr/local/lib/python2.7/dist-packages/pyfits/file.py:372: UserWarning: Overwriting existing file '23_45_I.fits'.
+  warnings.warn("Overwriting existing file %r." % self.name)
+tlgrobler@cs449238:~/heracommissioning/code$ ls *_I.fits
+ls: cannot access '*_I.fits': No such file or directory
+tlgrobler@cs449238:~/heracommissioning/code$ 
+
