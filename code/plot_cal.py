@@ -49,7 +49,10 @@ def plot_delays():
 
     JD_list = JD_list[idx]
     delays = delays[idx,:]
-    delays[0,3]=0
+    print "d = ", delays[0,3]
+    print ANT_ID[3]
+    #delays[0,3]=0
+    print "d = ", delays[0,3]
     print delays[0,:]
     print delays[1,:]
     print np.absolute(delays[0,:]-delays[1,:])**2
@@ -61,18 +64,18 @@ def plot_delays():
     ax = plt.subplot(111)
     x = float(ANT_ID[k])
 
-    ind = np.arange(len(ANT_ID[ANT_ID<=72])) 
+    ind = np.arange(len(ANT_ID[np.logical_and(ANT_ID<=72,ANT_ID<>9)])) 
     width = 0.3
     
-    rects1 = ax.bar(ind,delays[0,ANT_ID<=72],width=width,color='b',align='center')
-    rects2 = ax.bar(ind+width,delays[1,ANT_ID<=72],width=width,color='r',align='center')
-    rects3 = ax.bar(ind+2*width,delays[2,ANT_ID<=72],width=width,color='g',align='center')
+    rects1 = ax.bar(ind,delays[0,np.logical_and(ANT_ID<=72,ANT_ID<>9)],width=width,color='b',align='center')
+    rects2 = ax.bar(ind+width,delays[1,np.logical_and(ANT_ID<=72,ANT_ID<>9)],width=width,color='r',align='center')
+    rects3 = ax.bar(ind+2*width,delays[2,np.logical_and(ANT_ID<=72,ANT_ID<>9)],width=width,color='g',align='center')
 
     ax.set_ylabel(r'$\tau$ (ns)')
     ax.set_xlabel('ANTENNA ID')
     #ax.set_title('Delay at different JD\'s')
     ax.set_xticks(ind + width)
-    ax.set_xticklabels(ANT_ID)
+    ax.set_xticklabels(ANT_ID[1:])
     #ax.legend((rects1[0], rects2[0],rects3[0]), JD_list[0:3]) 
     
     plt.show()
@@ -84,8 +87,8 @@ def plot_bandpass(idx):
     ANT_ID = np.sort(ANT_ID)
     file_names = glob.glob("./CAL/b_*.cal")
     JD_list = []
-    comp_gain = np.zeros((len(file_names),len(ANT_ID),1024),dtype=complex)
-    chan_width = 100.0/1024.0
+    comp_gain = np.zeros((len(file_names),len(ANT_ID),205),dtype=complex)
+    chan_width = 100.0/205.0
     k = 0
     for file_name in file_names:
         JDs_split = file_name.split('.')
@@ -115,12 +118,13 @@ def plot_bandpass(idx):
 
     for k in xrange(len(color)):
         for j in xrange(len(line)):
-            plt.plot(freq,np.absolute(comp_gain[k,j,:]),color[k]+line[j],label="ANT:"+str(ANT_ID[j]),lw=2.0)
+            print comp_gain[k,j+1,:]
+            plt.plot(freq,np.absolute(comp_gain[k,j+1,:]),color[k]+line[j],label="ANT:"+str(ANT_ID[j+1]),lw=2.0)
              
     
     plt.xlabel("Frequency [MHz]")
     plt.ylabel("Gain amplitude")
-    plt.xlim([100+chan_width*200+chan_width/2.0,100+chan_width*900+chan_width/2.0])
+    plt.xlim([100+chan_width*(200./5)+chan_width/2.0,100+chan_width*(900./5)+chan_width/2.0])
     #plt.title("BANDPASS: AMP")
     matplotlib.rcParams.update({'font.size': 14})
     plt.legend()
@@ -131,12 +135,12 @@ def plot_bandpass(idx):
 
     for k in xrange(len(color)):
         for j in xrange(len(line)):
-            plt.plot(freq,np.angle(comp_gain[k,j,:],deg=True),color[k]+line[j],label="ANT:"+str(ANT_ID[j]),lw=2.0)
+            plt.plot(freq,np.angle(comp_gain[k,j+1,:],deg=True),color[k]+line[j],label="ANT:"+str(ANT_ID[j+1]),lw=2.0)
              
     
     plt.xlabel("Frequency [MHz]")
     plt.ylabel("Gain phase (degrees)")
-    plt.xlim([100+chan_width*200+chan_width/2.0,100+chan_width*900+chan_width/2.0])
+    plt.xlim([100+chan_width*(200./5)+chan_width/2.0,100+chan_width*(900./5)+chan_width/2.0])
     #plt.title("BANDPASS: PHASE")
     matplotlib.rcParams.update({'font.size': 14})
     plt.legend()
@@ -277,9 +281,9 @@ def plot_gaincal(file_name):
 
 
 if __name__ == "__main__":
-   plot_gaincal(file_name='gaincal_table')
-   #idx = plot_delays()
-   #plot_bandpass_2(idx=[0,1])
+   #plot_gaincal(file_name='gaincal_table')
+   idx = plot_delays()
+   plot_bandpass(idx=[0,1,2])
    
 
  
