@@ -99,6 +99,80 @@ class flagger(object):
           os.chdir(PATH_CODE)
           return data_mat,flag_mat,flag_row_mat,indx_2d
 
+      def plot_uv_coverage(self,ms_file,telescope="HERA19",):
+          os.chdir(PATH_DATA)
+          t=table(ms_file,readonly=False)
+          uvw = t.getcol("UVW")
+
+          if telescope == "HERA19":
+             ANT_ID = HERA19_ID
+          else:
+             ANT_ID = PAPER128_ID
+ 
+          N = len(ANT_ID)
+
+          if telescope == "HERA19":
+             B = ((N)**2 + (N))/2 #ASSUMING HERA19 CONTAINS AUTO-CORRELATIONS
+          else:
+             B = ((N)**2 - (N))/2 #ASSUMING PAPER128 CONTAINS NO AUTO-CORRELATIONS         
+
+          print "B = ",B
+
+          data = t.getcol("DATA")
+          ant1 = t.getcol("ANTENNA1")
+          ant2 = t.getcol("ANTENNA2")
+          indx_1d = np.arange(data.shape[0])
+
+          ts = uvw.shape[0]/B
+          print "ts = ",ts
+          chans = data.shape[1]
+
+          data_mat = np.zeros((N,N,ts,chans),dtype=complex)
+          uvw_mat = np.zeros((N,N,ts,3),dtype=complex)
+          uvw_mat_chan = np.zeros((N,N,ts,500,3),dtype=complex)
+          flag_mat = np.ones((N,N,ts,chans),dtype=int)
+          flag_row_mat = np.ones((N,N,ts),dtype=int)
+          indx_2d = np.zeros((N,N,ts),dtype=int)
+
+          for k in xrange(N):
+              for j in xrange(k+1,N): 
+                  #print "******************"
+                  #print "k = ",k
+                  #print "j = ",j
+                  p,q,greater = self.find_indices(ANT_ID[k],ANT_ID[j])
+                  #print "p = ",p
+                  #print "q = ",q
+                  #print "******************"
+                  temp_indx = np.logical_and(ant1==p,ant2==q)
+                                      
+                  uvw_mat[k,j,:,:] = uvw[temp_indx,:]
+                  uvw_mat[j,k,:,:] = -1*uvw[temp_indx,:] 
+
+                  #plt.plot(uvw_mat[k,j,:,0],uvw_mat[k,j,:,1],"b")
+                  #plt.hold('on')
+
+          for k in xrange(N):
+              for j in xrange(k+1,N):
+                  print "k = ",k
+                  print "j = ",j
+                  l = (1.0*3e8)/np.linspace(100e6,200e6,500)
+                  for count in xrange(len(l)):
+                      print "count = ",count
+
+                      uvw_mat_chan[k,j,:,count,:] = uvw_mat[k,j,:,:]/(1.0*l[count])
+                      uvw_mat_chan[j,k,:,count,:] = uvw_mat[j,k,:,:]/(1.0*l[count])
+                      
+          
+          plt.plot(uvw_mat_chan[:,:,:,:,0].flatten(),uvw_mat_chan[:,:,:,:,1].flatten(),"b.") 
+          
+
+          plt.xlabel("$\lambda$")
+          plt.ylabel("$\lambda$")
+          
+          plt.show()          
+          os.chdir(PATH_CODE)
+          return uvw_mat
+
       def write_to_D(self,ms_file,data_cube,indx_2d,column="CORRECTED_DATA",telescope="HERA19"):
           os.chdir(PATH_DATA)
           
@@ -212,10 +286,11 @@ def flag_data(data_mat, flag_mat, med_filter_size=9, sigma_factor=0.01, agreemen
 if __name__ == "__main__":
    
    f = flagger()
-   data_mat,flag_mat,flag_row_mat,indx_2d = f.read_in_D(ms_file="zen.2457661.16694.xx.HH.uvcU.ms",column="DATA",telescope="HERA19",flag_ant=np.array([]))
-   flag_mat = flag_data(data_mat, flag_mat, med_filter_size=9, sigma_factor=0.02, agreement=30)
+   f.plot_uv_coverage(ms_file="zen.2457661.16694.xx.HH.uvcU.ms")
+   #data_mat,flag_mat,flag_row_mat,indx_2d = f.read_in_D(ms_file="zen.2457661.16694.xx.HH.uvcU.ms",column="DATA",telescope="HERA19",flag_ant=np.array([]))
+   #flag_mat = flag_data(data_mat, flag_mat, med_filter_size=9, sigma_factor=0.02, agreement=30)
 
-   f.write_to_D(ms_file="zen.2457661.16694.xx.HH.uvcU.ms",data_cube=flag_mat,indx_2d=indx_2d, column="FLAG", telescope="HERA19")
+   #f.write_to_D(ms_file="zen.2457661.16694.xx.HH.uvcU.ms",data_cube=flag_mat,indx_2d=indx_2d, column="FLAG", telescope="HERA19")
 
    #print flag_mat[0,1,0,0].type   
    '''

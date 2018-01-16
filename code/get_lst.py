@@ -64,8 +64,8 @@ def plot_lst_range():
     ax.imshow(lst_matrix,aspect='auto')
     one = np.ones((len(days),))
     x = np.cumsum(one)-1
-    ax.plot(x,one*6,"r--",linewidth=2.0)
-    ax.plot(x,one*10,"r--",linewidth=2.0)
+    #ax.plot(x,one*6,"r--",linewidth=2.0)
+    #ax.plot(x,one*10,"r--",linewidth=2.0)
     ax.plot(x,one*21,"k",linewidth=2.0)
     ax.plot(x,one*18,"k",linewidth=2.0)
     x_copy = np.copy(x)
@@ -77,15 +77,28 @@ def plot_lst_range():
     ax.axvline(x=x)
     x = days.tolist().index("2457545")
     ax.axvline(x=x)
+    x = days.tolist().index("2457748")
+    ax.axvline(x=x)
     ax.set_ylabel("LST [h]")
-    ax.set_xlabel("JD")
-    ax.set_title("HERA-19 LST RANGE [xx]")
+    ax.set_xlabel("Date [dd/mm/yy]")
+    #ax.set_title("HERA-19 LST RANGE [xx]")
     idx = np.array([0,0,50,100,150,200,250])
-    labels = days[idx]
+    labels = np.copy(days[idx])
+    #labels.itemsize=20
+    labels2 = np.chararray(labels.shape, itemsize=20)
     print "labels = ",labels
+    labels2[0] = "15/10/15"
+    labels2[1] = "15/10/15"
+    labels2[2] = "01/07/16"
+    labels2[3] = "20/08/16"
+    labels2[4] = "26/10/16"
+    labels2[5] = "15/12/16" 
+    labels2[6] = "03/02/17"
+    print "labels = ",labels2
+
     #labels = [item.get_text() for item in ax.get_xticklabels()]
     #labels = np.array(["12$^h$","10$^h$","8$^h$","6$^h$","4$^h$","2$^h$","0$^h$","22$^h$","20$^h$","18$^h$","16$^h$","14$^h$","12$^h$"])
-    ax.set_xticklabels(labels)
+    ax.set_xticklabels(labels2)
     #plt.colorbar()
     #fig.canvas.draw()
     #ax.plot([2457661,2457661],[0,24],'c',linewidth=4.0)
