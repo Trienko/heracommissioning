@@ -103,7 +103,7 @@ class imager():
           
           os.chdir(it.PATH_DATA)
 
-          
+          #CREATE SHIFTED HERA BEAM
           k = 0
           for file_name in file_names:
               new_file_name = file_name[:-3]+"F.fits" 
@@ -113,7 +113,7 @@ class imager():
 
           #print "diff = ",(ra_m[1]-ra_m[0])/60.0*15
           
-          
+          #ADD AND WEIGH
           for k in xrange(len(minutes_m_vec)):
               ra_deg = (hours_m_vec[k] + minutes_m_vec[k]/60.0)*15
               list_val = self.find_fits_files_at_ra(ra_deg=ra_deg) 
